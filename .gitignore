@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/salicon/*
+data/rico/*
+!data/salicon/.gitkeep
+!data/rico/.gitkeep
+
+# Models
+backend/ai_models/*
+!backend/ai_models/.gitkeep
+
+# Logs
+*.log
+
+# Build
+frontend/build/
+frontend/.cache/
+
+# Testing
+coverage/
+.pytest_cache/
