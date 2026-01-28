@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { authService } from '../../services/auth';
 
 const Login = () => {
@@ -7,7 +7,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,11 +16,21 @@ const Login = () => {
     try {
       const result = await authService.login(email, password);
       console.log('Login successful:', result);
-      // Force navigation after successful login
-      window.location.href = '/dashboard';
+      console.log('Token stored:', localStorage.getItem('access_token') ? 'Yes' : 'No');
+      
+      // Verify token was stored before redirecting
+      if (localStorage.getItem('access_token')) {
+        console.log('Redirecting to dashboard...');
+        // Small delay to ensure localStorage is fully written
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
+      } else {
+        throw new Error('Authentication token not received');
+      }
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.response?.data?.detail || 'Login failed');
+      setError(err.response?.data?.detail || err.message || 'Login failed');
       setLoading(false);
     }
   };

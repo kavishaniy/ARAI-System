@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { authService } from '../../services/auth';
 
 const Signup = () => {
@@ -11,7 +11,6 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -33,8 +32,18 @@ const Signup = () => {
     try {
       const result = await authService.signup(formData.email, formData.password, formData.name);
       console.log('Signup successful:', result);
-      // Force navigation after successful signup
-      window.location.href = '/dashboard';
+      console.log('Token stored:', localStorage.getItem('access_token') ? 'Yes' : 'No');
+      
+      // Verify token was stored before redirecting
+      if (localStorage.getItem('access_token')) {
+        console.log('Redirecting to dashboard...');
+        // Small delay to ensure localStorage is fully written
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
+      } else {
+        throw new Error('Authentication token not received');
+      }
     } catch (err) {
       console.error('Signup error:', err);
       setError(err.response?.data?.detail || err.message || 'Signup failed. Please try again.');

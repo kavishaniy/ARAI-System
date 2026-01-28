@@ -14,6 +14,12 @@ const ProtectedRoute = ({ children }) => {
   const isAuthenticated = authService.isAuthenticated();
   const location = useLocation();
   
+  console.log('ProtectedRoute check:', {
+    isAuthenticated,
+    hasToken: !!localStorage.getItem('access_token'),
+    path: location.pathname
+  });
+  
   if (!isAuthenticated) {
     console.log('Not authenticated, redirecting to login');
     return <Navigate to="/login" state={{ from: location }} replace />;
