@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { authService } from '../../services/auth';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const Signup = () => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,11 +29,16 @@ const Signup = () => {
       return;
     }
 
+    setLoading(true);
     try {
-      // TODO: Implement signup logic
-      console.log('Signup attempt:', formData);
+      const result = await authService.signup(formData.email, formData.password, formData.name);
+      console.log('Signup successful:', result);
+      // Force navigation after successful signup
+      window.location.href = '/dashboard';
     } catch (err) {
-      setError(err.message || 'Signup failed');
+      console.error('Signup error:', err);
+      setError(err.response?.data?.detail || err.message || 'Signup failed. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -107,10 +114,18 @@ const Signup = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              Sign up
+              {loading ? 'Signing up...' : 'Sign up'}
             </button>
+          </div>
+
+          <div className="text-center text-sm">
+            <span className="text-gray-600">Already have an account? </span>
+            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
+              Sign in
+            </Link>
           </div>
         </form>
       </div>

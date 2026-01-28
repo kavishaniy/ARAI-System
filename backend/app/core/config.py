@@ -3,12 +3,19 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
+    # Server Configuration
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
+    DEBUG: bool = True
+    ENVIRONMENT: str = "development"
+    
     # API Settings
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "ARAI - AI-Powered UX Design Critique"
     VERSION: str = "1.0.0"
     
     # CORS
+    ALLOWED_ORIGINS: str = "http://localhost:3000"
     BACKEND_CORS_ORIGINS: list = [
         "http://localhost:3000",
         "http://localhost:5173",
@@ -30,6 +37,8 @@ class Settings(BaseSettings):
     
     # AI Models
     SALIENCY_MODEL_PATH: str = "ai_models/saliency_model.pth"
+    SALICON_MODEL_PATH: str = "./ai_models/salicon_model"
+    RICO_MODEL_PATH: str = "./ai_models/rico_model"
     
     class Config:
         env_file = ".env"

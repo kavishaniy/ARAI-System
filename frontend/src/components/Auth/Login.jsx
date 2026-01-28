@@ -15,11 +15,13 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await authService.login(email, password);
-      navigate('/dashboard');
+      const result = await authService.login(email, password);
+      console.log('Login successful:', result);
+      // Force navigation after successful login
+      window.location.href = '/dashboard';
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.response?.data?.detail || 'Login failed');
-    } finally {
       setLoading(false);
     }
   };

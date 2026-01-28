@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { authService } from '../../services/auth';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const isAuthenticated = false; // TODO: Implement authentication check
+  const isAuthenticated = authService.isAuthenticated();
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log('Logging out...');
+  const handleLogout = async () => {
+    await authService.logout();
     navigate('/login');
   };
 
