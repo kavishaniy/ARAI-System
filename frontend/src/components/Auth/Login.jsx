@@ -14,22 +14,38 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const result = await authService.login(email, password);
-      console.log('Login successful:', result);
-      console.log('Token stored:', localStorage.getItem('access_token') ? 'Yes' : 'No');
+      console.log('🚀 Starting login...');
+      console.log('📧 Email:', email);
+      
+      const response = await authService.login(email, password);
+      
+      console.log('✅ Login response:', response);
+      console.log('✅ Token saved:', localStorage.getItem('access_token'));
+      console.log('✅ User saved:', localStorage.getItem('user'));
+      console.log('🔄 About to navigate to /dashboard...');
       
       // Verify token was stored before redirecting
       if (localStorage.getItem('access_token')) {
-        console.log('Redirecting to dashboard...');
+        console.log('✅ Token verified, redirecting in 100ms...');
         // Small delay to ensure localStorage is fully written
         setTimeout(() => {
+          console.log('🎯 Executing redirect to /dashboard');
           window.location.href = '/dashboard';
         }, 100);
       } else {
+        console.error('❌ No token found in localStorage!');
         throw new Error('Authentication token not received');
       }
+      
+      console.log('✅ Navigate setup complete!');
+      
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err);
+      console.error('❌ Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
       setError(err.response?.data?.detail || err.message || 'Login failed');
       setLoading(false);
     }

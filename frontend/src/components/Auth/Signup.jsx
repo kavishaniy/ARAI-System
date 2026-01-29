@@ -30,22 +30,43 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const result = await authService.signup(formData.email, formData.password, formData.name);
-      console.log('Signup successful:', result);
-      console.log('Token stored:', localStorage.getItem('access_token') ? 'Yes' : 'No');
+      console.log('🚀 Starting signup...');
+      console.log('📧 Email:', formData.email);
+      console.log('👤 Name:', formData.name);
+      
+      const response = await authService.signup(
+        formData.email,
+        formData.password,
+        formData.name
+      );
+      
+      console.log('✅ Signup response:', response);
+      console.log('✅ Token saved:', localStorage.getItem('access_token'));
+      console.log('✅ User saved:', localStorage.getItem('user'));
+      console.log('🔄 About to navigate to /dashboard...');
       
       // Verify token was stored before redirecting
       if (localStorage.getItem('access_token')) {
-        console.log('Redirecting to dashboard...');
+        console.log('✅ Token verified, redirecting in 100ms...');
         // Small delay to ensure localStorage is fully written
         setTimeout(() => {
+          console.log('🎯 Executing redirect to /dashboard');
           window.location.href = '/dashboard';
         }, 100);
       } else {
+        console.error('❌ No token found in localStorage!');
         throw new Error('Authentication token not received');
       }
+      
+      console.log('✅ Navigate setup complete!');
+      
     } catch (err) {
-      console.error('Signup error:', err);
+      console.error('❌ Signup error:', err);
+      console.error('❌ Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
       setError(err.response?.data?.detail || err.message || 'Signup failed. Please try again.');
       setLoading(false);
     }
