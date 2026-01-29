@@ -1,0 +1,340 @@
+{
+  "analysis_id": "3dd506b4-45ec-4442-96b8-946a3ac33625",
+  "design_name": "MacBook Air - 9.png",
+  "filename": "MacBook Air - 9.png",
+  "timestamp": "2026-01-29T22:35:58.085932",
+  "arai_score": 54.279998779296875,
+  "accessibility": {
+    "score": 32,
+    "conformance_level": "Non-conformant",
+    "conformance_details": {
+      "level": "Non-conformant",
+      "a_failures": 1,
+      "aa_failures": 5,
+      "aaa_failures": 2,
+      "passes_a": false,
+      "passes_aa": false,
+      "passes_aaa": false
+    },
+    "issues": [
+      {
+        "wcag_criterion": "1.4.3",
+        "wcag_level": "AA",
+        "type": "Contrast Minimum Failure",
+        "severity": "high",
+        "description": "Found 4 color combinations below AA standard",
+        "details": [
+          {
+            "foreground": [
+              28,
+              33,
+              36
+            ],
+            "background": [
+              31,
+              36,
+              39
+            ],
+            "contrast_ratio": 1.04,
+            "required": 4.5,
+            "location": [
+              4083,
+              2018
+            ]
+          },
+          {
+            "foreground": [
+              40,
+              43,
+              47
+            ],
+            "background": [
+              42,
+              45,
+              49
+            ],
+            "contrast_ratio": 1.03,
+            "required": 4.5,
+            "location": [
+              5080,
+              1674
+            ]
+          },
+          {
+            "foreground": [
+              23,
+              23,
+              37
+            ],
+            "background": [
+              27,
+              28,
+              41
+            ],
+            "contrast_ratio": 1.05,
+            "required": 4.5,
+            "location": [
+              903,
+              1104
+            ]
+          },
+          {
+            "foreground": [
+              40,
+              44,
+              47
+            ],
+            "background": [
+              42,
+              46,
+              49
+            ],
+            "contrast_ratio": 1.03,
+            "required": 4.5,
+            "location": [
+              3463,
+              1637
+            ]
+          }
+        ],
+        "recommendation": "Adjust colors to achieve minimum 4.5:1 contrast ratio"
+      },
+      {
+        "wcag_criterion": "1.4.6",
+        "wcag_level": "AAA",
+        "type": "Enhanced Contrast",
+        "severity": "low",
+        "description": "5 color combinations don't meet AAA enhanced contrast",
+        "recommendation": "For AAA compliance, achieve 7:1 contrast ratio for normal text"
+      },
+      {
+        "wcag_criterion": "1.4.11",
+        "wcag_level": "AA",
+        "type": "Non-text Contrast",
+        "severity": "medium",
+        "description": "Found 1 UI components with insufficient contrast",
+        "recommendation": "UI components and graphic elements need 3:1 contrast ratio"
+      },
+      {
+        "wcag_criterion": "2.1.1",
+        "wcag_level": "A",
+        "type": "Interactive Elements",
+        "severity": "medium",
+        "description": "Detected 21 potential interactive elements",
+        "recommendation": "Ensure all interactive elements are keyboard accessible and clearly focusable"
+      },
+      {
+        "wcag_criterion": "2.4.7",
+        "wcag_level": "AA",
+        "type": "Focus Indicators",
+        "severity": "medium",
+        "description": "Limited visible borders detected. Ensure focus indicators are clearly visible.",
+        "recommendation": "Add clear visual focus indicators (2px minimum) for all interactive elements"
+      },
+      {
+        "wcag_criterion": "2.5.5",
+        "wcag_level": "AAA",
+        "type": "Small Target Size",
+        "severity": "medium",
+        "description": "Found 244 potentially small interactive targets",
+        "recommendation": "Make touch/click targets at least 44x44px"
+      },
+      {
+        "wcag_criterion": "2.5.8",
+        "wcag_level": "AA",
+        "type": "Minimum Target Size",
+        "severity": "high",
+        "description": "Found 144 targets below minimum size requirement",
+        "recommendation": "Ensure all targets are at least 24x24px (WCAG 2.2)"
+      },
+      {
+        "wcag_criterion": "3.2.4",
+        "wcag_level": "AA",
+        "type": "Visual Consistency",
+        "severity": "low",
+        "description": "Color and style consistency varies significantly across the design",
+        "recommendation": "Maintain consistent visual patterns for similar elements"
+      }
+    ],
+    "issue_count": {
+      "critical": 0,
+      "high": 2,
+      "medium": 4,
+      "low": 2
+    },
+    "recommendations": [
+      "\u26a0\ufe0f HIGH PRIORITY: Address 2 high-severity issues",
+      "\u274c Design does not meet WCAG Level A (minimum legal requirement)",
+      "Focus on fixing Level A issues first",
+      "[1.4.3] Adjust colors to achieve minimum 4.5:1 contrast ratio",
+      "[1.4.6] For AAA compliance, achieve 7:1 contrast ratio for normal text",
+      "[1.4.11] UI components and graphic elements need 3:1 contrast ratio",
+      "[2.1.1] Ensure all interactive elements are keyboard accessible and clearly focusable",
+      "[2.4.7] Add clear visual focus indicators (2px minimum) for all interactive elements",
+      "[2.5.5] Make touch/click targets at least 44x44px",
+      "[2.5.8] Ensure all targets are at least 24x24px (WCAG 2.2)",
+      "[3.2.4] Maintain consistent visual patterns for similar elements"
+    ],
+    "wcag_criteria_status": {
+      "1.4.3": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Contrast Minimum Failure",
+            "severity": "high",
+            "description": "Found 4 color combinations below AA standard"
+          }
+        ]
+      },
+      "1.4.6": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Enhanced Contrast",
+            "severity": "low",
+            "description": "5 color combinations don't meet AAA enhanced contrast"
+          }
+        ]
+      },
+      "1.4.11": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Non-text Contrast",
+            "severity": "medium",
+            "description": "Found 1 UI components with insufficient contrast"
+          }
+        ]
+      },
+      "2.1.1": {
+        "status": "fail",
+        "level": "A",
+        "issues": [
+          {
+            "type": "Interactive Elements",
+            "severity": "medium",
+            "description": "Detected 21 potential interactive elements"
+          }
+        ]
+      },
+      "2.4.7": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Focus Indicators",
+            "severity": "medium",
+            "description": "Limited visible borders detected. Ensure focus indicators are clearly visible."
+          }
+        ]
+      },
+      "2.5.5": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Small Target Size",
+            "severity": "medium",
+            "description": "Found 244 potentially small interactive targets"
+          }
+        ]
+      },
+      "2.5.8": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Minimum Target Size",
+            "severity": "high",
+            "description": "Found 144 targets below minimum size requirement"
+          }
+        ]
+      },
+      "3.2.4": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Visual Consistency",
+            "severity": "low",
+            "description": "Color and style consistency varies significantly across the design"
+          }
+        ]
+      }
+    },
+    "annotated_image": "annotated_image_placeholder.png"
+  },
+  "readability": {
+    "score": 75,
+    "metrics": {
+      "word_count": 94,
+      "character_count": 515,
+      "sentence_count": 1,
+      "flesch_reading_ease": 32.4,
+      "flesch_kincaid_grade": 18.3,
+      "gunning_fog": 18.0,
+      "avg_line_length": 515.0
+    },
+    "issues": [
+      {
+        "type": "Complex Text",
+        "severity": "medium",
+        "description": "Text may be too complex for general audience",
+        "value": 32.4
+      },
+      {
+        "type": "High Grade Level",
+        "severity": "medium",
+        "description": "Text requires grade 18.3 reading level",
+        "value": 18.3
+      },
+      {
+        "type": "Long Lines",
+        "severity": "low",
+        "description": "Text lines are too long (optimal: 50-75 characters)",
+        "value": 515.0
+      }
+    ],
+    "recommendations": [
+      "Simplify language - use shorter words and sentences",
+      "Break complex ideas into smaller, digestible chunks",
+      "Reduce reading level to grade 8-10 for better accessibility",
+      "Shorten line length to 50-75 characters for better readability",
+      "Increase font size or reduce container width"
+    ]
+  },
+  "attention": {
+    "score": 63.27691650390625,
+    "heatmap_url": "heatmaps/original_heatmap.png",
+    "attention_areas": [
+      {
+        "region": "top_left",
+        "attention_level": 0.5273008346557617,
+        "percentage": 52.73008346557617
+      },
+      {
+        "region": "bottom_right",
+        "attention_level": 0.527287483215332,
+        "percentage": 52.7287483215332
+      },
+      {
+        "region": "bottom_left",
+        "attention_level": 0.5272709727287292,
+        "percentage": 52.72709655761719
+      },
+      {
+        "region": "top_right",
+        "attention_level": 0.5272022485733032,
+        "percentage": 52.7202262878418
+      }
+    ],
+    "recommendations": [
+      "Good use of F-pattern - left alignment captures attention"
+    ]
+  },
+  "overall_grade": "F",
+  "status": "completed"
+}

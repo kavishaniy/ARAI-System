@@ -1,0 +1,296 @@
+{
+  "analysis_id": "14227382-ad9c-45d0-adb0-560ee9a91b6c",
+  "design_name": "Simulator Screenshot - iPhone 17 Pro - 2026-01-04 at 23.49.02.png",
+  "filename": "Simulator Screenshot - iPhone 17 Pro - 2026-01-04 at 23.49.02.png",
+  "timestamp": "2026-01-29T22:32:30.263746",
+  "arai_score": 72.25,
+  "accessibility": {
+    "score": 58,
+    "conformance_level": "Level A",
+    "conformance_details": {
+      "level": "Level A",
+      "a_failures": 0,
+      "aa_failures": 4,
+      "aaa_failures": 2,
+      "passes_a": true,
+      "passes_aa": false,
+      "passes_aaa": false
+    },
+    "issues": [
+      {
+        "wcag_criterion": "1.4.3",
+        "wcag_level": "AA",
+        "type": "Low Color Contrast",
+        "severity": "high",
+        "description": "16 out of 30 sampled regions have insufficient contrast",
+        "recommendation": "Increase color contrast to meet WCAG AA standards (4.5:1 for normal text)"
+      },
+      {
+        "wcag_criterion": "1.4.3",
+        "wcag_level": "AA",
+        "type": "Contrast Minimum Failure",
+        "severity": "high",
+        "description": "Found 12 color combinations below AA standard",
+        "details": [
+          {
+            "foreground": [
+              103,
+              179,
+              241
+            ],
+            "background": [
+              106,
+              181,
+              242
+            ],
+            "contrast_ratio": 1.02,
+            "required": 4.5,
+            "location": [
+              169,
+              383
+            ]
+          },
+          {
+            "foreground": [
+              135,
+              187,
+              229
+            ],
+            "background": [
+              254,
+              255,
+              255
+            ],
+            "contrast_ratio": 2.04,
+            "required": 4.5,
+            "location": [
+              1004,
+              1863
+            ]
+          },
+          {
+            "foreground": [
+              122,
+              184,
+              229
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 2.14,
+            "required": 4.5,
+            "location": [
+              1122,
+              1177
+            ]
+          },
+          {
+            "foreground": [
+              252,
+              253,
+              253
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 1.02,
+            "required": 4.5,
+            "location": [
+              1050,
+              1518
+            ]
+          },
+          {
+            "foreground": [
+              102,
+              176,
+              238
+            ],
+            "background": [
+              242,
+              242,
+              247
+            ],
+            "contrast_ratio": 2.09,
+            "required": 4.5,
+            "location": [
+              27,
+              150
+            ]
+          }
+        ],
+        "recommendation": "Adjust colors to achieve minimum 4.5:1 contrast ratio"
+      },
+      {
+        "wcag_criterion": "1.4.6",
+        "wcag_level": "AAA",
+        "type": "Enhanced Contrast",
+        "severity": "low",
+        "description": "13 color combinations don't meet AAA enhanced contrast",
+        "recommendation": "For AAA compliance, achieve 7:1 contrast ratio for normal text"
+      },
+      {
+        "wcag_criterion": "2.5.5",
+        "wcag_level": "AAA",
+        "type": "Small Target Size",
+        "severity": "medium",
+        "description": "Found 65 potentially small interactive targets",
+        "recommendation": "Make touch/click targets at least 44x44px"
+      },
+      {
+        "wcag_criterion": "2.5.8",
+        "wcag_level": "AA",
+        "type": "Minimum Target Size",
+        "severity": "high",
+        "description": "Found 81 targets below minimum size requirement",
+        "recommendation": "Ensure all targets are at least 24x24px (WCAG 2.2)"
+      },
+      {
+        "wcag_criterion": "3.2.4",
+        "wcag_level": "AA",
+        "type": "Visual Consistency",
+        "severity": "low",
+        "description": "Color and style consistency varies significantly across the design",
+        "recommendation": "Maintain consistent visual patterns for similar elements"
+      }
+    ],
+    "issue_count": {
+      "critical": 0,
+      "high": 3,
+      "medium": 1,
+      "low": 2
+    },
+    "recommendations": [
+      "\u26a0\ufe0f HIGH PRIORITY: Address 3 high-severity issues",
+      "\u2713 Passes Level A, but fails Level AA",
+      "Address contrast and target size issues to reach AA compliance",
+      "[1.4.3] Increase color contrast to meet WCAG AA standards (4.5:1 for normal text)",
+      "[1.4.6] For AAA compliance, achieve 7:1 contrast ratio for normal text",
+      "[2.5.5] Make touch/click targets at least 44x44px",
+      "[2.5.8] Ensure all targets are at least 24x24px (WCAG 2.2)",
+      "[3.2.4] Maintain consistent visual patterns for similar elements"
+    ],
+    "wcag_criteria_status": {
+      "1.4.3": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Low Color Contrast",
+            "severity": "high",
+            "description": "16 out of 30 sampled regions have insufficient contrast"
+          },
+          {
+            "type": "Contrast Minimum Failure",
+            "severity": "high",
+            "description": "Found 12 color combinations below AA standard"
+          }
+        ]
+      },
+      "1.4.6": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Enhanced Contrast",
+            "severity": "low",
+            "description": "13 color combinations don't meet AAA enhanced contrast"
+          }
+        ]
+      },
+      "2.5.5": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Small Target Size",
+            "severity": "medium",
+            "description": "Found 65 potentially small interactive targets"
+          }
+        ]
+      },
+      "2.5.8": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Minimum Target Size",
+            "severity": "high",
+            "description": "Found 81 targets below minimum size requirement"
+          }
+        ]
+      },
+      "3.2.4": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Visual Consistency",
+            "severity": "low",
+            "description": "Color and style consistency varies significantly across the design"
+          }
+        ]
+      }
+    },
+    "annotated_image": "annotated_image_placeholder.png"
+  },
+  "readability": {
+    "score": 100,
+    "metrics": {
+      "word_count": 52,
+      "character_count": 348,
+      "sentence_count": 10,
+      "flesch_reading_ease": 83.73,
+      "flesch_kincaid_grade": 2.7,
+      "gunning_fog": 4.19,
+      "avg_line_length": 348.0
+    },
+    "issues": [
+      {
+        "type": "Long Lines",
+        "severity": "low",
+        "description": "Text lines are too long (optimal: 50-75 characters)",
+        "value": 348.0
+      }
+    ],
+    "recommendations": [
+      "Shorten line length to 50-75 characters for better readability",
+      "Increase font size or reduce container width"
+    ]
+  },
+  "attention": {
+    "score": 63.503360748291016,
+    "heatmap_url": "heatmaps/original_heatmap.png",
+    "attention_areas": [
+      {
+        "region": "bottom_left",
+        "attention_level": 0.5292751789093018,
+        "percentage": 52.92751693725586
+      },
+      {
+        "region": "bottom_right",
+        "attention_level": 0.5292625427246094,
+        "percentage": 52.92625427246094
+      },
+      {
+        "region": "top_left",
+        "attention_level": 0.5291235446929932,
+        "percentage": 52.912353515625
+      },
+      {
+        "region": "top_right",
+        "attention_level": 0.5291120409965515,
+        "percentage": 52.91120529174805
+      }
+    ],
+    "recommendations": [
+      "Good use of F-pattern - left alignment captures attention"
+    ]
+  },
+  "overall_grade": "C",
+  "status": "completed"
+}
