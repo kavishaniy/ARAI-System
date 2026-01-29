@@ -84,19 +84,36 @@ async def signup(user_data: UserSignup):
 async def login(credentials: UserLogin):
     """Login user"""
     try:
+        print(f"🔐 Login attempt for: {credentials.email}")
+        
         # Sign in with Supabase Auth
         auth_response = supabase.auth.sign_in_with_password({
             "email": credentials.email,
             "password": credentials.password
         })
         
+        print(f"✅ Auth response received: {auth_response}")
+        
         if not auth_response.user:
+            print("❌ No user in auth response")
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
+        if not auth_response.session:
+            print("❌ No session in auth response")
+            raise HTTPException(status_code=401, detail="Login failed: No session created")
+        
+        print(f"✅ User authenticated: {auth_response.user.id}")
+        
         # Get user profile
-        profile = supabase.table("profiles").select("*").eq(
-            "id", auth_response.user.id
-        ).single().execute()
+        try:
+            profile = supabase.table("profiles").select("*").eq(
+                "id", auth_response.user.id
+            ).single().execute()
+            print(f"✅ Profile fetched: {profile.data}")
+        except Exception as profile_error:
+            print(f"⚠️ Profile fetch failed: {profile_error}")
+            # Continue with minimal user data if profile doesn't exist
+            profile = None
         
         return Token(
             access_token=auth_response.session.access_token,
@@ -104,13 +121,31 @@ async def login(credentials: UserLogin):
             user=User(
                 id=auth_response.user.id,
                 email=auth_response.user.email,
-                full_name=profile.data.get("full_name"),
-                avatar_url=profile.data.get("avatar_url"),
+                full_name=profile.data.get("full_name") if profile else credentials.email.split("@")[0],
+                avatar_url=profile.data.get("avatar_url") if profile else None,
                 created_at=auth_response.user.created_at
             )
         )
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        print(f"❌ Login error: {type(e).__name__}: {str(e)}")
+        error_msg = str(e)
+        
+        # Provide more specific error messages
+        if "Email not confirmed" in error_msg:
+            raise HTTPException(
+                status_code=401, 
+                detail="Please confirm your email before logging in. Check your inbox for the confirmation link, or disable email confirmation in Supabase settings for development."
+            )
+        elif "Invalid login credentials" in error_msg or "invalid" in error_msg.lower():
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        elif "not confirmed" in error_msg.lower():
+            raise HTTPException(status_code=401, detail="Please confirm your email before logging in")
+        elif "rate limit" in error_msg.lower():
+            raise HTTPException(status_code=429, detail="Too many login attempts. Please try again later.")
+        else:
+            raise HTTPException(status_code=401, detail=f"Login failed: {error_msg}")
 
 
 @router.post("/logout")

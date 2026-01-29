@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/auth';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,22 +23,12 @@ const Login = () => {
       console.log('✅ Login response:', response);
       console.log('✅ Token saved:', localStorage.getItem('access_token'));
       console.log('✅ User saved:', localStorage.getItem('user'));
-      console.log('🔄 About to navigate to /dashboard...');
+      console.log('🔄 Navigating to /dashboard...');
       
-      // Verify token was stored before redirecting
-      if (localStorage.getItem('access_token')) {
-        console.log('✅ Token verified, redirecting in 100ms...');
-        // Small delay to ensure localStorage is fully written
-        setTimeout(() => {
-          console.log('🎯 Executing redirect to /dashboard');
-          window.location.href = '/dashboard';
-        }, 100);
-      } else {
-        console.error('❌ No token found in localStorage!');
-        throw new Error('Authentication token not received');
-      }
+      // Navigate to dashboard using React Router
+      navigate('/dashboard', { replace: true });
       
-      console.log('✅ Navigate setup complete!');
+      console.log('✅ Navigate called!');
       
     } catch (err) {
       console.error('❌ Login error:', err);

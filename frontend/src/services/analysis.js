@@ -15,7 +15,7 @@ export const analysisService = {
   },
 
   async getAnalysis(analysisId) {
-    const response = await api.get(`/analysis/${analysisId}`);
+    const response = await api.get(`/analysis/results/${analysisId}`);
     return response.data;
   },
 
@@ -27,7 +27,7 @@ export const analysisService = {
   },
 
   async deleteAnalysis(analysisId) {
-    const response = await api.delete(`/analysis/${analysisId}`);
+    const response = await api.delete(`/analysis/results/${analysisId}`);
     return response.data;
   },
 };

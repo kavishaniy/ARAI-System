@@ -42,3 +42,15 @@ async def get_analysis_history():
     return {
         "analyses": []
     }
+
+
+@router.delete("/results/{analysis_id}")
+async def delete_analysis(analysis_id: str):
+    """
+    Delete an analysis by ID
+    """
+    # TODO: Implement analysis deletion logic
+    return {
+        "message": "Analysis deleted successfully",
+        "analysis_id": analysis_id
+    }
