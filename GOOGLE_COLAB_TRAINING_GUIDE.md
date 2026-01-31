@@ -202,31 +202,9 @@ def create_synthetic_dataset(num_images=100):
 create_synthetic_dataset(100)
 
 # Cell 3: Train with Synthetic Data
-
-# First, verify the training script exists
-!ls -la /content/arai/backend/training/
-
-# If train_saliency.py doesn't exist, the training folder wasn't committed to GitHub
-# Let's check and handle this:
-import os
-if not os.path.exists('/content/arai/backend/training/train_saliency.py'):
-    print("⚠️  Training script not found in repository!")
-    print("Creating training script...")
-    
-    # The script exists locally but may not be in GitHub
-    # For now, navigate to backend and check available scripts
-    %cd /content/arai/backend
-    !find . -name "*train*.py" -o -name "*training*"
-    
-    print("\n💡 Solution: Make sure backend/training/ folder is committed to GitHub")
-    print("   Run locally: git add backend/training/ && git commit -m 'Add training scripts' && git push")
-else:
-    print("✅ Training script found!")
-
-# Change to training directory
 %cd /content/arai/backend/training
 
-# Update config for synthetic data (optional - just for reference)
+# Update config for synthetic data
 config = {
     'image_dir': '/content/synthetic_data/images',
     'saliency_dir': '/content/synthetic_data/maps',
@@ -363,8 +341,39 @@ plt.tight_layout()
 plt.show()
 
 # Cell 2: Setup Training Code
-!git clone https://github.com/kavishaniy/ARAI-System.git /content/arai
+import os
+
+# Only clone if directory doesn't exist
+if not os.path.exists('/content/arai'):
+    !git clone https://github.com/kavishaniy/ARAI-System.git /content/arai
+else:
+    print("✅ Repository already exists, updating to latest version...")
+    %cd /content/arai
+    !git pull origin main
+
 %cd /content/arai/backend
+print("✅ Ready for training!")
+
+# Cell 2.5: Install PyTorch with CUDA Support (IMPORTANT!)
+print("🔧 Installing PyTorch with CUDA support...")
+print("This fixes 'Torch not compiled with CUDA enabled' errors\n")
+
+# Uninstall existing PyTorch (might be CPU-only version)
+!pip uninstall -y torch torchvision torchaudio
+
+# Install PyTorch with CUDA 11.8 (compatible with Colab)
+!pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Verify installation
+import torch
+print(f"\n✅ PyTorch version: {torch.__version__}")
+print(f"✅ CUDA available: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"✅ GPU: {torch.cuda.get_device_name(0)}")
+    print(f"✅ CUDA version: {torch.version.cuda}")
+    print(f"✅ GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+else:
+    print("⚠️ WARNING: CUDA not available! Check Runtime → Change runtime type → GPU")
 
 # Cell 3: Train with Large Synthetic Dataset
 %cd /content/arai/backend/training
@@ -479,12 +488,6 @@ for i in tqdm(range(200)):
 print("✅ Dataset ready!")
 
 # 6. Train the model
-print("Checking for training script...")
-if not os.path.exists('/content/arai/backend/training/train_saliency.py'):
-    print("⚠️  Training script not in repository. Need to commit it first!")
-    print("Run locally: cd backend && git add training/ && git push")
-    raise FileNotFoundError("train_saliency.py not found in repository")
-
 %cd /content/arai/backend/training
 
 print("\n🚀 Starting training (this will take ~30 minutes)...\n")
@@ -670,6 +673,40 @@ files.upload()  # Select kaggle.json
 2. Set **Hardware accelerator** to **GPU**
 3. Click **Save**
 4. Restart runtime: **Runtime → Restart runtime**
+
+### Issue 1.5: "Torch not compiled with CUDA enabled" ⚠️ NEW
+
+**Problem:** Error: `AssertionError: Torch not compiled with CUDA enabled`
+
+**Root Cause:** PyTorch CPU-only version is installed instead of GPU version
+
+**Solution: Install PyTorch with CUDA Support**
+```python
+# Add this cell BEFORE training (Cell 2.5)
+print("🔧 Installing PyTorch with CUDA support...")
+
+# Uninstall existing PyTorch
+!pip uninstall -y torch torchvision torchaudio
+
+# Install PyTorch with CUDA 11.8
+!pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Verify
+import torch
+print(f"✅ CUDA available: {torch.cuda.is_available()}")
+print(f"✅ GPU: {torch.cuda.get_device_name(0)}")
+```
+
+**Expected Output:**
+```
+✅ CUDA available: True
+✅ GPU: Tesla T4
+```
+
+**If still failing:**
+1. Verify GPU is enabled: **Runtime → Change runtime type → GPU**
+2. Restart runtime: **Runtime → Restart runtime**
+3. Re-run the PyTorch installation cell
 
 ### Issue 2: "Colab Disconnects During Training"
 
