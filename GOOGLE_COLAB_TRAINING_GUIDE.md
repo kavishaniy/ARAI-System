@@ -345,11 +345,23 @@ import os
 
 # Only clone if directory doesn't exist
 if not os.path.exists('/content/arai'):
+    print("📦 Cloning ARAI repository...")
     !git clone https://github.com/kavishaniy/ARAI-System.git /content/arai
+    print("✅ Repository cloned successfully!")
 else:
     print("✅ Repository already exists, updating to latest version...")
     %cd /content/arai
     !git pull origin main
+    %cd /content
+
+# Verify the structure
+print("\n📂 Verifying repository structure...")
+if os.path.exists('/content/arai/backend/training/train_saliency.py'):
+    print("✅ train_saliency.py found!")
+else:
+    print("❌ train_saliency.py NOT found!")
+    print("Listing directory contents:")
+    !ls -la /content/arai/backend/training/ 2>/dev/null || echo "Directory doesn't exist"
 
 %cd /content/arai/backend
 print("✅ Ready for training!")
@@ -376,16 +388,36 @@ else:
     print("⚠️ WARNING: CUDA not available! Check Runtime → Change runtime type → GPU")
 
 # Cell 3: Train with Large Synthetic Dataset
+import os
+
+# Verify we're in the right place
+if not os.path.exists('/content/arai/backend/training/train_saliency.py'):
+    print("❌ ERROR: train_saliency.py not found!")
+    print("Current directory:", os.getcwd())
+    print("\nTrying to fix by cloning repository again...")
+    %cd /content
+    !rm -rf arai
+    !git clone https://github.com/kavishaniy/ARAI-System.git /content/arai
+    
+# Navigate to training directory
 %cd /content/arai/backend/training
 
-!python train_saliency.py \
-    --image_dir /content/large_synthetic/images \
-    --saliency_dir /content/large_synthetic/maps \
-    --batch_size 16 \
-    --num_epochs 40 \
-    --learning_rate 1e-4 \
-    --save_dir /content/drive/MyDrive/ARAI/models \
-    --device cuda
+# Verify file exists before training
+if os.path.exists('train_saliency.py'):
+    print("✅ Found train_saliency.py, starting training...\n")
+    
+    !python train_saliency.py \
+        --image_dir /content/large_synthetic/images \
+        --saliency_dir /content/large_synthetic/maps \
+        --batch_size 16 \
+        --num_epochs 40 \
+        --learning_rate 1e-4 \
+        --save_dir /content/drive/MyDrive/ARAI/models \
+        --device cuda
+else:
+    print("❌ ERROR: Still can't find train_saliency.py!")
+    print("Directory contents:")
+    !ls -la
 
 # This will take 1-2 hours on Colab GPU
 # With 5000 samples, you'll get production-quality results!
@@ -707,6 +739,52 @@ print(f"✅ GPU: {torch.cuda.get_device_name(0)}")
 1. Verify GPU is enabled: **Runtime → Change runtime type → GPU**
 2. Restart runtime: **Runtime → Restart runtime**
 3. Re-run the PyTorch installation cell
+
+### Issue 1.7: "No such file or directory: train_saliency.py" ⚠️ NEW
+
+**Problem:** Error: `[Errno 2] No such file or directory: '/content/arai/backend/training'` or `can't open file 'train_saliency.py'`
+
+**Root Cause:** Repository wasn't cloned properly or cells were run out of order
+
+**Solution A: Re-clone Repository**
+```python
+# Run this in a new cell to fix immediately
+import os
+%cd /content
+!rm -rf arai
+!git clone https://github.com/kavishaniy/ARAI-System.git /content/arai
+
+# Verify structure
+print("\n📂 Verifying files...")
+if os.path.exists('/content/arai/backend/training/train_saliency.py'):
+    print("✅ train_saliency.py found!")
+    %cd /content/arai/backend/training
+else:
+    print("❌ Still missing! Check repository structure")
+    !ls -la /content/arai/backend/
+```
+
+**Solution B: Verify Current Location**
+```python
+# Check where you are
+import os
+print("Current directory:", os.getcwd())
+print("\nDirectory contents:")
+!ls -la
+
+# Navigate to correct location
+%cd /content/arai/backend/training
+print("\n✅ Now in:", os.getcwd())
+```
+
+**Solution C: Run Cells in Order**
+Make sure you run cells in this exact order:
+1. Cell 1: Create synthetic dataset
+2. Cell 2: Clone repository
+3. Cell 2.5: Install PyTorch with CUDA
+4. Cell 3: Train model
+
+**Prevention:** The updated Cell 3 now includes automatic error checking and will re-clone if needed.
 
 ### Issue 2: "Colab Disconnects During Training"
 
