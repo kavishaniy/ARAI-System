@@ -1,0 +1,258 @@
+{
+  "analysis_id": "3fd82e10-b32b-46ca-a367-15c0690670cd",
+  "design_name": "Community Events Page.png",
+  "filename": "Community Events Page.png",
+  "timestamp": "2026-01-31T15:43:00.286947",
+  "arai_score": 66.80000305175781,
+  "accessibility": {
+    "score": 68,
+    "conformance_level": "Level A",
+    "conformance_details": {
+      "level": "Level A",
+      "a_failures": 0,
+      "aa_failures": 2,
+      "aaa_failures": 1,
+      "passes_a": true,
+      "passes_aa": false,
+      "passes_aaa": false
+    },
+    "issues": [
+      {
+        "wcag_criterion": "1.4.3",
+        "wcag_level": "AA",
+        "type": "Contrast Minimum Failure",
+        "severity": "high",
+        "description": "Found 7 color combinations below AA standard",
+        "details": [
+          {
+            "foreground": [
+              0,
+              0,
+              0
+            ],
+            "background": [
+              64,
+              64,
+              64
+            ],
+            "contrast_ratio": 2.03,
+            "required": 4.5,
+            "location": [
+              220,
+              2059
+            ]
+          },
+          {
+            "foreground": [
+              244,
+              245,
+              246
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 1.09,
+            "required": 4.5,
+            "location": [
+              1086,
+              1576
+            ]
+          },
+          {
+            "foreground": [
+              251,
+              247,
+              239
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 1.07,
+            "required": 4.5,
+            "location": [
+              1478,
+              679
+            ]
+          },
+          {
+            "foreground": [
+              244,
+              245,
+              246
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 1.09,
+            "required": 4.5,
+            "location": [
+              1105,
+              869
+            ]
+          },
+          {
+            "foreground": [
+              0,
+              0,
+              0
+            ],
+            "background": [
+              64,
+              64,
+              64
+            ],
+            "contrast_ratio": 2.03,
+            "required": 4.5,
+            "location": [
+              907,
+              32
+            ]
+          }
+        ],
+        "recommendation": "Adjust colors to achieve minimum 4.5:1 contrast ratio"
+      },
+      {
+        "wcag_criterion": "1.4.6",
+        "wcag_level": "AAA",
+        "type": "Enhanced Contrast",
+        "severity": "low",
+        "description": "5 color combinations don't meet AAA enhanced contrast",
+        "recommendation": "For AAA compliance, achieve 7:1 contrast ratio for normal text"
+      },
+      {
+        "wcag_criterion": "1.4.11",
+        "wcag_level": "AA",
+        "type": "Non-text Contrast",
+        "severity": "medium",
+        "description": "Found 1 UI components with insufficient contrast",
+        "recommendation": "UI components and graphic elements need 3:1 contrast ratio"
+      }
+    ],
+    "issue_count": {
+      "critical": 0,
+      "high": 1,
+      "medium": 1,
+      "low": 1
+    },
+    "recommendations": [
+      "\u26a0\ufe0f HIGH PRIORITY: Address 1 high-severity issues",
+      "\u2713 Passes Level A, but fails Level AA",
+      "Address contrast and target size issues to reach AA compliance",
+      "[1.4.3] Adjust colors to achieve minimum 4.5:1 contrast ratio",
+      "[1.4.6] For AAA compliance, achieve 7:1 contrast ratio for normal text",
+      "[1.4.11] UI components and graphic elements need 3:1 contrast ratio"
+    ],
+    "wcag_criteria_status": {
+      "1.4.3": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Contrast Minimum Failure",
+            "severity": "high",
+            "description": "Found 7 color combinations below AA standard"
+          }
+        ]
+      },
+      "1.4.6": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Enhanced Contrast",
+            "severity": "low",
+            "description": "5 color combinations don't meet AAA enhanced contrast"
+          }
+        ]
+      },
+      "1.4.11": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Non-text Contrast",
+            "severity": "medium",
+            "description": "Found 1 UI components with insufficient contrast"
+          }
+        ]
+      }
+    },
+    "annotated_image": "annotated_image_placeholder.png"
+  },
+  "readability": {
+    "score": 75,
+    "metrics": {
+      "word_count": 107,
+      "character_count": 763,
+      "sentence_count": 6,
+      "flesch_reading_ease": 12.77,
+      "flesch_kincaid_grade": 17.6,
+      "gunning_fog": 15.92,
+      "avg_line_length": 763.0
+    },
+    "issues": [
+      {
+        "type": "Complex Text",
+        "severity": "medium",
+        "description": "Text may be too complex for general audience",
+        "value": 12.77
+      },
+      {
+        "type": "High Grade Level",
+        "severity": "medium",
+        "description": "Text requires grade 17.6 reading level",
+        "value": 17.6
+      },
+      {
+        "type": "Long Lines",
+        "severity": "low",
+        "description": "Text lines are too long (optimal: 50-75 characters)",
+        "value": 763.0
+      }
+    ],
+    "recommendations": [
+      "Simplify language - use shorter words and sentences",
+      "Break complex ideas into smaller, digestible chunks",
+      "Reduce reading level to grade 8-10 for better accessibility",
+      "Shorten line length to 50-75 characters for better readability",
+      "Increase font size or reduce container width"
+    ]
+  },
+  "attention": {
+    "score": 56.98554611206055,
+    "heatmap_url": "heatmaps/original_heatmap.png",
+    "attention_areas": [
+      {
+        "region": "top_right",
+        "attention_level": 0.475070595741272,
+        "percentage": 47.50706100463867
+      },
+      {
+        "region": "bottom_right",
+        "attention_level": 0.47504734992980957,
+        "percentage": 47.50473403930664
+      },
+      {
+        "region": "top_left",
+        "attention_level": 0.4749850332736969,
+        "percentage": 47.498504638671875
+      },
+      {
+        "region": "bottom_left",
+        "attention_level": 0.47495630383491516,
+        "percentage": 47.49563217163086
+      }
+    ],
+    "recommendations": [
+      "Good use of F-pattern - left alignment captures attention"
+    ]
+  },
+  "overall_grade": "D",
+  "status": "completed"
+}

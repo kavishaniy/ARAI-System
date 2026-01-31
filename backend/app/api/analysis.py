@@ -8,10 +8,10 @@ from pathlib import Path
 import numpy as np
 import logging
 
-from app.ai_modules.accessibility_analyzer import AccessibilityAnalyzer
-from app.ai_modules.wcag_analyzer import WCAGAnalyzer
-from app.ai_modules.readability_analyzer import ReadabilityAnalyzer
-from app.ai_modules.attention_analyzer import AttentionAnalyzer
+from app.ai_modules.comprehensive_wcag_analyzer import ComprehensiveWCAGAnalyzer
+from app.ai_modules.comprehensive_readability_analyzer import ComprehensiveReadabilityAnalyzer
+from app.ai_modules.comprehensive_attention_analyzer import ComprehensiveAttentionAnalyzer
+from app.ai_modules.report_generator import ComprehensiveReportGenerator
 from app.core.database import (
     upload_design_to_storage,
     save_analysis_to_db,
@@ -25,14 +25,16 @@ from app.core.database import (
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Initialize analyzers
-accessibility_analyzer = AccessibilityAnalyzer()
-wcag_analyzer = WCAGAnalyzer()  # Comprehensive WCAG 2.1 analyzer
-readability_analyzer = ReadabilityAnalyzer()
+# Initialize comprehensive analyzers
+wcag_analyzer = ComprehensiveWCAGAnalyzer()  # FR-009 to FR-012
+readability_analyzer = ComprehensiveReadabilityAnalyzer()  # FR-013 to FR-016
 
 # Path to saliency model (will be created during training)
 MODEL_PATH = Path(__file__).parent.parent.parent / "models" / "saliency_model.pth"
-attention_analyzer = AttentionAnalyzer(str(MODEL_PATH))
+attention_analyzer = ComprehensiveAttentionAnalyzer(str(MODEL_PATH))  # FR-017 to FR-020
+
+# Report generator for FR-021 to FR-027
+report_generator = ComprehensiveReportGenerator()
 
 # Upload directory
 UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / "uploads"
@@ -167,41 +169,71 @@ async def upload_design(
         # Run all analyses
         logger.info(f"🔍 Starting comprehensive analysis for {file.filename}...")
         
-        # 1. Comprehensive WCAG 2.1 Accessibility Analysis
-        logger.info("♿ Running comprehensive WCAG 2.1 analysis...")
+        # 1. Comprehensive WCAG 2.1 Accessibility Analysis (FR-009 to FR-012)
+        logger.info("♿ Running comprehensive WCAG 2.1 analysis (Contrast, Color Blindness, Alt Text)...")
         accessibility_results = wcag_analyzer.analyze_design(str(local_file_path))
         
-        # 2. Readability Analysis
-        logger.info("📖 Running readability analysis...")
+        # 2. Comprehensive Readability Analysis (FR-013 to FR-016)
+        logger.info("📖 Running readability analysis (Flesch-Kincaid, Vocabulary, Inclusive Language, Typography)...")
         readability_results = readability_analyzer.analyze_design(str(local_file_path))
         
-        # 3. Attention Analysis
-        logger.info("👁️ Running attention analysis...")
+        # 3. Comprehensive Attention Analysis (FR-017 to FR-020)
+        logger.info("👁️ Running attention analysis (Saliency, Visual Hierarchy, Cognitive Load)...")
         attention_results = attention_analyzer.analyze_design(str(local_file_path))
-        
-        # Calculate overall ARAI score
-        arai_score = calculate_arai_score(
-            accessibility_results["score"],
-            readability_results["score"],
-            attention_results["score"]
-        )
         
         # Compile comprehensive results
         analysis_results = {
+            "accessibility": accessibility_results,
+            "readability": readability_results,
+            "attention": attention_results
+        }
+        
+        # 4. Generate Comprehensive Report (FR-021 to FR-027)
+        logger.info("📊 Generating comprehensive report with ARAI score, annotations, and exports...")
+        comprehensive_report = report_generator.generate_comprehensive_report(
+            analysis_results,
+            str(local_file_path)
+        )
+        
+        # Calculate overall ARAI score (FR-021)
+        arai_score = comprehensive_report["arai_score"]["overall"]
+        
+        # Compile final results
+        final_results = {
             "analysis_id": analysis_id,
             "design_name": design_name or file.filename,
             "filename": file.filename,
             "timestamp": timestamp,
+            
+            # FR-021: ARAI Score
             "arai_score": round(arai_score, 2),
+            "arai_breakdown": comprehensive_report["arai_score"],
+            "overall_grade": comprehensive_report["grade"],
+            
+            # Individual analysis results
             "accessibility": accessibility_results,
             "readability": readability_results,
             "attention": attention_results,
-            "overall_grade": _get_grade(arai_score),
-            "status": "completed"
+            
+            # FR-022: Annotated image
+            "annotated_image": comprehensive_report["annotated_image"],
+            
+            # FR-023 & FR-024: Comprehensive issue list with explainable AI
+            "issues": comprehensive_report["issues"],
+            "issue_summary": comprehensive_report["issue_summary"],
+            
+            # FR-025: Educational content
+            "education": comprehensive_report["education"],
+            
+            # Recommendations
+            "recommendations": comprehensive_report["recommendations"],
+            
+            "status": "completed",
+            "metadata": comprehensive_report["metadata"]
         }
         
         # Convert NumPy types to native Python types for JSON serialization
-        analysis_results = convert_to_native_types(analysis_results)
+        final_results = convert_to_native_types(final_results)
         
         # Save to Supabase database
         try:
@@ -211,7 +243,7 @@ async def upload_design(
                 design_name=design_name or file.filename,
                 filename=file.filename,
                 file_path=storage_path,
-                results=analysis_results
+                results=final_results
             )
             logger.info(f"💾 Analysis saved to database")
         except Exception as db_error:
@@ -222,11 +254,12 @@ async def upload_design(
         import json
         results_path = analysis_dir / "results.json"
         with open(results_path, "w") as f:
-            json.dump(analysis_results, f, indent=2)
+            json.dump(final_results, f, indent=2)
         
         logger.info(f"✅ Analysis completed. ARAI Score: {arai_score}")
+        logger.info(f"📊 Accessibility: {accessibility_results['score']}, Readability: {readability_results['score']}, Attention: {attention_results['score']}")
         
-        return analysis_results
+        return final_results
         
     except HTTPException:
         raise
@@ -351,3 +384,86 @@ async def delete_analysis_endpoint(
         logger.error(f"Error deleting analysis: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@router.get("/export/pdf/{analysis_id}")
+async def export_pdf(
+    analysis_id: str,
+    current_user = Depends(get_current_user)
+):
+    """
+    FR-026: Export comprehensive analysis report as PDF
+    Requires authentication
+    """
+    try:
+        # Get analysis results
+        analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
+        
+        if not analysis:
+            raise HTTPException(status_code=404, detail="Analysis not found")
+        
+        results = analysis.get("results", analysis)
+        
+        # Generate PDF
+        analysis_dir = UPLOAD_DIR / analysis_id
+        analysis_dir.mkdir(exist_ok=True)
+        
+        pdf_path = analysis_dir / f"report_{analysis_id}.pdf"
+        
+        # Use report generator to create PDF
+        report_generator.export_to_pdf(results, str(pdf_path))
+        
+        # Return file for download
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            path=str(pdf_path),
+            filename=f"ARAI_Report_{results.get('design_name', 'analysis')}.pdf",
+            media_type="application/pdf"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating PDF: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+
+
+@router.get("/export/csv/{analysis_id}")
+async def export_csv(
+    analysis_id: str,
+    current_user = Depends(get_current_user)
+):
+    """
+    FR-027: Export issue data as CSV
+    Requires authentication
+    """
+    try:
+        # Get analysis results
+        analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
+        
+        if not analysis:
+            raise HTTPException(status_code=404, detail="Analysis not found")
+        
+        results = analysis.get("results", analysis)
+        
+        # Generate CSV
+        analysis_dir = UPLOAD_DIR / analysis_id
+        analysis_dir.mkdir(exist_ok=True)
+        
+        csv_path = analysis_dir / f"issues_{analysis_id}.csv"
+        
+        # Use report generator to create CSV
+        report_generator.export_to_csv(results, str(csv_path))
+        
+        # Return file for download
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            path=str(csv_path),
+            filename=f"ARAI_Issues_{results.get('design_name', 'analysis')}.csv",
+            media_type="text/csv"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating CSV: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"CSV generation failed: {str(e)}")

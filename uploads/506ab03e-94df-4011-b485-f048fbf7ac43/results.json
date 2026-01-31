@@ -1,0 +1,2751 @@
+{
+  "analysis_id": "506ab03e-94df-4011-b485-f048fbf7ac43",
+  "design_name": "Screenshot 2026-01-28 at 16.30.36.png",
+  "filename": "Screenshot 2026-01-28 at 16.30.36.png",
+  "timestamp": "2026-01-31T22:18:32.662670",
+  "arai_score": 42.8,
+  "arai_breakdown": {
+    "overall": 42.8,
+    "accessibility": 0,
+    "readability": 83,
+    "attention": 59.66,
+    "weights": {
+      "accessibility": 40,
+      "readability": 30,
+      "attention": 30
+    },
+    "interpretation": "Critical - Design requires major accessibility improvements"
+  },
+  "overall_grade": "F",
+  "accessibility": {
+    "score": 0,
+    "wcag_level": "Non-compliant",
+    "compliance": {
+      "level": "Non-compliant",
+      "level_a_compliant": false,
+      "level_aa_compliant": false,
+      "level_a_issues": 24,
+      "level_aa_issues": 6
+    },
+    "issues": [
+      {
+        "id": "contrast_12",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 64,
+          "y": 583,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 1.01,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#eff1f5",
+          "foreground_rgb": [
+            239,
+            241,
+            245
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 1.01:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_17",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 672,
+          "y": 587,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 1.01,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#f0f1f5",
+          "foreground_rgb": [
+            240,
+            241,
+            245
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 1.01:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_37",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 419,
+          "y": 578,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 1.04,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#edeef3",
+          "foreground_rgb": [
+            237,
+            238,
+            243
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 1.04:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_38",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 115,
+          "y": 40,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 1.03,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#eeeff3",
+          "foreground_rgb": [
+            238,
+            239,
+            243
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 1.03:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "alt_text_10",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 8,
+          "y": 686,
+          "width": 25,
+          "height": 25
+        },
+        "element_type": "image",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_24",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 38,
+          "y": 650,
+          "width": 15,
+          "height": 10
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_39",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 22,
+          "y": 579,
+          "width": 9,
+          "height": 8
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_41",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 0,
+          "y": 578,
+          "width": 17,
+          "height": 12
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_46",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 12,
+          "y": 545,
+          "width": 18,
+          "height": 19
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_51",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 7,
+          "y": 495,
+          "width": 7,
+          "height": 8
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_52",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 22,
+          "y": 473,
+          "width": 8,
+          "height": 7
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_53",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 11,
+          "y": 472,
+          "width": 10,
+          "height": 9
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_54",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 21,
+          "y": 462,
+          "width": 10,
+          "height": 9
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_55",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 11,
+          "y": 462,
+          "width": 9,
+          "height": 9
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_58",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 32,
+          "y": 424,
+          "width": 11,
+          "height": 8
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_59",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 21,
+          "y": 424,
+          "width": 10,
+          "height": 8
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_60",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 0,
+          "y": 422,
+          "width": 20,
+          "height": 12
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_61",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 11,
+          "y": 389,
+          "width": 20,
+          "height": 20
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_67",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 27,
+          "y": 350,
+          "width": 8,
+          "height": 10
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_70",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 17,
+          "y": 317,
+          "width": 14,
+          "height": 13
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_74",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 31,
+          "y": 279,
+          "width": 12,
+          "height": 9
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_76",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 10,
+          "y": 245,
+          "width": 22,
+          "height": 18
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_82",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 11,
+          "y": 180,
+          "width": 20,
+          "height": 13
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_86",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 35,
+          "y": 160,
+          "width": 12,
+          "height": 11
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_90",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 16,
+          "y": 136,
+          "width": 9,
+          "height": 8
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_93",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 13,
+          "y": 103,
+          "width": 16,
+          "height": 14
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_102",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 21,
+          "y": 30,
+          "width": 9,
+          "height": 9
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "alt_text_summary",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "medium",
+        "type": "Multiple Alt Text Requirements",
+        "description": "Found 23 icons/images that may need alt text",
+        "icon_count": 23,
+        "confidence": 0.8,
+        "explanation": "Detected multiple visual elements that should have alternative text descriptions.",
+        "fix_suggestion": "Ensure all decorative images have empty alt text (alt='') and functional images have descriptive alt text."
+      },
+      {
+        "id": "font_size_0",
+        "category": "Accessibility",
+        "subcategory": "Font Size",
+        "wcag_criterion": "1.4.4 Resize Text",
+        "wcag_level": "AA",
+        "severity": "medium",
+        "type": "Small Font Size",
+        "description": "Text may be too small (estimated 6px)",
+        "location": {
+          "x": 657,
+          "y": 130
+        },
+        "estimated_size": 6,
+        "minimum_size": 12,
+        "confidence": 0.6,
+        "explanation": "Text should be at least 12px for readability.",
+        "fix_suggestion": "Increase font size to at least 12px."
+      },
+      {
+        "id": "font_size_1",
+        "category": "Accessibility",
+        "subcategory": "Font Size",
+        "wcag_criterion": "1.4.4 Resize Text",
+        "wcag_level": "AA",
+        "severity": "medium",
+        "type": "Small Font Size",
+        "description": "Text may be too small (estimated 9px)",
+        "location": {
+          "x": 443,
+          "y": 339
+        },
+        "estimated_size": 9,
+        "minimum_size": 12,
+        "confidence": 0.6,
+        "explanation": "Text should be at least 12px for readability.",
+        "fix_suggestion": "Increase font size to at least 12px."
+      }
+    ],
+    "issue_summary": {
+      "critical": 4,
+      "high": 23,
+      "medium": 3,
+      "low": 0
+    },
+    "recommendations": [
+      {
+        "category": "Contrast",
+        "priority": "high",
+        "title": "Improve Color Contrast",
+        "description": "Found 4 areas with insufficient contrast",
+        "action": "Increase contrast ratios to meet WCAG AA standards (4.5:1 for normal text, 3:1 for large text)",
+        "wcag_reference": "1.4.3 Contrast (Minimum)",
+        "resources": [
+          "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum"
+        ]
+      },
+      {
+        "category": "Alternative Text",
+        "priority": "high",
+        "title": "Add Alternative Text",
+        "description": "Found 23 images/icons without alt text",
+        "action": "Provide descriptive alt text for all meaningful images and icons",
+        "wcag_reference": "1.1.1 Non-text Content",
+        "resources": [
+          "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+        ]
+      },
+      {
+        "category": "Alternative Text",
+        "priority": "high",
+        "title": "Add Alternative Text",
+        "description": "Found 1 images/icons without alt text",
+        "action": "Provide descriptive alt text for all meaningful images and icons",
+        "wcag_reference": "1.1.1 Non-text Content",
+        "resources": [
+          "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+        ]
+      }
+    ],
+    "visualizations": {
+      "annotated_image": "annotated_image_path",
+      "color_vision_simulations": {
+        "protanopia": "protanopia_preview_path",
+        "deuteranopia": "deuteranopia_preview_path",
+        "tritanopia": "tritanopia_preview_path"
+      }
+    },
+    "wcag_criteria": [
+      {
+        "criterion": "1.4.3 Contrast (Minimum)",
+        "level": "AA",
+        "passed": false,
+        "issue_count": 4
+      },
+      {
+        "criterion": "1.1.1 Non-text Content",
+        "level": "A",
+        "passed": false,
+        "issue_count": 24
+      },
+      {
+        "criterion": "1.4.4 Resize Text",
+        "level": "AA",
+        "passed": false,
+        "issue_count": 2
+      },
+      {
+        "criterion": "1.4.1 Use of Color",
+        "level": "A",
+        "passed": true,
+        "issue_count": 0
+      },
+      {
+        "criterion": "2.5.5 Target Size",
+        "level": "AAA",
+        "passed": true,
+        "issue_count": 0
+      }
+    ]
+  },
+  "readability": {
+    "score": 83,
+    "text_found": true,
+    "text_preview": "PRESENTATION\n\nWORLD CLASS BUILDING\nL] MATERIALS FOR YOUR [|\nPRESTIGIOUS PROJECTS\n\nSCG SCG\nDalIKEnN @lscc QSCc ,_EEIFRAMEWoRK",
+    "word_count": 17,
+    "readability_scores": {
+      "word_count": 17,
+      "sentence_count": 1,
+      "character_count": 122,
+      "avg_sentence_length": 17.0,
+      "flesch_reading_ease": 46.8,
+      "flesch_kincaid_grade": 10.7,
+      "gunning_fog": 13.9,
+      "smog_index": 0.0,
+      "coleman_liau_index": 19.0,
+      "automated_readability_index": 17.8
+    },
+    "issues": [
+      {
+        "id": "complex__eeiframework",
+        "category": "Readability",
+        "subcategory": "Vocabulary",
+        "severity": "low",
+        "type": "Complex Word",
+        "term": "_eeiframework",
+        "description": "Complex word '_eeiframework' may reduce readability",
+        "confidence": 0.7,
+        "explanation": "'_eeiframework' is a complex word. Consider using simpler alternatives.",
+        "fix_suggestion": "Consider using a simpler alternative if available"
+      },
+      {
+        "id": "typography_line_length_short",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "low",
+        "type": "Short Line Length",
+        "description": "Average line length (20 chars) is below optimal range",
+        "current_value": 19.5,
+        "optimal_range": [
+          50,
+          75
+        ],
+        "confidence": 0.7,
+        "explanation": "Lines average 20 characters. Optimal is 50-75 characters.",
+        "fix_suggestion": "Increase line length to 50-75 characters for better readability."
+      },
+      {
+        "id": "typography_line_height",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "info",
+        "type": "Line Height Recommendation",
+        "description": "Ensure line height is 1.5-2.0x font size",
+        "optimal_range": [
+          1.5,
+          2.0
+        ],
+        "confidence": 1.0,
+        "explanation": "Line height (leading) should be 1.5-2.0 times the font size for optimal readability.",
+        "fix_suggestion": "Set line-height to 1.5-2.0 in your CSS or design tool."
+      },
+      {
+        "id": "typography_font",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "info",
+        "type": "Font Selection Guidance",
+        "description": "Use clear, readable fonts",
+        "confidence": 1.0,
+        "explanation": "Choose fonts designed for screen readability. Sans-serif fonts like Arial, Helvetica, or Open Sans work well for body text.",
+        "fix_suggestion": "Use readable sans-serif fonts for body text and ensure sufficient font weight."
+      }
+    ],
+    "issue_summary": {
+      "vocabulary": 1,
+      "sentence_length": 0,
+      "inclusive_language": 0,
+      "typography": 3
+    },
+    "recommendations": [
+      {
+        "category": "Typography",
+        "priority": "medium",
+        "title": "Optimize Typography",
+        "description": "Improve text formatting for better readability",
+        "action": "Adjust line length (50-75 chars), line height (1.5-2.0x), and font selection",
+        "impact": "Enhances reading comfort and reduces eye strain",
+        "resources": [
+          "https://practicaltypography.com/"
+        ]
+      }
+    ],
+    "grade_level": "Grade 11 - Conversational (High school level)"
+  },
+  "attention": {
+    "score": 59.66,
+    "saliency_heatmap": "heatmap_overlay_path",
+    "attention_distribution": {
+      "high_attention_percentage": 20.0,
+      "average_attention": 0.143,
+      "max_attention": 1.0,
+      "attention_concentration": 0.117
+    },
+    "critical_elements": [],
+    "visual_hierarchy": {
+      "attention_distribution": {
+        "top": 0.206,
+        "middle": 0.148,
+        "bottom": 0.076,
+        "left": 0.194,
+        "center": 0.142,
+        "right": 0.094
+      },
+      "f_pattern_compliance": 0.2,
+      "hierarchy_clarity": 0.0028,
+      "issues": [
+        {
+          "id": "hierarchy_flat",
+          "category": "Attention",
+          "subcategory": "Visual Hierarchy",
+          "severity": "medium",
+          "type": "Flat Visual Hierarchy",
+          "description": "Lack of clear visual hierarchy",
+          "attention_variance": 0.0028,
+          "confidence": 0.7,
+          "explanation": "All areas receive similar attention, making it unclear what's most important.",
+          "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+        }
+      ]
+    },
+    "cognitive_load": {
+      "cognitive_load_score": 71.14,
+      "level": "Very High - Likely to cause cognitive overload",
+      "metrics": {
+        "element_count": 105,
+        "dominant_colors": 94,
+        "visual_density": 0.028,
+        "attention_entropy": 5.51,
+        "text_density": 0.071
+      },
+      "issues": [
+        {
+          "id": "cognitive_too_many_elements",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "high",
+          "type": "Too Many Elements",
+          "description": "Design contains 105 distinct elements",
+          "element_count": 105,
+          "recommended_max": 30,
+          "confidence": 0.75,
+          "explanation": "Too many elements increase cognitive load and make it hard for users to focus.",
+          "fix_suggestion": "Simplify design by grouping related elements or removing non-essential items."
+        },
+        {
+          "id": "cognitive_too_many_colors",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "medium",
+          "type": "Excessive Color Palette",
+          "description": "Design uses 94 dominant colors",
+          "color_count": 94,
+          "recommended_max": 5,
+          "confidence": 0.8,
+          "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+          "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+        },
+        {
+          "id": "cognitive_fragmented_attention",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "medium",
+          "type": "Fragmented Attention",
+          "description": "Attention is scattered across many areas",
+          "entropy": 5.51,
+          "confidence": 0.75,
+          "explanation": "Scattered attention increases cognitive load and reduces task completion.",
+          "fix_suggestion": "Create clear focal points to guide user attention."
+        }
+      ]
+    },
+    "issues": [
+      {
+        "id": "hierarchy_flat",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Flat Visual Hierarchy",
+        "description": "Lack of clear visual hierarchy",
+        "attention_variance": 0.0028,
+        "confidence": 0.7,
+        "explanation": "All areas receive similar attention, making it unclear what's most important.",
+        "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+      },
+      {
+        "id": "cognitive_too_many_elements",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "high",
+        "type": "Too Many Elements",
+        "description": "Design contains 105 distinct elements",
+        "element_count": 105,
+        "recommended_max": 30,
+        "confidence": 0.75,
+        "explanation": "Too many elements increase cognitive load and make it hard for users to focus.",
+        "fix_suggestion": "Simplify design by grouping related elements or removing non-essential items."
+      },
+      {
+        "id": "cognitive_too_many_colors",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Excessive Color Palette",
+        "description": "Design uses 94 dominant colors",
+        "color_count": 94,
+        "recommended_max": 5,
+        "confidence": 0.8,
+        "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+        "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+      },
+      {
+        "id": "cognitive_fragmented_attention",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Fragmented Attention",
+        "description": "Attention is scattered across many areas",
+        "entropy": 5.51,
+        "confidence": 0.75,
+        "explanation": "Scattered attention increases cognitive load and reduces task completion.",
+        "fix_suggestion": "Create clear focal points to guide user attention."
+      }
+    ],
+    "issue_summary": {
+      "attention_priority": 0,
+      "visual_hierarchy": 1,
+      "cognitive_load": 3
+    },
+    "recommendations": [
+      {
+        "category": "Visual Hierarchy",
+        "priority": "high",
+        "title": "Improve Visual Hierarchy",
+        "description": "Strengthen visual hierarchy to guide user attention",
+        "action": "Use size, color, and positioning to create clear information hierarchy",
+        "impact": "Helps users quickly understand content structure and importance",
+        "resources": [
+          "https://www.interaction-design.org/literature/article/visual-hierarchy"
+        ]
+      },
+      {
+        "category": "Cognitive Load",
+        "priority": "high",
+        "title": "Reduce Cognitive Load",
+        "description": "Current cognitive load: Very High - Likely to cause cognitive overload",
+        "action": "Simplify design by reducing elements, colors, and visual complexity",
+        "impact": "Improves user comprehension and task completion rates",
+        "resources": [
+          "https://www.nngroup.com/articles/minimize-cognitive-load/",
+          "https://lawsofux.com/millers-law/"
+        ]
+      }
+    ]
+  },
+  "annotated_image": "annotated_image_path",
+  "issues": [
+    {
+      "id": "contrast_12",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 64,
+        "y": 583,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#eff1f5",
+          "foreground_rgb": [
+            239,
+            241,
+            245
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_17",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 672,
+        "y": 587,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#f0f1f5",
+          "foreground_rgb": [
+            240,
+            241,
+            245
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_37",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 419,
+        "y": 578,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#edeef3",
+          "foreground_rgb": [
+            237,
+            238,
+            243
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_38",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 115,
+        "y": 40,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#eeeff3",
+          "foreground_rgb": [
+            238,
+            239,
+            243
+          ],
+          "background": "#f1f2f6",
+          "background_rgb": [
+            241,
+            242,
+            246
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_10",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 8,
+        "y": 686,
+        "width": 25,
+        "height": 25
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_24",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 38,
+        "y": 650,
+        "width": 15,
+        "height": 10
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_39",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 22,
+        "y": 579,
+        "width": 9,
+        "height": 8
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_41",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 0,
+        "y": 578,
+        "width": 17,
+        "height": 12
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_46",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 12,
+        "y": 545,
+        "width": 18,
+        "height": 19
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_51",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 7,
+        "y": 495,
+        "width": 7,
+        "height": 8
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_52",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 22,
+        "y": 473,
+        "width": 8,
+        "height": 7
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_53",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 11,
+        "y": 472,
+        "width": 10,
+        "height": 9
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_54",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 21,
+        "y": 462,
+        "width": 10,
+        "height": 9
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_55",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 11,
+        "y": 462,
+        "width": 9,
+        "height": 9
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_58",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 32,
+        "y": 424,
+        "width": 11,
+        "height": 8
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_59",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 21,
+        "y": 424,
+        "width": 10,
+        "height": 8
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_60",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 0,
+        "y": 422,
+        "width": 20,
+        "height": 12
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_61",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 11,
+        "y": 389,
+        "width": 20,
+        "height": 20
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_67",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 27,
+        "y": 350,
+        "width": 8,
+        "height": 10
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_70",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 17,
+        "y": 317,
+        "width": 14,
+        "height": 13
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_74",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 31,
+        "y": 279,
+        "width": 12,
+        "height": 9
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_76",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 10,
+        "y": 245,
+        "width": 22,
+        "height": 18
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_82",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 11,
+        "y": 180,
+        "width": 20,
+        "height": 13
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_86",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 35,
+        "y": 160,
+        "width": 12,
+        "height": 11
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_90",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 16,
+        "y": 136,
+        "width": 9,
+        "height": 8
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_93",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 13,
+        "y": 103,
+        "width": 16,
+        "height": 14
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_102",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 21,
+        "y": 30,
+        "width": 9,
+        "height": 9
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_too_many_elements",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Too Many Elements",
+      "severity": "high",
+      "description": "Design contains 105 distinct elements",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "recommended_max": 30
+      },
+      "confidence": 0.75,
+      "explanation": "This high severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "alt_text_summary",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Multiple Alt Text Requirements",
+      "severity": "medium",
+      "description": "Found 23 icons/images that may need alt text",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "font_size_0",
+      "category": "Accessibility",
+      "subcategory": "Font Size",
+      "type": "Small Font Size",
+      "severity": "medium",
+      "description": "Text may be too small (estimated 6px)",
+      "wcag_criterion": "1.4.4 Resize Text",
+      "wcag_level": "AA",
+      "location": {
+        "x": 657,
+        "y": 130
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "font_size_1",
+      "category": "Accessibility",
+      "subcategory": "Font Size",
+      "type": "Small Font Size",
+      "severity": "medium",
+      "description": "Text may be too small (estimated 9px)",
+      "wcag_criterion": "1.4.4 Resize Text",
+      "wcag_level": "AA",
+      "location": {
+        "x": 443,
+        "y": 339
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "hierarchy_flat",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "type": "Flat Visual Hierarchy",
+      "severity": "medium",
+      "description": "Lack of clear visual hierarchy",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_too_many_colors",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Excessive Color Palette",
+      "severity": "medium",
+      "description": "Design uses 94 dominant colors",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "recommended_max": 5
+      },
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_fragmented_attention",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Fragmented Attention",
+      "severity": "medium",
+      "description": "Attention is scattered across many areas",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "complex__eeiframework",
+      "category": "Readability",
+      "subcategory": "Vocabulary",
+      "type": "Complex Word",
+      "severity": "low",
+      "description": "Complex word '_eeiframework' may reduce readability",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "_eeiframework"
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_line_length_short",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Short Line Length",
+      "severity": "low",
+      "description": "Average line length (20 chars) is below optimal range",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "current_value": 19.5,
+        "optimal_range": [
+          50,
+          75
+        ]
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_line_height",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Line Height Recommendation",
+      "severity": "info",
+      "description": "Ensure line height is 1.5-2.0x font size",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "optimal_range": [
+          1.5,
+          2.0
+        ]
+      },
+      "confidence": 0.75,
+      "explanation": "This info severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_font",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Font Selection Guidance",
+      "severity": "info",
+      "description": "Use clear, readable fonts",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This info severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    }
+  ],
+  "issue_summary": {
+    "total": 38,
+    "by_severity": {
+      "critical": 4,
+      "high": 24,
+      "medium": 6,
+      "low": 2,
+      "info": 2
+    },
+    "by_category": {
+      "Accessibility": 30,
+      "Attention": 4,
+      "Readability": 4
+    },
+    "by_wcag_level": {
+      "AA": 6,
+      "A": 24
+    }
+  },
+  "education": [
+    {
+      "title": "Contrast (Minimum)",
+      "level": "AA",
+      "description": "Text and images of text have a contrast ratio of at least 4.5:1 (3:1 for large text).",
+      "why_important": "Low contrast makes text hard to read for users with low vision, color blindness, or in bright lighting conditions.",
+      "how_to_fix": "Use darker text on lighter backgrounds or vice versa. Test contrast ratios using tools like WebAIM's Contrast Checker.",
+      "example": "Good: Black text on white (21:1)\nBad: Light gray text on white (2:1)",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html"
+      ],
+      "related_issues": [
+        {
+          "id": "contrast_12",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 64,
+            "y": 583,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#eff1f5",
+              "foreground_rgb": [
+                239,
+                241,
+                245
+              ],
+              "background": "#f1f2f6",
+              "background_rgb": [
+                241,
+                242,
+                246
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_17",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 672,
+            "y": 587,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#f0f1f5",
+              "foreground_rgb": [
+                240,
+                241,
+                245
+              ],
+              "background": "#f1f2f6",
+              "background_rgb": [
+                241,
+                242,
+                246
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_37",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 419,
+            "y": 578,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#edeef3",
+              "foreground_rgb": [
+                237,
+                238,
+                243
+              ],
+              "background": "#f1f2f6",
+              "background_rgb": [
+                241,
+                242,
+                246
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_38",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 115,
+            "y": 40,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#eeeff3",
+              "foreground_rgb": [
+                238,
+                239,
+                243
+              ],
+              "background": "#f1f2f6",
+              "background_rgb": [
+                241,
+                242,
+                246
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        }
+      ]
+    },
+    {
+      "title": "Non-text Content",
+      "level": "A",
+      "description": "All non-text content must have a text alternative that serves the equivalent purpose.",
+      "why_important": "Screen readers and assistive technologies rely on text alternatives to describe images, icons, and other visual elements to users who cannot see them.",
+      "how_to_fix": "Add descriptive alt text to all images. Decorative images should have empty alt text (alt='').",
+      "example": "Good: <img src='logo.png' alt='ARAI System Logo'>\nBad: <img src='logo.png'>",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
+      ],
+      "related_issues": [
+        {
+          "id": "alt_text_10",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 8,
+            "y": 686,
+            "width": 25,
+            "height": 25
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_24",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 38,
+            "y": 650,
+            "width": 15,
+            "height": 10
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_39",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 22,
+            "y": 579,
+            "width": 9,
+            "height": 8
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_41",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 0,
+            "y": 578,
+            "width": 17,
+            "height": 12
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_46",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 12,
+            "y": 545,
+            "width": 18,
+            "height": 19
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_51",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 7,
+            "y": 495,
+            "width": 7,
+            "height": 8
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_52",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 22,
+            "y": 473,
+            "width": 8,
+            "height": 7
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_53",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 11,
+            "y": 472,
+            "width": 10,
+            "height": 9
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_54",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 21,
+            "y": 462,
+            "width": 10,
+            "height": 9
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_55",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 11,
+            "y": 462,
+            "width": 9,
+            "height": 9
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_58",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 32,
+            "y": 424,
+            "width": 11,
+            "height": 8
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_59",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 21,
+            "y": 424,
+            "width": 10,
+            "height": 8
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_60",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 0,
+            "y": 422,
+            "width": 20,
+            "height": 12
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_61",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 11,
+            "y": 389,
+            "width": 20,
+            "height": 20
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_67",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 27,
+            "y": 350,
+            "width": 8,
+            "height": 10
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_70",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 17,
+            "y": 317,
+            "width": 14,
+            "height": 13
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_74",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 31,
+            "y": 279,
+            "width": 12,
+            "height": 9
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_76",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 10,
+            "y": 245,
+            "width": 22,
+            "height": 18
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_82",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 11,
+            "y": 180,
+            "width": 20,
+            "height": 13
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_86",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 35,
+            "y": 160,
+            "width": 12,
+            "height": 11
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_90",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 16,
+            "y": 136,
+            "width": 9,
+            "height": 8
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_93",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 13,
+            "y": 103,
+            "width": 16,
+            "height": 14
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_102",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 21,
+            "y": 30,
+            "width": 9,
+            "height": 9
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "alt_text_summary",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Multiple Alt Text Requirements",
+          "severity": "medium",
+          "description": "Found 23 icons/images that may need alt text",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": null,
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "This medium severity issue may impact user experience.",
+          "fix_suggestion": "Review and address this issue according to best practices.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        }
+      ]
+    },
+    {
+      "title": "Resize Text",
+      "level": "AA",
+      "description": "Text can be resized up to 200% without loss of content or functionality.",
+      "why_important": "Users with low vision need to enlarge text to read comfortably.",
+      "how_to_fix": "Use relative units (em, rem, %) instead of fixed pixels. Ensure minimum font size of 12-14px.",
+      "example": "Good: font-size: 1rem;\nBad: font-size: 10px;",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html"
+      ],
+      "related_issues": [
+        {
+          "id": "font_size_0",
+          "category": "Accessibility",
+          "subcategory": "Font Size",
+          "type": "Small Font Size",
+          "severity": "medium",
+          "description": "Text may be too small (estimated 6px)",
+          "wcag_criterion": "1.4.4 Resize Text",
+          "wcag_level": "AA",
+          "location": {
+            "x": 657,
+            "y": 130
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "This medium severity issue may impact user experience.",
+          "fix_suggestion": "Review and address this issue according to best practices.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "font_size_1",
+          "category": "Accessibility",
+          "subcategory": "Font Size",
+          "type": "Small Font Size",
+          "severity": "medium",
+          "description": "Text may be too small (estimated 9px)",
+          "wcag_criterion": "1.4.4 Resize Text",
+          "wcag_level": "AA",
+          "location": {
+            "x": 443,
+            "y": 339
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "This medium severity issue may impact user experience.",
+          "fix_suggestion": "Review and address this issue according to best practices.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "category": "Contrast",
+      "priority": "high",
+      "title": "Improve Color Contrast",
+      "description": "Found 4 areas with insufficient contrast",
+      "action": "Increase contrast ratios to meet WCAG AA standards (4.5:1 for normal text, 3:1 for large text)",
+      "wcag_reference": "1.4.3 Contrast (Minimum)",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum"
+      ]
+    },
+    {
+      "category": "Alternative Text",
+      "priority": "high",
+      "title": "Add Alternative Text",
+      "description": "Found 23 images/icons without alt text",
+      "action": "Provide descriptive alt text for all meaningful images and icons",
+      "wcag_reference": "1.1.1 Non-text Content",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+      ]
+    },
+    {
+      "category": "Alternative Text",
+      "priority": "high",
+      "title": "Add Alternative Text",
+      "description": "Found 1 images/icons without alt text",
+      "action": "Provide descriptive alt text for all meaningful images and icons",
+      "wcag_reference": "1.1.1 Non-text Content",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+      ]
+    },
+    {
+      "category": "Visual Hierarchy",
+      "priority": "high",
+      "title": "Improve Visual Hierarchy",
+      "description": "Strengthen visual hierarchy to guide user attention",
+      "action": "Use size, color, and positioning to create clear information hierarchy",
+      "impact": "Helps users quickly understand content structure and importance",
+      "resources": [
+        "https://www.interaction-design.org/literature/article/visual-hierarchy"
+      ]
+    },
+    {
+      "category": "Cognitive Load",
+      "priority": "high",
+      "title": "Reduce Cognitive Load",
+      "description": "Current cognitive load: Very High - Likely to cause cognitive overload",
+      "action": "Simplify design by reducing elements, colors, and visual complexity",
+      "impact": "Improves user comprehension and task completion rates",
+      "resources": [
+        "https://www.nngroup.com/articles/minimize-cognitive-load/",
+        "https://lawsofux.com/millers-law/"
+      ]
+    },
+    {
+      "category": "Typography",
+      "priority": "medium",
+      "title": "Optimize Typography",
+      "description": "Improve text formatting for better readability",
+      "action": "Adjust line length (50-75 chars), line height (1.5-2.0x), and font selection",
+      "impact": "Enhances reading comfort and reduces eye strain",
+      "resources": [
+        "https://practicaltypography.com/"
+      ]
+    }
+  ],
+  "status": "completed",
+  "metadata": {
+    "generated_at": "2026-01-31T22:18:34.203034",
+    "image_analyzed": "/Users/kavishani/Documents/FYP/arai-system/uploads/506ab03e-94df-4011-b485-f048fbf7ac43/original.png",
+    "total_issues": 38
+  }
+}
