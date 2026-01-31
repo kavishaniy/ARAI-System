@@ -1,0 +1,316 @@
+{
+  "analysis_id": "f3630377-7b63-465a-9efb-0ddad11de37d",
+  "design_name": "Charts _ chartsJS.png",
+  "filename": "Charts _ chartsJS.png",
+  "timestamp": "2026-01-30T00:09:32.049439",
+  "arai_score": 58.380001068115234,
+  "accessibility": {
+    "score": 31,
+    "conformance_level": "Non-conformant",
+    "conformance_details": {
+      "level": "Non-conformant",
+      "a_failures": 1,
+      "aa_failures": 4,
+      "aaa_failures": 2,
+      "passes_a": false,
+      "passes_aa": false,
+      "passes_aaa": false
+    },
+    "issues": [
+      {
+        "wcag_criterion": "1.4.3",
+        "wcag_level": "AA",
+        "type": "Low Color Contrast",
+        "severity": "high",
+        "description": "12 out of 30 sampled regions have insufficient contrast",
+        "recommendation": "Increase color contrast to meet WCAG AA standards (4.5:1 for normal text)"
+      },
+      {
+        "wcag_criterion": "1.4.3",
+        "wcag_level": "AA",
+        "type": "Contrast Minimum Failure",
+        "severity": "high",
+        "description": "Found 11 color combinations below AA standard",
+        "details": [
+          {
+            "foreground": [
+              0,
+              116,
+              239
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 4.43,
+            "required": 4.5,
+            "location": [
+              330,
+              154
+            ]
+          },
+          {
+            "foreground": [
+              0,
+              123,
+              255
+            ],
+            "background": [
+              244,
+              246,
+              249
+            ],
+            "contrast_ratio": 3.68,
+            "required": 4.5,
+            "location": [
+              433,
+              123
+            ]
+          },
+          {
+            "foreground": [
+              38,
+              156,
+              65
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 3.55,
+            "required": 4.5,
+            "location": [
+              1736,
+              503
+            ]
+          },
+          {
+            "foreground": [
+              124,
+              124,
+              124
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 4.17,
+            "required": 4.5,
+            "location": [
+              1519,
+              791
+            ]
+          },
+          {
+            "foreground": [
+              65,
+              143,
+              189
+            ],
+            "background": [
+              255,
+              255,
+              255
+            ],
+            "contrast_ratio": 3.57,
+            "required": 4.5,
+            "location": [
+              1733,
+              998
+            ]
+          }
+        ],
+        "recommendation": "Adjust colors to achieve minimum 4.5:1 contrast ratio"
+      },
+      {
+        "wcag_criterion": "1.4.6",
+        "wcag_level": "AAA",
+        "type": "Enhanced Contrast",
+        "severity": "low",
+        "description": "17 color combinations don't meet AAA enhanced contrast",
+        "recommendation": "For AAA compliance, achieve 7:1 contrast ratio for normal text"
+      },
+      {
+        "wcag_criterion": "2.1.1",
+        "wcag_level": "A",
+        "type": "Interactive Elements",
+        "severity": "medium",
+        "description": "Detected 10 potential interactive elements",
+        "recommendation": "Ensure all interactive elements are keyboard accessible and clearly focusable"
+      },
+      {
+        "wcag_criterion": "2.5.5",
+        "wcag_level": "AAA",
+        "type": "Small Target Size",
+        "severity": "medium",
+        "description": "Found 235 potentially small interactive targets",
+        "recommendation": "Make touch/click targets at least 44x44px"
+      },
+      {
+        "wcag_criterion": "2.5.8",
+        "wcag_level": "AA",
+        "type": "Minimum Target Size",
+        "severity": "high",
+        "description": "Found 554 targets below minimum size requirement",
+        "recommendation": "Ensure all targets are at least 24x24px (WCAG 2.2)"
+      },
+      {
+        "wcag_criterion": "3.2.4",
+        "wcag_level": "AA",
+        "type": "Visual Consistency",
+        "severity": "low",
+        "description": "Color and style consistency varies significantly across the design",
+        "recommendation": "Maintain consistent visual patterns for similar elements"
+      }
+    ],
+    "issue_count": {
+      "critical": 0,
+      "high": 3,
+      "medium": 2,
+      "low": 2
+    },
+    "recommendations": [
+      "\u26a0\ufe0f HIGH PRIORITY: Address 3 high-severity issues",
+      "\u274c Design does not meet WCAG Level A (minimum legal requirement)",
+      "Focus on fixing Level A issues first",
+      "[1.4.3] Increase color contrast to meet WCAG AA standards (4.5:1 for normal text)",
+      "[1.4.6] For AAA compliance, achieve 7:1 contrast ratio for normal text",
+      "[2.1.1] Ensure all interactive elements are keyboard accessible and clearly focusable",
+      "[2.5.5] Make touch/click targets at least 44x44px",
+      "[2.5.8] Ensure all targets are at least 24x24px (WCAG 2.2)",
+      "[3.2.4] Maintain consistent visual patterns for similar elements"
+    ],
+    "wcag_criteria_status": {
+      "1.4.3": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Low Color Contrast",
+            "severity": "high",
+            "description": "12 out of 30 sampled regions have insufficient contrast"
+          },
+          {
+            "type": "Contrast Minimum Failure",
+            "severity": "high",
+            "description": "Found 11 color combinations below AA standard"
+          }
+        ]
+      },
+      "1.4.6": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Enhanced Contrast",
+            "severity": "low",
+            "description": "17 color combinations don't meet AAA enhanced contrast"
+          }
+        ]
+      },
+      "2.1.1": {
+        "status": "fail",
+        "level": "A",
+        "issues": [
+          {
+            "type": "Interactive Elements",
+            "severity": "medium",
+            "description": "Detected 10 potential interactive elements"
+          }
+        ]
+      },
+      "2.5.5": {
+        "status": "fail",
+        "level": "AAA",
+        "issues": [
+          {
+            "type": "Small Target Size",
+            "severity": "medium",
+            "description": "Found 235 potentially small interactive targets"
+          }
+        ]
+      },
+      "2.5.8": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Minimum Target Size",
+            "severity": "high",
+            "description": "Found 554 targets below minimum size requirement"
+          }
+        ]
+      },
+      "3.2.4": {
+        "status": "fail",
+        "level": "AA",
+        "issues": [
+          {
+            "type": "Visual Consistency",
+            "severity": "low",
+            "description": "Color and style consistency varies significantly across the design"
+          }
+        ]
+      }
+    },
+    "annotated_image": "annotated_image_placeholder.png"
+  },
+  "readability": {
+    "score": 95,
+    "metrics": {
+      "word_count": 127,
+      "character_count": 669,
+      "sentence_count": 7,
+      "flesch_reading_ease": 56.79,
+      "flesch_kincaid_grade": 11.0,
+      "gunning_fog": 11.58,
+      "avg_line_length": 669.0
+    },
+    "issues": [
+      {
+        "type": "Long Lines",
+        "severity": "low",
+        "description": "Text lines are too long (optimal: 50-75 characters)",
+        "value": 669.0
+      }
+    ],
+    "recommendations": [
+      "Shorten line length to 50-75 characters for better readability",
+      "Increase font size or reduce container width"
+    ]
+  },
+  "attention": {
+    "score": 58.272682189941406,
+    "heatmap_url": "heatmaps/original_heatmap.png",
+    "attention_areas": [
+      {
+        "region": "bottom_left",
+        "attention_level": 0.48584693670272827,
+        "percentage": 48.584693908691406
+      },
+      {
+        "region": "top_left",
+        "attention_level": 0.48573368787765503,
+        "percentage": 48.573368072509766
+      },
+      {
+        "region": "bottom_right",
+        "attention_level": 0.48557329177856445,
+        "percentage": 48.55732727050781
+      },
+      {
+        "region": "top_right",
+        "attention_level": 0.4855262041091919,
+        "percentage": 48.55261993408203
+      }
+    ],
+    "recommendations": [
+      "Good use of F-pattern - left alignment captures attention"
+    ]
+  },
+  "overall_grade": "F",
+  "status": "completed"
+}

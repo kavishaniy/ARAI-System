@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Header
 from typing import Optional
 import os
 import uuid
@@ -6,13 +6,24 @@ from datetime import datetime
 import shutil
 from pathlib import Path
 import numpy as np
+import logging
 
 from app.ai_modules.accessibility_analyzer import AccessibilityAnalyzer
 from app.ai_modules.wcag_analyzer import WCAGAnalyzer
 from app.ai_modules.readability_analyzer import ReadabilityAnalyzer
 from app.ai_modules.attention_analyzer import AttentionAnalyzer
+from app.core.database import (
+    upload_design_to_storage,
+    save_analysis_to_db,
+    get_user_analyses,
+    get_analysis_by_id,
+    delete_analysis,
+    update_analysis_status,
+    supabase
+)
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 # Initialize analyzers
 accessibility_analyzer = AccessibilityAnalyzer()
@@ -26,6 +37,47 @@ attention_analyzer = AttentionAnalyzer(str(MODEL_PATH))
 # Upload directory
 UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+async def get_current_user(authorization: Optional[str] = Header(None)):
+    """
+    Extract and verify user from JWT token
+    """
+    if not authorization:
+        logger.error("❌ No authorization header")
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+    
+    try:
+        # Extract token from "Bearer <token>"
+        if not authorization.startswith("Bearer "):
+            logger.error("❌ Invalid authorization format")
+            raise HTTPException(status_code=401, detail="Invalid authorization format")
+        
+        token = authorization.replace("Bearer ", "")
+        logger.info(f"🔑 Token received: {token[:20]}...")
+        
+        # Verify token with Supabase
+        try:
+            user_response = supabase.auth.get_user(token)
+            logger.info(f"✅ User response: {user_response}")
+            
+            if not user_response or not user_response.user:
+                logger.error("❌ No user in response")
+                raise HTTPException(status_code=401, detail="Invalid or expired token")
+            
+            logger.info(f"✅ Authenticated user: {user_response.user.id}")
+            return user_response.user
+            
+        except Exception as supabase_error:
+            logger.error(f"❌ Supabase auth error: {str(supabase_error)}")
+            raise HTTPException(status_code=401, detail=f"Token verification failed: {str(supabase_error)}")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Authentication error: {str(e)}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
 
 
 def convert_to_native_types(obj):
@@ -57,13 +109,17 @@ def calculate_arai_score(accessibility_score: float, readability_score: float, a
 @router.post("/upload")
 async def upload_design(
     file: UploadFile = File(...),
-    design_name: Optional[str] = None
+    design_name: Optional[str] = None,
+    current_user = Depends(get_current_user)
 ):
     """
     Upload a design file for comprehensive AI-powered analysis
     Analyzes: Accessibility (WCAG 2.1), Readability, and Visual Attention
+    Requires authentication
     """
     try:
+        logger.info(f"📤 Upload request from user: {current_user.id}")
+        
         # Validate file type
         allowed_extensions = {'.png', '.jpg', '.jpeg', '.webp'}
         file_ext = os.path.splitext(file.filename)[1].lower()
@@ -74,33 +130,54 @@ async def upload_design(
                 detail=f"Invalid file type. Allowed types: {', '.join(allowed_extensions)}"
             )
         
+        # Validate file size (10MB max)
+        file.file.seek(0, 2)  # Seek to end
+        file_size = file.file.tell()
+        file.file.seek(0)  # Reset to beginning
+        
+        if file_size > 10 * 1024 * 1024:  # 10MB
+            raise HTTPException(status_code=400, detail="File size exceeds 10MB limit")
+        
         # Generate unique analysis ID
         analysis_id = str(uuid.uuid4())
         timestamp = datetime.now().isoformat()
         
-        # Create analysis directory
+        # Create analysis directory (local temporary storage)
         analysis_dir = UPLOAD_DIR / analysis_id
         analysis_dir.mkdir(exist_ok=True)
         
-        # Save uploaded file
-        file_path = analysis_dir / f"original{file_ext}"
-        with open(file_path, "wb") as buffer:
+        # Save uploaded file locally first
+        local_file_path = analysis_dir / f"original{file_ext}"
+        with open(local_file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
+        logger.info(f"💾 File saved locally: {local_file_path}")
+        
+        # Upload to Supabase Storage
+        try:
+            storage_path = await upload_design_to_storage(
+                user_id=str(current_user.id),
+                file_path=str(local_file_path),
+                file_name=file.filename
+            )
+            logger.info(f"☁️ File uploaded to Supabase Storage: {storage_path}")
+        except Exception as storage_error:
+            logger.warning(f"⚠️ Storage upload failed (continuing with local): {storage_error}")
+            storage_path = str(local_file_path)
         # Run all analyses
-        print(f"Starting comprehensive analysis for {file.filename}...")
+        logger.info(f"🔍 Starting comprehensive analysis for {file.filename}...")
         
         # 1. Comprehensive WCAG 2.1 Accessibility Analysis
-        print("Running comprehensive WCAG 2.1 analysis...")
-        accessibility_results = wcag_analyzer.analyze_design(str(file_path))
+        logger.info("♿ Running comprehensive WCAG 2.1 analysis...")
+        accessibility_results = wcag_analyzer.analyze_design(str(local_file_path))
         
         # 2. Readability Analysis
-        print("Running readability analysis...")
-        readability_results = readability_analyzer.analyze_design(str(file_path))
+        logger.info("📖 Running readability analysis...")
+        readability_results = readability_analyzer.analyze_design(str(local_file_path))
         
         # 3. Attention Analysis
-        print("Running attention analysis...")
-        attention_results = attention_analyzer.analyze_design(str(file_path))
+        logger.info("👁️ Running attention analysis...")
+        attention_results = attention_analyzer.analyze_design(str(local_file_path))
         
         # Calculate overall ARAI score
         arai_score = calculate_arai_score(
@@ -126,18 +203,35 @@ async def upload_design(
         # Convert NumPy types to native Python types for JSON serialization
         analysis_results = convert_to_native_types(analysis_results)
         
-        # Save results to JSON
+        # Save to Supabase database
+        try:
+            await save_analysis_to_db(
+                user_id=str(current_user.id),
+                analysis_id=analysis_id,
+                design_name=design_name or file.filename,
+                filename=file.filename,
+                file_path=storage_path,
+                results=analysis_results
+            )
+            logger.info(f"💾 Analysis saved to database")
+        except Exception as db_error:
+            logger.error(f"❌ Database save failed: {db_error}")
+            # Continue even if DB save fails - return results anyway
+        
+        # Save results to JSON (local backup)
         import json
         results_path = analysis_dir / "results.json"
         with open(results_path, "w") as f:
             json.dump(analysis_results, f, indent=2)
         
-        print(f"Analysis completed. ARAI Score: {arai_score}")
+        logger.info(f"✅ Analysis completed. ARAI Score: {arai_score}")
         
         return analysis_results
         
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Error during analysis: {str(e)}")
+        logger.error(f"❌ Error during analysis: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
@@ -156,11 +250,22 @@ def _get_grade(score: float) -> str:
 
 
 @router.get("/results/{analysis_id}")
-async def get_analysis_results(analysis_id: str):
+async def get_analysis_results(
+    analysis_id: str,
+    current_user = Depends(get_current_user)
+):
     """
     Get analysis results for a specific design
+    Requires authentication
     """
     try:
+        # Try to get from database first
+        analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
+        
+        if analysis:
+            return analysis.get("results", analysis)
+        
+        # Fallback to local file if not in database
         analysis_dir = UPLOAD_DIR / analysis_id
         results_path = analysis_dir / "results.json"
         
@@ -173,62 +278,76 @@ async def get_analysis_results(analysis_id: str):
         
         return results
         
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Analysis not found")
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error fetching results: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/history")
-async def get_analysis_history():
+async def get_analysis_history(
+    limit: int = 50,
+    current_user = Depends(get_current_user)
+):
     """
-    Get history of all analyses
+    Get history of all analyses for the current user
+    Requires authentication
     """
     try:
-        analyses = []
+        # Get from database
+        analyses = await get_user_analyses(str(current_user.id), limit)
         
-        for analysis_dir in UPLOAD_DIR.iterdir():
-            if analysis_dir.is_dir():
-                results_path = analysis_dir / "results.json"
-                if results_path.exists():
-                    import json
-                    with open(results_path, "r") as f:
-                        data = json.load(f)
-                        analyses.append({
-                            "analysis_id": data["analysis_id"],
-                            "design_name": data["design_name"],
-                            "timestamp": data["timestamp"],
-                            "arai_score": data["arai_score"],
-                            "overall_grade": data["overall_grade"]
-                        })
+        # Format for frontend
+        history = []
+        for analysis in analyses:
+            history.append({
+                "analysis_id": analysis["id"],
+                "design_name": analysis["design_name"],
+                "filename": analysis.get("filename", ""),
+                "timestamp": analysis["created_at"],
+                "arai_score": analysis.get("arai_score"),
+                "overall_grade": analysis.get("overall_grade"),
+                "conformance_level": analysis.get("conformance_level"),
+                "status": analysis.get("status", "completed")
+            })
         
-        # Sort by timestamp (newest first)
-        analyses.sort(key=lambda x: x["timestamp"], reverse=True)
-        
-        return {"analyses": analyses}
+        return {"analyses": history, "total": len(history)}
         
     except Exception as e:
+        logger.error(f"Error fetching history: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("/results/{analysis_id}")
-async def delete_analysis(analysis_id: str):
+async def delete_analysis_endpoint(
+    analysis_id: str,
+    current_user = Depends(get_current_user)
+):
     """
     Delete an analysis by ID
+    Requires authentication
     """
     try:
-        analysis_dir = UPLOAD_DIR / analysis_id
+        # Delete from database
+        success = await delete_analysis(analysis_id, str(current_user.id))
         
-        if not analysis_dir.exists():
+        if not success:
             raise HTTPException(status_code=404, detail="Analysis not found")
         
-        # Delete the entire analysis directory
-        shutil.rmtree(analysis_dir)
+        # Delete local files if they exist
+        analysis_dir = UPLOAD_DIR / analysis_id
+        if analysis_dir.exists():
+            shutil.rmtree(analysis_dir)
         
         return {
             "message": "Analysis deleted successfully",
             "analysis_id": analysis_id
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error deleting analysis: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+

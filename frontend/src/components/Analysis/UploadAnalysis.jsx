@@ -70,15 +70,26 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       return;
     }
 
+    // Check if user is authenticated
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      setError('Please login to upload and analyze designs');
+      return;
+    }
+
     setIsAnalyzing(true);
     setError(null);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('design_name', designName || file.name);
+      if (designName) {
+        formData.append('design_name', designName);
+      }
 
-      const token = localStorage.getItem('access_token');
+      console.log('🚀 Uploading design for analysis...');
+      console.log('📁 File:', file.name);
+      console.log('🔑 Token exists:', !!token);
       
       const response = await axios.post(
         'http://localhost:8000/api/v1/analysis/upload',
@@ -91,19 +102,32 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         }
       );
 
-      console.log('Analysis completed:', response.data);
+      console.log('✅ Analysis completed:', response.data);
       
       // Notify parent component
       if (onAnalysisComplete) {
         onAnalysisComplete(response.data);
       }
 
+      // Reset form
+      setFile(null);
+      setPreview(null);
+      setDesignName('');
+      
     } catch (err) {
-      console.error('Analysis error:', err);
-      setError(
-        err.response?.data?.detail || 
-        'Failed to analyze design. Please try again.'
-      );
+      console.error('❌ Analysis error:', err);
+      console.error('❌ Error response:', err.response?.data);
+      
+      if (err.response?.status === 401) {
+        setError('Authentication failed. Please login again.');
+        // Clear invalid token
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+      } else if (err.response?.status === 400) {
+        setError(err.response?.data?.detail || 'Invalid file or parameters');
+      } else {
+        setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.');
+      }
     } finally {
       setIsAnalyzing(false);
     }
