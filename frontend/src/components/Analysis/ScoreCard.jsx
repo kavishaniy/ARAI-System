@@ -2,21 +2,21 @@ import React from 'react';
 
 const ScoreCard = ({ title, score, description }) => {
   const getScoreColor = (score) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return 'text-gray-900';
+    if (score >= 60) return 'text-gray-700';
+    return 'text-gray-600';
   };
 
   const getScoreBgColor = (score) => {
-    if (score >= 80) return 'bg-green-50';
-    if (score >= 60) return 'bg-yellow-50';
-    return 'bg-red-50';
+    if (score >= 80) return 'bg-gray-50';
+    if (score >= 60) return 'bg-gray-100';
+    return 'bg-gray-200';
   };
 
   const getScoreBorderColor = (score) => {
-    if (score >= 80) return 'border-green-200';
-    if (score >= 60) return 'border-yellow-200';
-    return 'border-red-200';
+    if (score >= 80) return 'border-gray-300';
+    if (score >= 60) return 'border-gray-400';
+    return 'border-gray-500';
   };
 
   return (

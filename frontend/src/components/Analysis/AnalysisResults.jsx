@@ -5,7 +5,8 @@ import {
   XCircle, Info, ChevronDown, ChevronUp, Target, 
   Zap, TrendingUp, ExternalLink, Download, FileText,
   Palette, Type, MousePointer, Image as ImageIcon,
-  Contrast, FileWarning, Lightbulb
+  Contrast, FileWarning, Lightbulb, AlignLeft, Layers,
+  HelpCircle
 } from 'lucide-react';
 
 // Helper function to format location (handles both strings and objects)
@@ -56,11 +57,11 @@ const AccessibilityIssueCard = ({ issue }) => {
     switch (issue.severity?.toLowerCase()) {
       case 'critical':
       case 'high':
-        return 'bg-red-50 border-red-200';
+        return 'bg-gray-100 border-gray-400';
       case 'medium':
-        return 'bg-yellow-50 border-yellow-200';
+        return 'bg-gray-50 border-gray-300';
       case 'low':
-        return 'bg-blue-50 border-blue-200';
+        return 'bg-gray-50 border-gray-300';
       default:
         return 'bg-gray-50 border-gray-200';
     }
@@ -89,7 +90,7 @@ const AccessibilityIssueCard = ({ issue }) => {
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">Severity</div>
-                  <div className="font-semibold capitalize text-red-600">
+                  <div className="font-semibold capitalize text-gray-900">
                     {issue.severity ? issue.severity.charAt(0).toUpperCase() + issue.severity.slice(1).toLowerCase() : 'Medium'}
                   </div>
                 </div>
@@ -98,11 +99,11 @@ const AccessibilityIssueCard = ({ issue }) => {
               <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
                 <div>
                   <div className="text-sm font-semibold text-gray-700 mb-1">Current Ratio:</div>
-                  <div className="text-2xl font-bold text-red-600">{issue.current_value || 'N/A'}</div>
+                  <div className="text-2xl font-bold text-gray-900">{issue.current_value || 'N/A'}</div>
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-gray-700 mb-1">Required:</div>
-                  <div className="text-lg font-semibold text-green-600">
+                  <div className="text-lg font-semibold text-gray-900">
                     {issue.required_value || '4.5:1 (normal text) or 3:1 (large text)'}
                   </div>
                 </div>
@@ -110,7 +111,7 @@ const AccessibilityIssueCard = ({ issue }) => {
 
               {expanded && (
                 <>
-                  <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-4">
                     <div className="font-bold text-green-900 mb-2 flex items-center gap-2">
                       <Lightbulb className="h-5 w-5" />
                       Suggested Fix:
@@ -133,11 +134,11 @@ const AccessibilityIssueCard = ({ issue }) => {
                     <div className="mt-4">
                       <div className="text-sm font-semibold text-gray-700 mb-2">Preview:</div>
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="border-2 border-red-300 rounded p-3 text-center">
+                        <div className="border-2 border-gray-500 rounded p-3 text-center">
                           <div className="text-xs text-gray-600 mb-1">Before</div>
                           <div className="font-mono font-bold">{issue.before_value}</div>
                         </div>
-                        <div className="border-2 border-green-300 rounded p-3 text-center">
+                        <div className="border-2 border-gray-400 rounded p-3 text-center">
                           <div className="text-xs text-gray-600 mb-1">After</div>
                           <div className="font-mono font-bold">{issue.after_value}</div>
                         </div>
@@ -179,17 +180,17 @@ const AccessibilityIssueCard = ({ issue }) => {
                 <div className="flex justify-between items-center">
                   <div>
                     <div className="text-sm text-gray-600">Current Size:</div>
-                    <div className="text-2xl font-bold text-red-600">{issue.current_value || 'N/A'}</div>
+                    <div className="text-2xl font-bold text-gray-900">{issue.current_value || 'N/A'}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-gray-600">Minimum Required:</div>
-                    <div className="text-2xl font-bold text-green-600">{issue.required_value || '16px'}</div>
+                    <div className="text-2xl font-bold text-gray-900">{issue.required_value || '16px'}</div>
                   </div>
                 </div>
               </div>
 
               {expanded && (
-                <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-4">
                   <div className="font-bold text-green-900 mb-2 flex items-center gap-2">
                     <Lightbulb className="h-5 w-5" />
                     Action Required:
@@ -226,7 +227,7 @@ const AccessibilityIssueCard = ({ issue }) => {
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">Severity</div>
-                  <div className="font-semibold capitalize text-yellow-600">
+                  <div className="font-semibold capitalize text-gray-700">
                     {issue.severity ? issue.severity.charAt(0).toUpperCase() + issue.severity.slice(1).toLowerCase() : 'Medium'}
                   </div>
                 </div>
@@ -236,11 +237,11 @@ const AccessibilityIssueCard = ({ issue }) => {
                 <div className="flex justify-between items-center">
                   <div>
                     <div className="text-sm text-gray-600">Current Size:</div>
-                    <div className="text-xl font-bold text-red-600">{issue.current_value || 'N/A'}</div>
+                    <div className="text-xl font-bold text-gray-900">{issue.current_value || 'N/A'}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-gray-600">Minimum Required:</div>
-                    <div className="text-xl font-bold text-green-600">
+                    <div className="text-xl font-bold text-gray-900">
                       {issue.required_value || '44x44px (WCAG 2.1 AA)'}
                     </div>
                   </div>
@@ -248,7 +249,7 @@ const AccessibilityIssueCard = ({ issue }) => {
               </div>
 
               {expanded && (
-                <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-4">
                   <div className="font-bold text-green-900 mb-2 flex items-center gap-2">
                     <Lightbulb className="h-5 w-5" />
                     Fix Options:
@@ -292,13 +293,13 @@ const AccessibilityIssueCard = ({ issue }) => {
 
               <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <div className="text-sm text-gray-600 mb-1">Current Alt Text:</div>
-                <div className="text-lg font-semibold text-red-600">
+                <div className="text-lg font-semibold text-gray-900">
                   {issue.current_value || 'None'}
                 </div>
               </div>
 
               {expanded && (
-                <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-4">
                   <div className="font-bold text-green-900 mb-2 flex items-center gap-2">
                     <Lightbulb className="h-5 w-5" />
                     Suggested Alt Text Examples:
@@ -357,7 +358,7 @@ const AccessibilityIssueCard = ({ issue }) => {
                 <div className="bg-white border border-gray-200 rounded-lg p-4">
                   <p className="text-gray-700">{issue.description}</p>
                   {issue.recommendation && (
-                    <div className="mt-2 text-sm text-green-700 font-semibold">
+                    <div className="mt-2 text-sm text-gray-900 font-semibold">
                       Fix: {issue.recommendation}
                     </div>
                   )}
@@ -388,7 +389,7 @@ const AccessibilityIssueCard = ({ issue }) => {
                 </div>
                 <div className="text-sm">
                   <span className="text-gray-600">Affected Users: </span>
-                  <span className="font-semibold text-red-600">
+                  <span className="font-semibold text-gray-900">
                     {issue.affected_percentage || '8% of males'} ({issue.condition || 'deuteranopia'})
                   </span>
                 </div>
@@ -408,7 +409,7 @@ const AccessibilityIssueCard = ({ issue }) => {
                     </div>
                   )}
                   
-                  <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-4">
                     <div className="font-bold text-green-900 mb-2 flex items-center gap-2">
                       <Lightbulb className="h-5 w-5" />
                       Recommendations:
@@ -448,7 +449,7 @@ const AccessibilityIssueCard = ({ issue }) => {
               )}
             </div>
             {expanded && issue.recommendation && (
-              <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-4">
                 <div className="font-bold text-green-900 mb-2 flex items-center gap-2">
                   <Lightbulb className="h-5 w-5" />
                   Recommended Fix:
@@ -494,24 +495,24 @@ const IssueCard = ({ issue, category }) => {
     switch (cat) {
       case 'accessibility':
         return {
-          border: 'border-blue-200',
-          bg: 'bg-blue-50',
-          text: 'text-blue-700',
-          iconBg: 'bg-blue-100'
+          border: 'border-gray-300',
+          bg: 'bg-gray-50',
+          text: 'text-gray-900',
+          iconBg: 'bg-gray-100'
         };
       case 'readability':
         return {
-          border: 'border-green-200',
-          bg: 'bg-green-50',
-          text: 'text-green-700',
-          iconBg: 'bg-green-100'
+          border: 'border-gray-300',
+          bg: 'bg-gray-50',
+          text: 'text-gray-900',
+          iconBg: 'bg-gray-100'
         };
       case 'attention':
         return {
-          border: 'border-purple-200',
-          bg: 'bg-purple-50',
-          text: 'text-purple-700',
-          iconBg: 'bg-purple-100'
+          border: 'border-gray-300',
+          bg: 'bg-gray-50',
+          text: 'text-gray-900',
+          iconBg: 'bg-gray-100'
         };
       default:
         return {
@@ -528,17 +529,17 @@ const IssueCard = ({ issue, category }) => {
       case 'critical':
         return {
           icon: <XCircle className="h-5 w-5" />,
-          color: 'text-red-600',
-          bg: 'bg-red-100',
-          border: 'border-red-300',
+          color: 'text-gray-900',
+          bg: 'bg-gray-200',
+          border: 'border-gray-500',
           label: 'Critical',
           emoji: '🔴'
         };
       case 'high':
         return {
           icon: <AlertTriangle className="h-5 w-5" />,
-          color: 'text-orange-600',
-          bg: 'bg-orange-100',
+          color: 'text-gray-800',
+          bg: 'bg-gray-200',
           border: 'border-orange-300',
           label: 'High',
           emoji: '🟠'
@@ -546,8 +547,8 @@ const IssueCard = ({ issue, category }) => {
       case 'medium':
         return {
           icon: <Info className="h-5 w-5" />,
-          color: 'text-yellow-600',
-          bg: 'bg-yellow-100',
+          color: 'text-gray-700',
+          bg: 'bg-gray-100',
           border: 'border-yellow-300',
           label: 'Medium',
           emoji: '🟡'
@@ -555,9 +556,9 @@ const IssueCard = ({ issue, category }) => {
       case 'low':
         return {
           icon: <Info className="h-5 w-5" />,
-          color: 'text-blue-600',
-          bg: 'bg-blue-100',
-          border: 'border-blue-300',
+          color: 'text-gray-900',
+          bg: 'bg-gray-100',
+          border: 'border-gray-400',
           label: 'Low',
           emoji: '🔵'
         };
@@ -639,12 +640,12 @@ const IssueCard = ({ issue, category }) => {
                 <FileWarning className="h-4 w-4 text-gray-500" />
                 <h4 className="font-semibold text-sm text-gray-900">🔍 Current State</h4>
               </div>
-              <div className="bg-red-50 border border-red-200 p-3 rounded">
+              <div className="bg-gray-100 border border-gray-400 p-3 rounded">
                 <p className="text-sm text-gray-700">{issue.current_state}</p>
                 {issue.current_value && (
                   <div className="mt-2 font-mono text-sm">
                     <span className="text-gray-600">Value: </span>
-                    <span className="text-red-700 font-semibold">{issue.current_value}</span>
+                    <span className="text-gray-900 font-semibold">{issue.current_value}</span>
                   </div>
                 )}
               </div>
@@ -657,7 +658,7 @@ const IssueCard = ({ issue, category }) => {
               <AlertTriangle className="h-4 w-4 text-orange-500" />
               <h4 className="font-semibold text-sm text-gray-900">⚠️ Problem</h4>
             </div>
-            <p className="text-sm text-gray-700 bg-orange-50 p-3 rounded border border-orange-200">
+            <p className="text-sm text-gray-700 bg-gray-100 p-3 rounded border border-gray-400">
               {issue.description}
             </p>
           </div>
@@ -669,7 +670,7 @@ const IssueCard = ({ issue, category }) => {
                 <CheckCircle className="h-4 w-4 text-green-500" />
                 <h4 className="font-semibold text-sm text-gray-900">✅ Solution</h4>
               </div>
-              <div className="bg-green-50 border border-green-200 p-3 rounded">
+              <div className="bg-gray-50 border border-gray-300 p-3 rounded">
                 <p className="text-sm text-gray-700">{issue.recommendation}</p>
               </div>
             </div>
@@ -684,15 +685,15 @@ const IssueCard = ({ issue, category }) => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {issue.before_value && (
-                  <div className="bg-red-50 border border-red-200 p-3 rounded">
+                  <div className="bg-gray-100 border border-gray-400 p-3 rounded">
                     <div className="text-xs text-gray-600 mb-1 font-semibold">Before</div>
-                    <div className="font-mono text-sm text-red-700">{issue.before_value}</div>
+                    <div className="font-mono text-sm text-gray-900">{issue.before_value}</div>
                   </div>
                 )}
                 {issue.after_value && (
-                  <div className="bg-green-50 border border-green-200 p-3 rounded">
+                  <div className="bg-gray-50 border border-gray-300 p-3 rounded">
                     <div className="text-xs text-gray-600 mb-1 font-semibold">After</div>
-                    <div className="font-mono text-sm text-green-700">{issue.after_value}</div>
+                    <div className="font-mono text-sm text-gray-900">{issue.after_value}</div>
                   </div>
                 )}
               </div>
@@ -706,17 +707,17 @@ const IssueCard = ({ issue, category }) => {
                 <Zap className="h-4 w-4 text-purple-500" />
                 <h4 className="font-semibold text-sm text-gray-900">📊 Impact</h4>
               </div>
-              <div className="bg-purple-50 border border-purple-200 p-3 rounded space-y-2">
+              <div className="bg-gray-50 border border-gray-300 p-3 rounded space-y-2">
                 {issue.impact.affects_percentage && (
                   <p className="text-sm">
                     <span className="text-gray-600">Affects: </span>
-                    <span className="text-purple-700 font-semibold">{issue.impact.affects_percentage}% of users</span>
+                    <span className="text-gray-900 font-semibold">{issue.impact.affects_percentage}% of users</span>
                   </p>
                 )}
                 {issue.impact.improvement && (
                   <p className="text-sm">
                     <span className="text-gray-600">Improvement: </span>
-                    <span className="text-purple-700 font-semibold">{issue.impact.improvement}</span>
+                    <span className="text-gray-900 font-semibold">{issue.impact.improvement}</span>
                   </p>
                 )}
                 {issue.impact.description && (
@@ -731,9 +732,9 @@ const IssueCard = ({ issue, category }) => {
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded border border-gray-200">
               <span className="text-sm text-gray-600 font-medium">⏱️ Effort Required:</span>
               <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                issue.effort === 'low' ? 'bg-green-100 text-green-700' :
-                issue.effort === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
+                issue.effort === 'low' ? 'bg-gray-100 text-gray-900' :
+                issue.effort === 'medium' ? 'bg-gray-100 text-gray-800' :
+                'bg-gray-200 text-gray-900'
               }`}>
                 {issue.effort.charAt(0).toUpperCase() + issue.effort.slice(1)}
               </span>
@@ -747,7 +748,7 @@ const IssueCard = ({ issue, category }) => {
                 href={issue.learn_more_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                className="inline-flex items-center gap-2 text-sm text-gray-900 hover:text-gray-900 font-medium"
               >
                 <ExternalLink className="h-4 w-4" />
                 🔗 Learn More
@@ -765,24 +766,24 @@ const PriorityFixCard = ({ fix, rank }) => {
   const getSeverityColor = (severity) => {
     switch (severity) {
       case 'critical':
-        return { bg: 'bg-red-100', border: 'border-red-300', text: 'text-red-700', emoji: '🔴' };
+        return { bg: 'bg-gray-200', border: 'border-gray-500', text: 'text-gray-900', emoji: '🔴' };
       case 'high':
-        return { bg: 'bg-orange-100', border: 'border-orange-300', text: 'text-orange-700', emoji: '🟠' };
+        return { bg: 'bg-gray-200', border: 'border-orange-300', text: 'text-gray-900', emoji: '🟠' };
       case 'medium':
-        return { bg: 'bg-yellow-100', border: 'border-yellow-300', text: 'text-yellow-700', emoji: '🟡' };
+        return { bg: 'bg-gray-100', border: 'border-yellow-300', text: 'text-gray-800', emoji: '🟡' };
       default:
-        return { bg: 'bg-blue-100', border: 'border-blue-300', text: 'text-blue-700', emoji: '🔵' };
+        return { bg: 'bg-gray-100', border: 'border-gray-400', text: 'text-gray-900', emoji: '🔵' };
     }
   };
 
   const getEffortColor = (effort) => {
     switch (effort) {
       case 'low':
-        return 'text-green-600';
+        return 'text-gray-900';
       case 'medium':
-        return 'text-yellow-600';
+        return 'text-gray-700';
       case 'high':
-        return 'text-red-600';
+        return 'text-gray-900';
       default:
         return 'text-gray-600';
     }
@@ -791,9 +792,9 @@ const PriorityFixCard = ({ fix, rank }) => {
   const getImpactColor = (impact) => {
     switch (impact) {
       case 'high':
-        return 'text-purple-600';
+        return 'text-gray-900';
       case 'medium':
-        return 'text-blue-600';
+        return 'text-gray-900';
       case 'low':
         return 'text-gray-600';
       default:
@@ -930,29 +931,29 @@ const AnalysisResults = ({ results }) => {
 
   const priorityFixes = generatePriorityFixes();
 
-  // Get score color
+  // Get score color - Grayscale
   const getScoreColor = (score) => {
-    if (score >= 90) return 'text-green-600';
-    if (score >= 80) return 'text-blue-600';
-    if (score >= 70) return 'text-yellow-600';
-    if (score >= 60) return 'text-orange-600';
-    return 'text-red-600';
+    if (score >= 90) return 'text-gray-900';
+    if (score >= 80) return 'text-gray-800';
+    if (score >= 70) return 'text-gray-700';
+    if (score >= 60) return 'text-gray-600';
+    return 'text-gray-500';
   };
 
-  // Get score status
+  // Get score status - Grayscale
   const getScoreStatus = (score) => {
-    if (score >= 90) return { emoji: '✅', label: 'Excellent', color: 'text-green-600' };
-    if (score >= 70) return { emoji: '⚠️', label: 'Needs Improvement', color: 'text-yellow-600' };
-    return { emoji: '❌', label: 'Critical Issues', color: 'text-red-600' };
+    if (score >= 90) return { emoji: '✅', label: 'Excellent', color: 'text-gray-900' };
+    if (score >= 70) return { emoji: '⚠️', label: 'Needs Improvement', color: 'text-gray-700' };
+    return { emoji: '❌', label: 'Critical Issues', color: 'text-gray-600' };
   };
 
-  // Get grade badge color
+  // Get grade badge color - Grayscale
   const getGradeBadgeColor = (grade) => {
-    if (grade === 'A') return 'bg-green-100 text-green-800 border-green-300';
-    if (grade === 'B') return 'bg-blue-100 text-blue-800 border-blue-300';
-    if (grade === 'C') return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-    if (grade === 'D') return 'bg-orange-100 text-orange-800 border-orange-300';
-    return 'bg-red-100 text-red-800 border-red-300';
+    if (grade === 'A') return 'bg-gray-900 text-white border-gray-900';
+    if (grade === 'B') return 'bg-gray-700 text-white border-gray-700';
+    if (grade === 'C') return 'bg-gray-600 text-white border-gray-600';
+    if (grade === 'D') return 'bg-gray-500 text-white border-gray-500';
+    return 'bg-gray-400 text-white border-gray-400';
   };
 
 
@@ -960,18 +961,18 @@ const AnalysisResults = ({ results }) => {
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Overall Score Dashboard */}
       <div className="bg-white rounded-xl shadow-xl border-2 border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h1 className="text-3xl font-bold mb-2">
                 {results.design_name || 'Design Analysis Report'}
               </h1>
-              <p className="text-blue-100 text-sm">
+              <p className="text-gray-300 text-sm">
                 Comprehensive AI-Powered Accessibility Analysis
               </p>
             </div>
-            <div className="text-center bg-white bg-opacity-20 rounded-xl p-6 backdrop-blur-sm">
-              <div className="text-sm text-blue-100 mb-1">Overall Score</div>
+            <div className="text-center bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm">
+              <div className="text-sm text-gray-300 mb-1">Overall Score</div>
               <div className="text-6xl font-bold mb-2">
                 {arai_score || 0}
               </div>
@@ -985,43 +986,50 @@ const AnalysisResults = ({ results }) => {
         {/* Score Breakdown Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
           {/* Accessibility */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-2 border-blue-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-300">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-blue-600 rounded-lg">
+              <div className="p-3 bg-gray-900 rounded-lg">
                 <Shield className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h3 className="font-bold text-gray-900">🎨 Accessibility</h3>
-                <p className="text-xs text-gray-600">WCAG 2.1 Compliance</p>
+                <p className="text-xs text-gray-600">Can everyone use your design?</p>
               </div>
             </div>
             <div className={`text-5xl font-bold mb-2 ${getScoreColor(accessibility?.score || 0)}`}>
               {accessibility?.score || 0}<span className="text-2xl">/100</span>
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="flex-1 h-3 bg-white rounded-full overflow-hidden border border-blue-300">
+              <div className="flex-1 h-3 bg-white rounded-full overflow-hidden border border-gray-400">
                 <div 
-                  className="h-full bg-blue-600 transition-all duration-500"
+                  className="h-full bg-gray-900 transition-all duration-500"
                   style={{ width: `${accessibility?.score || 0}%` }}
                 />
               </div>
             </div>
+            <p className="text-sm text-gray-700 mb-3">
+              {accessibility?.score >= 80 
+                ? '✓ Excellent! Your design works for people with disabilities.'
+                : accessibility?.score >= 60 
+                ? '⚠️ Good, but some users might struggle to use your design.'
+                : '❌ Needs improvement! Many users with disabilities cannot use this.'}
+            </p>
             {accessibility?.issue_count && (
               <div className="grid grid-cols-4 gap-1 text-center text-xs">
                 <div>
-                  <div className="font-bold text-red-600">{accessibility.issue_count.critical || 0}</div>
+                  <div className="font-bold text-gray-900">{accessibility.issue_count.critical || 0}</div>
                   <div className="text-gray-600">Critical</div>
                 </div>
                 <div>
-                  <div className="font-bold text-orange-600">{accessibility.issue_count.high || 0}</div>
+                  <div className="font-bold text-gray-800">{accessibility.issue_count.high || 0}</div>
                   <div className="text-gray-600">High</div>
                 </div>
                 <div>
-                  <div className="font-bold text-yellow-600">{accessibility.issue_count.medium || 0}</div>
+                  <div className="font-bold text-gray-700">{accessibility.issue_count.medium || 0}</div>
                   <div className="text-gray-600">Medium</div>
                 </div>
                 <div>
-                  <div className="font-bold text-blue-600">{accessibility.issue_count.low || 0}</div>
+                  <div className="font-bold text-gray-600">{accessibility.issue_count.low || 0}</div>
                   <div className="text-gray-600">Low</div>
                 </div>
               </div>
@@ -1029,43 +1037,50 @@ const AnalysisResults = ({ results }) => {
           </div>
 
           {/* Readability */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-300">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-green-600 rounded-lg">
+              <div className="p-3 bg-gray-900 rounded-lg">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h3 className="font-bold text-gray-900">📖 Readability</h3>
-                <p className="text-xs text-gray-600">Text Clarity & Quality</p>
+                <p className="text-xs text-gray-600">Is your text easy to read?</p>
               </div>
             </div>
             <div className={`text-5xl font-bold mb-2 ${getScoreColor(readability?.score || 0)}`}>
               {readability?.score || 0}<span className="text-2xl">/100</span>
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="flex-1 h-3 bg-white rounded-full overflow-hidden border border-green-300">
+              <div className="flex-1 h-3 bg-white rounded-full overflow-hidden border border-gray-400">
                 <div 
-                  className="h-full bg-green-600 transition-all duration-500"
+                  className="h-full bg-gray-900 transition-all duration-500"
                   style={{ width: `${readability?.score || 0}%` }}
                 />
               </div>
             </div>
+            <p className="text-sm text-gray-700 mb-3">
+              {readability?.score >= 80 
+                ? '✓ Great! Your text is clear and easy to understand.'
+                : readability?.score >= 60 
+                ? '⚠️ Decent, but some text might confuse readers.'
+                : '❌ Hard to read! Users will struggle to understand your content.'}
+            </p>
             {readability?.issue_count && (
               <div className="grid grid-cols-4 gap-1 text-center text-xs">
                 <div>
-                  <div className="font-bold text-red-600">{readability.issue_count.critical || 0}</div>
+                  <div className="font-bold text-gray-900">{readability.issue_count.critical || 0}</div>
                   <div className="text-gray-600">Critical</div>
                 </div>
                 <div>
-                  <div className="font-bold text-orange-600">{readability.issue_count.high || 0}</div>
+                  <div className="font-bold text-gray-800">{readability.issue_count.high || 0}</div>
                   <div className="text-gray-600">High</div>
                 </div>
                 <div>
-                  <div className="font-bold text-yellow-600">{readability.issue_count.medium || 0}</div>
+                  <div className="font-bold text-gray-700">{readability.issue_count.medium || 0}</div>
                   <div className="text-gray-600">Medium</div>
                 </div>
                 <div>
-                  <div className="font-bold text-blue-600">{readability.issue_count.low || 0}</div>
+                  <div className="font-bold text-gray-600">{readability.issue_count.low || 0}</div>
                   <div className="text-gray-600">Low</div>
                 </div>
               </div>
@@ -1073,43 +1088,50 @@ const AnalysisResults = ({ results }) => {
           </div>
 
           {/* Attention */}
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-300">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-purple-600 rounded-lg">
+              <div className="p-3 bg-gray-900 rounded-lg">
                 <Eye className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h3 className="font-bold text-gray-900">👁️ Attention</h3>
-                <p className="text-xs text-gray-600">Visual Hierarchy</p>
+                <p className="text-xs text-gray-600">Does it guide user's eyes?</p>
               </div>
             </div>
             <div className={`text-5xl font-bold mb-2 ${getScoreColor(attention?.score || 0)}`}>
               {attention?.score || 0}<span className="text-2xl">/100</span>
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="flex-1 h-3 bg-white rounded-full overflow-hidden border border-purple-300">
+              <div className="flex-1 h-3 bg-white rounded-full overflow-hidden border border-gray-400">
                 <div 
-                  className="h-full bg-purple-600 transition-all duration-500"
+                  className="h-full bg-gray-900 transition-all duration-500"
                   style={{ width: `${attention?.score || 0}%` }}
                 />
               </div>
             </div>
+            <p className="text-sm text-gray-700 mb-3">
+              {attention?.score >= 80 
+                ? '✓ Perfect! Your design guides users to important content.'
+                : attention?.score >= 60 
+                ? '⚠️ Good structure, but could be more focused.'
+                : '❌ Confusing! Users won\'t know where to look first.'}
+            </p>
             {attention?.issue_count && (
               <div className="grid grid-cols-4 gap-1 text-center text-xs">
                 <div>
-                  <div className="font-bold text-red-600">{attention.issue_count.critical || 0}</div>
+                  <div className="font-bold text-gray-900">{attention.issue_count.critical || 0}</div>
                   <div className="text-gray-600">Critical</div>
                 </div>
                 <div>
-                  <div className="font-bold text-orange-600">{attention.issue_count.high || 0}</div>
+                  <div className="font-bold text-gray-800">{attention.issue_count.high || 0}</div>
                   <div className="text-gray-600">High</div>
                 </div>
                 <div>
-                  <div className="font-bold text-yellow-600">{attention.issue_count.medium || 0}</div>
+                  <div className="font-bold text-gray-700">{attention.issue_count.medium || 0}</div>
                   <div className="text-gray-600">Medium</div>
                 </div>
                 <div>
-                  <div className="font-bold text-blue-600">{attention.issue_count.low || 0}</div>
+                  <div className="font-bold text-gray-600">{attention.issue_count.low || 0}</div>
                   <div className="text-gray-600">Low</div>
                 </div>
               </div>
@@ -1133,7 +1155,7 @@ const AnalysisResults = ({ results }) => {
             {conformance_level && (
               <div className="text-right">
                 <div className="text-sm text-gray-600 mb-1">WCAG Level</div>
-                <div className="text-2xl font-bold text-blue-600">{conformance_level}</div>
+                <div className="text-2xl font-bold text-gray-900">{conformance_level}</div>
               </div>
             )}
           </div>
@@ -1144,7 +1166,7 @@ const AnalysisResults = ({ results }) => {
       {priorityFixes.length > 0 && (
         <div className="bg-white rounded-xl shadow-lg border-2 border-gray-200 p-6">
           <div className="flex items-center gap-3 mb-6">
-            <Target className="h-8 w-8 text-red-600" />
+            <Target className="h-8 w-8 text-gray-900" />
             <div>
               <h2 className="text-2xl font-bold text-gray-900">🎯 Top 5 Priority Fixes</h2>
               <p className="text-sm text-gray-600">Address these issues first for maximum impact</p>
@@ -1166,7 +1188,7 @@ const AnalysisResults = ({ results }) => {
               onClick={() => setActiveTab('summary')}
               className={`flex-1 px-6 py-4 font-semibold text-sm transition-colors ${
                 activeTab === 'summary'
-                  ? 'bg-white text-blue-600 border-b-4 border-blue-600'
+                  ? 'bg-white text-gray-900 border-b-4 border-gray-900'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
@@ -1179,7 +1201,7 @@ const AnalysisResults = ({ results }) => {
               onClick={() => setActiveTab('accessibility')}
               className={`flex-1 px-6 py-4 font-semibold text-sm transition-colors ${
                 activeTab === 'accessibility'
-                  ? 'bg-white text-blue-600 border-b-4 border-blue-600'
+                  ? 'bg-white text-gray-900 border-b-4 border-gray-900'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
@@ -1192,7 +1214,7 @@ const AnalysisResults = ({ results }) => {
               onClick={() => setActiveTab('readability')}
               className={`flex-1 px-6 py-4 font-semibold text-sm transition-colors ${
                 activeTab === 'readability'
-                  ? 'bg-white text-green-600 border-b-4 border-green-600'
+                  ? 'bg-white text-gray-900 border-b-4 border-gray-900'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
@@ -1205,7 +1227,7 @@ const AnalysisResults = ({ results }) => {
               onClick={() => setActiveTab('attention')}
               className={`flex-1 px-6 py-4 font-semibold text-sm transition-colors ${
                 activeTab === 'attention'
-                  ? 'bg-white text-purple-600 border-b-4 border-purple-600'
+                  ? 'bg-white text-gray-900 border-b-4 border-gray-900'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
@@ -1223,76 +1245,136 @@ const AnalysisResults = ({ results }) => {
           {activeTab === 'summary' && (
             <div className="space-y-6">
               <div className="prose max-w-none">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Analysis Summary</h3>
-                <p className="text-gray-700">
-                  This comprehensive analysis evaluates your design across three critical dimensions:
-                  accessibility, readability, and visual attention. Each dimension is scored out of 100,
-                  with issues categorized by severity to help you prioritize improvements.
+                <h3 className="text-xl font-bold text-gray-900 mb-4">📊 Your Design Report - Easy to Understand</h3>
+                <p className="text-gray-700 text-lg">
+                  We checked your design in <strong>3 important ways</strong> to make sure it works well for everyone.
+                  Think of this as a health checkup for your design! 🏥
                 </p>
               </div>
 
               {/* Quick Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <Palette className="h-6 w-6 text-blue-600" />
-                    <h4 className="font-bold text-gray-900">Accessibility</h4>
+                    <div className="p-2 bg-gray-900 rounded-lg">
+                      <Shield className="h-6 w-6 text-white" />
+                    </div>
+                    <h4 className="font-bold text-gray-900 text-lg">🎨 Accessibility</h4>
                   </div>
+                  <p className="text-sm text-gray-700 mb-3 font-medium">
+                    Can <strong>everyone</strong> use your design? Including people with disabilities.
+                  </p>
                   <ul className="space-y-2 text-sm text-gray-700">
-                    <li className="flex items-center gap-2">
-                      <Contrast className="h-4 w-4 text-blue-600" />
-                      Color contrast ratios
+                    <li className="flex items-start gap-2">
+                      <Contrast className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Can colorblind people see everything?</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Type className="h-4 w-4 text-blue-600" />
-                      Text size & readability
+                    <li className="flex items-start gap-2">
+                      <Type className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Is text readable for people with low vision?</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <MousePointer className="h-4 w-4 text-blue-600" />
-                      Touch target sizes
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ImageIcon className="h-4 w-4 text-blue-600" />
-                      Image alt text
+                    <li className="flex items-start gap-2">
+                      <Palette className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Does it work without relying only on colors?</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+                <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <BookOpen className="h-6 w-6 text-green-600" />
-                    <h4 className="font-bold text-gray-900">Readability</h4>
+                    <div className="p-2 bg-gray-900 rounded-lg">
+                      <BookOpen className="h-6 w-6 text-white" />
+                    </div>
+                    <h4 className="font-bold text-gray-900 text-lg">📖 Readability</h4>
                   </div>
+                  <p className="text-sm text-gray-700 mb-3 font-medium">
+                    Is your text <strong>easy to read</strong> and understand?
+                  </p>
                   <ul className="space-y-2 text-sm text-gray-700">
-                    <li>• Text complexity analysis</li>
-                    <li>• Sentence length optimization</li>
-                    <li>• Typography & line spacing</li>
-                    <li>• Inclusive language check</li>
+                    <li className="flex items-start gap-2">
+                      <BookOpen className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Are sentences simple (not too long)?</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Type className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Do you use easy words (not too technical)?</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <AlignLeft className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Is text comfortable to read on screen?</span>
+                    </li>
                   </ul>
                 </div>
 
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
+                <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <Eye className="h-6 w-6 text-purple-600" />
-                    <h4 className="font-bold text-gray-900">Attention</h4>
+                    <div className="p-2 bg-gray-900 rounded-lg">
+                      <Eye className="h-6 w-6 text-white" />
+                    </div>
+                    <h4 className="font-bold text-gray-900 text-lg">👁️ Visual Attention</h4>
                   </div>
+                  <p className="text-sm text-gray-700 mb-3 font-medium">
+                    Where do users <strong>look first</strong> and does it make sense?
+                  </p>
                   <ul className="space-y-2 text-sm text-gray-700">
-                    <li>• Visual hierarchy analysis</li>
-                    <li>• Heatmap attention flow</li>
-                    <li>• CTA visibility</li>
-                    <li>• Cognitive load assessment</li>
+                    <li className="flex items-start gap-2">
+                      <Target className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Do important things catch attention first?</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Eye className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Is there a clear order to follow?</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Layers className="h-4 w-4 text-gray-900 mt-0.5 flex-shrink-0" />
+                      <span>Is it too cluttered or confusing?</span>
+                    </li>
                   </ul>
                 </div>
               </div>
 
+              {/* Score Interpretation Guide */}
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg p-6">
+                <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
+                  <TrendingUp className="h-5 w-5 text-gray-900" />
+                  How to Read Your Scores
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-start gap-3 bg-white p-4 rounded-lg border border-gray-300">
+                    <div className="text-4xl">🟢</div>
+                    <div>
+                      <div className="font-bold text-gray-900 text-lg">80-100</div>
+                      <div className="text-sm text-gray-900 font-semibold">Excellent!</div>
+                      <div className="text-sm text-gray-600">Keep it up! This area is great.</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-white p-4 rounded-lg border border-gray-300">
+                    <div className="text-4xl">🟡</div>
+                    <div>
+                      <div className="font-bold text-gray-800 text-lg">60-79</div>
+                      <div className="text-sm text-gray-900 font-semibold">Pretty Good</div>
+                      <div className="text-sm text-gray-600">Some tweaks will make it better.</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-white p-4 rounded-lg border border-gray-400">
+                    <div className="text-4xl">🔴</div>
+                    <div>
+                      <div className="font-bold text-gray-900 text-lg">Below 60</div>
+                      <div className="text-sm text-gray-900 font-semibold">Needs Fixing</div>
+                      <div className="text-sm text-gray-600">Users might struggle here.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Action Items */}
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-lg p-6">
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-gray-400 rounded-lg p-6">
                 <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                  <AlertTriangle className="h-5 w-5 text-gray-800" />
                   Recommended Next Steps
                 </h4>
                 <ol className="space-y-2 ml-6 list-decimal text-gray-700">
-                  <li>Review and address all <span className="font-semibold text-red-600">Critical</span> issues first</li>
+                  <li>Review and address all <span className="font-semibold text-gray-900">Critical</span> issues first</li>
                   <li>Focus on high-impact, low-effort fixes for quick wins</li>
                   <li>Test changes with actual users, especially those with disabilities</li>
                   <li>Use the detailed tabs below to explore each category</li>
@@ -1302,7 +1384,7 @@ const AnalysisResults = ({ results }) => {
 
               {/* Export Options */}
               <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                <button className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-900 transition-colors font-semibold">
                   <Download className="h-5 w-5" />
                   Export as PDF
                 </button>
@@ -1325,7 +1407,7 @@ const AnalysisResults = ({ results }) => {
                 {accessibility?.conformance_level && (
                   <div className="text-right">
                     <div className="text-sm text-gray-600">Conformance Level</div>
-                    <div className="text-3xl font-bold text-blue-600">{accessibility.conformance_level}</div>
+                    <div className="text-3xl font-bold text-gray-900">{accessibility.conformance_level}</div>
                   </div>
                 )}
               </div>
@@ -1337,7 +1419,7 @@ const AnalysisResults = ({ results }) => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 bg-green-50 border-2 border-green-200 rounded-lg">
+                <div className="text-center py-12 bg-gray-50 border-2 border-gray-300 rounded-lg">
                   <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-500" />
                   <h4 className="text-xl font-bold text-gray-900 mb-2">Great Job!</h4>
                   <p className="text-gray-600">No accessibility issues found in this design.</p>
@@ -1356,54 +1438,120 @@ const AnalysisResults = ({ results }) => {
                 </div>
               </div>
 
-              {/* Readability Metrics */}
+              {/* Readability Metrics - User-Friendly */}
               {readability?.metrics && (
-                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6 mb-6">
-                  <h4 className="font-bold text-gray-900 mb-4">📊 Readability Metrics</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 mb-6">
+                  <h4 className="font-bold text-gray-900 mb-2">📊 How Easy is Your Text to Read?</h4>
+                  <p className="text-sm text-gray-600 mb-4">We analyzed your text to see how readable it is for users</p>
+                  
+                  <div className="space-y-4">
+                    {/* Reading Ease Score - Simplified */}
                     {readability.metrics.flesch_reading_ease !== undefined && (
-                      <div className="bg-white p-4 rounded-lg border border-green-300">
-                        <div className="text-sm text-gray-600 mb-1">Reading Ease</div>
-                        <div className="text-2xl font-bold text-green-700">
-                          {readability.metrics.flesch_reading_ease.toFixed(1)}
+                      <div className="bg-white p-5 rounded-lg border border-gray-400">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <div className="text-lg font-bold text-gray-900">📖 Text Difficulty Level</div>
+                            <div className="text-sm text-gray-600">How easy is it for people to understand?</div>
+                          </div>
+                          <div className={`text-4xl font-bold ${
+                            readability.metrics.flesch_reading_ease >= 60 ? 'text-gray-900' :
+                            readability.metrics.flesch_reading_ease >= 30 ? 'text-gray-700' : 'text-gray-900'
+                          }`}>
+                            {readability.metrics.flesch_reading_ease >= 60 ? '😊' :
+                             readability.metrics.flesch_reading_ease >= 30 ? '😐' : '😕'}
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {readability.metrics.flesch_reading_ease >= 60 ? 'Easy' : 
-                           readability.metrics.flesch_reading_ease >= 30 ? 'Moderate' : 'Difficult'}
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full transition-all ${
+                                readability.metrics.flesch_reading_ease >= 60 ? 'bg-gray-500' :
+                                readability.metrics.flesch_reading_ease >= 30 ? 'bg-gray-500' : 'bg-gray-1000'
+                              }`}
+                              style={{ width: `${Math.min(100, readability.metrics.flesch_reading_ease)}%` }}
+                            />
+                          </div>
+                          <span className={`font-bold text-lg ${
+                            readability.metrics.flesch_reading_ease >= 60 ? 'text-gray-900' :
+                            readability.metrics.flesch_reading_ease >= 30 ? 'text-gray-700' : 'text-gray-900'
+                          }`}>
+                            {readability.metrics.flesch_reading_ease >= 60 ? 'Easy to Read ✓' :
+                             readability.metrics.flesch_reading_ease >= 30 ? 'Moderately Easy' : 'Hard to Read'}
+                          </span>
                         </div>
+                        <p className="mt-3 text-sm text-gray-700 bg-gray-50 p-3 rounded">
+                          {readability.metrics.flesch_reading_ease >= 60 
+                            ? '👍 Great! Most people can easily understand your text.'
+                            : readability.metrics.flesch_reading_ease >= 30 
+                            ? '⚠️ Your text is somewhat complex. Consider simplifying for better understanding.'
+                            : '❌ Your text is quite difficult to read. Try using simpler words and shorter sentences.'}
+                        </p>
                       </div>
                     )}
+
+                    {/* Education Level Required */}
                     {readability.metrics.flesch_kincaid_grade !== undefined && (
-                      <div className="bg-white p-4 rounded-lg border border-green-300">
-                        <div className="text-sm text-gray-600 mb-1">Grade Level</div>
-                        <div className="text-2xl font-bold text-green-700">
-                          {readability.metrics.flesch_kincaid_grade.toFixed(1)}
+                      <div className="bg-white p-5 rounded-lg border border-gray-400">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <div className="text-lg font-bold text-gray-900">🎓 Education Level Needed</div>
+                            <div className="text-sm text-gray-600">What reading level is required to understand your text?</div>
+                          </div>
+                          <div className={`px-4 py-2 rounded-full font-bold text-lg ${
+                            readability.metrics.flesch_kincaid_grade <= 8 ? 'bg-gray-100 text-gray-900' :
+                            readability.metrics.flesch_kincaid_grade <= 12 ? 'bg-gray-100 text-gray-800' : 
+                            'bg-gray-200 text-gray-900'
+                          }`}>
+                            Grade {Math.round(readability.metrics.flesch_kincaid_grade)}
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          Grade {Math.round(readability.metrics.flesch_kincaid_grade)}
-                        </div>
+                        <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded">
+                          {readability.metrics.flesch_kincaid_grade <= 8 
+                            ? '👍 Perfect! Your text can be understood by most people (Middle school level).'
+                            : readability.metrics.flesch_kincaid_grade <= 12 
+                            ? '⚠️ Your text requires high school level education to understand.'
+                            : '❌ Your text requires college-level education. Consider simplifying for broader accessibility.'}
+                        </p>
                       </div>
                     )}
-                    {readability.metrics.word_count !== undefined && (
-                      <div className="bg-white p-4 rounded-lg border border-green-300">
-                        <div className="text-sm text-gray-600 mb-1">Word Count</div>
-                        <div className="text-2xl font-bold text-green-700">
-                          {readability.metrics.word_count}
+
+                    {/* Text Statistics */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {readability.metrics.word_count !== undefined && (
+                        <div className="bg-white p-4 rounded-lg border border-gray-400">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">💬</span>
+                            <div>
+                              <div className="text-sm text-gray-600">Total Words</div>
+                              <div className="text-2xl font-bold text-gray-900">
+                                {readability.metrics.word_count}
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-600">
+                            {readability.metrics.word_count < 50 ? 'Very brief content' :
+                             readability.metrics.word_count < 200 ? 'Brief content' :
+                             readability.metrics.word_count < 500 ? 'Moderate content' : 'Extensive content'}
+                          </p>
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">Total words</div>
-                      </div>
-                    )}
-                    {readability.metrics.avg_line_length !== undefined && (
-                      <div className="bg-white p-4 rounded-lg border border-green-300">
-                        <div className="text-sm text-gray-600 mb-1">Avg Line Length</div>
-                        <div className="text-2xl font-bold text-green-700">
-                          {readability.metrics.avg_line_length.toFixed(0)}
+                      )}
+                      {readability.metrics.avg_line_length !== undefined && (
+                        <div className="bg-white p-4 rounded-lg border border-gray-400">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">📏</span>
+                            <div>
+                              <div className="text-sm text-gray-600">Line Length</div>
+                              <div className="text-2xl font-bold text-gray-900">
+                                {readability.metrics.avg_line_length.toFixed(0)} chars
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-600">
+                            {readability.metrics.avg_line_length <= 75 ? '✓ Good line length' : '⚠️ Lines are too long'}
+                          </p>
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {readability.metrics.avg_line_length <= 75 ? 'Optimal' : 'Too long'}
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -1415,7 +1563,7 @@ const AnalysisResults = ({ results }) => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 bg-green-50 border-2 border-green-200 rounded-lg">
+                <div className="text-center py-12 bg-gray-50 border-2 border-gray-300 rounded-lg">
                   <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-500" />
                   <h4 className="text-xl font-bold text-gray-900 mb-2">Excellent Readability!</h4>
                   <p className="text-gray-600">Your text content is clear and easy to read.</p>
@@ -1434,40 +1582,106 @@ const AnalysisResults = ({ results }) => {
                 </div>
               </div>
 
-              {/* Attention Distribution */}
+              {/* Attention Distribution - Visual & Intuitive */}
               {attention?.attention_distribution && (
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6 mb-6">
-                  <h4 className="font-bold text-gray-900 mb-4">🎯 Attention Distribution</h4>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded-lg border border-purple-300 text-center">
-                      <div className="text-sm text-gray-600 mb-2">Top Section</div>
-                      <div className="text-3xl font-bold text-purple-700">
-                        {(attention.attention_distribution.top * 100).toFixed(0)}%
+                <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 mb-6">
+                  <h4 className="font-bold text-gray-900 mb-2">🎯 Where Do Users Look First?</h4>
+                  <p className="text-sm text-gray-600 mb-4">We predict where users' eyes naturally go when viewing your design</p>
+                  
+                  {/* Visual Page Representation */}
+                  <div className="bg-white p-6 rounded-lg border-2 border-gray-400 mb-4">
+                    <div className="space-y-3">
+                      {/* Top Section */}
+                      <div className={`relative p-5 rounded-lg border-2 ${
+                        attention.attention_distribution.top >= 0.6 ? 'bg-gray-100 border-purple-500' :
+                        attention.attention_distribution.top >= 0.3 ? 'bg-gray-100 border-yellow-500' :
+                        'bg-gray-200 border-red-500'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-bold text-gray-900 flex items-center gap-2">
+                              👆 Top of Page
+                              {attention.attention_distribution.top >= 0.6 && <span className="text-gray-900">✓</span>}
+                            </div>
+                            <div className="text-sm text-gray-600 mt-1">Header & Hero Section</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-3xl font-bold text-gray-900">
+                              {(attention.attention_distribution.top * 100).toFixed(0)}%
+                            </div>
+                            <div className="text-xs text-gray-600">of attention</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 text-sm bg-white p-3 rounded">
+                          {attention.attention_distribution.top >= 0.6 
+                            ? '✓ Excellent! Users will notice your top content immediately.'
+                            : attention.attention_distribution.top >= 0.3 
+                            ? '⚠️ Moderate attention. Consider making your header more eye-catching.'
+                            : '❌ Low attention. Users might miss important top content.'}
+                        </div>
                       </div>
-                      <div className="mt-2 text-xs text-gray-500">
-                        {attention.attention_distribution.top >= 0.6 ? '✓ Optimal' : '⚠️ Low attention'}
+
+                      {/* Center Section */}
+                      <div className={`relative p-5 rounded-lg border-2 bg-gray-50 border-gray-400`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-bold text-gray-900">👉 Middle Area</div>
+                            <div className="text-sm text-gray-600 mt-1">Main Content Zone</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-3xl font-bold text-gray-900">
+                              {(attention.attention_distribution.center * 100).toFixed(0)}%
+                            </div>
+                            <div className="text-xs text-gray-600">of attention</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 text-sm bg-white p-3 rounded">
+                          💡 This is where your main content sits. Balance is key!
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border border-purple-300 text-center">
-                      <div className="text-sm text-gray-600 mb-2">Center Section</div>
-                      <div className="text-3xl font-bold text-purple-700">
-                        {(attention.attention_distribution.center * 100).toFixed(0)}%
-                      </div>
-                      <div className="mt-2 text-xs text-gray-500">Middle area</div>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border border-purple-300 text-center">
-                      <div className="text-sm text-gray-600 mb-2">Bottom Section</div>
-                      <div className="text-3xl font-bold text-purple-700">
-                        {(attention.attention_distribution.bottom * 100).toFixed(0)}%
-                      </div>
-                      <div className="mt-2 text-xs text-gray-500">
-                        {attention.attention_distribution.bottom <= 0.1 ? '✓ Expected' : 'High attention'}
+
+                      {/* Bottom Section */}
+                      <div className={`relative p-5 rounded-lg border-2 ${
+                        attention.attention_distribution.bottom <= 0.1 ? 'bg-gray-100 border-gray-300' :
+                        attention.attention_distribution.bottom <= 0.2 ? 'bg-gray-100 border-yellow-400' :
+                        'bg-gray-200 border-orange-400'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-bold text-gray-900 flex items-center gap-2">
+                              👇 Bottom Section
+                              {attention.attention_distribution.bottom <= 0.1 && <span className="text-gray-900">✓</span>}
+                            </div>
+                            <div className="text-sm text-gray-600 mt-1">Footer Area</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-3xl font-bold text-gray-700">
+                              {(attention.attention_distribution.bottom * 100).toFixed(0)}%
+                            </div>
+                            <div className="text-xs text-gray-600">of attention</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 text-sm bg-white p-3 rounded">
+                          {attention.attention_distribution.bottom <= 0.1 
+                            ? '✓ Normal! Bottom areas naturally get less attention.'
+                            : attention.attention_distribution.bottom <= 0.2 
+                            ? '⚠️ Slightly higher than expected. Is there something distracting?'
+                            : '❌ Unusually high! Users might be confused or looking for something.'}
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Summary Insight */}
                   {attention.analysis_summary && (
-                    <div className="mt-4 p-4 bg-white rounded-lg border border-purple-300">
-                      <p className="text-sm text-gray-700">{attention.analysis_summary}</p>
+                    <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-5 rounded-lg border-2 border-gray-400">
+                      <div className="flex items-start gap-3">
+                        <span className="text-3xl">💡</span>
+                        <div>
+                          <div className="font-bold text-gray-900 mb-2">Key Insight:</div>
+                          <p className="text-gray-700">{attention.analysis_summary}</p>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1480,7 +1694,7 @@ const AnalysisResults = ({ results }) => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 bg-purple-50 border-2 border-purple-200 rounded-lg">
+                <div className="text-center py-12 bg-gray-50 border-2 border-gray-300 rounded-lg">
                   <CheckCircle className="h-16 w-16 mx-auto mb-4 text-purple-500" />
                   <h4 className="text-xl font-bold text-gray-900 mb-2">Perfect Visual Hierarchy!</h4>
                   <p className="text-gray-600">Your design effectively guides user attention.</p>
