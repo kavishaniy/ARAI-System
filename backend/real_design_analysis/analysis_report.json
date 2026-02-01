@@ -1,0 +1,146 @@
+{
+  "score": 65.03,
+  "saliency_heatmap": "heatmap_overlay_path",
+  "attention_distribution": {
+    "high_attention_percentage": 20.0,
+    "average_attention": 0.412,
+    "max_attention": 0.597,
+    "attention_concentration": 0.035
+  },
+  "critical_elements": [],
+  "visual_hierarchy": {
+    "attention_distribution": {
+      "top": 0.421,
+      "middle": 0.403,
+      "bottom": 0.411,
+      "left": 0.445,
+      "center": 0.398,
+      "right": 0.392
+    },
+    "f_pattern_compliance": 0.433,
+    "hierarchy_clarity": 0.0001,
+    "issues": [
+      {
+        "id": "hierarchy_flat",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Flat Visual Hierarchy",
+        "description": "Lack of clear visual hierarchy",
+        "attention_variance": 0.0001,
+        "confidence": 0.7,
+        "explanation": "All areas receive similar attention, making it unclear what's most important.",
+        "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+      }
+    ]
+  },
+  "cognitive_load": {
+    "cognitive_load_score": 66.56,
+    "level": "High - May overwhelm some users",
+    "metrics": {
+      "element_count": 1571,
+      "dominant_colors": 133,
+      "visual_density": 0.025,
+      "attention_entropy": 4.21,
+      "text_density": 0.199
+    },
+    "issues": [
+      {
+        "id": "cognitive_too_many_elements",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "high",
+        "type": "Too Many Elements",
+        "description": "Design contains 1571 distinct elements",
+        "element_count": 1571,
+        "recommended_max": 30,
+        "confidence": 0.75,
+        "explanation": "Too many elements increase cognitive load and make it hard for users to focus.",
+        "fix_suggestion": "Simplify design by grouping related elements or removing non-essential items."
+      },
+      {
+        "id": "cognitive_too_many_colors",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Excessive Color Palette",
+        "description": "Design uses 133 dominant colors",
+        "color_count": 133,
+        "recommended_max": 5,
+        "confidence": 0.8,
+        "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+        "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+      }
+    ]
+  },
+  "issues": [
+    {
+      "id": "hierarchy_flat",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "severity": "medium",
+      "type": "Flat Visual Hierarchy",
+      "description": "Lack of clear visual hierarchy",
+      "attention_variance": 0.0001,
+      "confidence": 0.7,
+      "explanation": "All areas receive similar attention, making it unclear what's most important.",
+      "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+    },
+    {
+      "id": "cognitive_too_many_elements",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "severity": "high",
+      "type": "Too Many Elements",
+      "description": "Design contains 1571 distinct elements",
+      "element_count": 1571,
+      "recommended_max": 30,
+      "confidence": 0.75,
+      "explanation": "Too many elements increase cognitive load and make it hard for users to focus.",
+      "fix_suggestion": "Simplify design by grouping related elements or removing non-essential items."
+    },
+    {
+      "id": "cognitive_too_many_colors",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "severity": "medium",
+      "type": "Excessive Color Palette",
+      "description": "Design uses 133 dominant colors",
+      "color_count": 133,
+      "recommended_max": 5,
+      "confidence": 0.8,
+      "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+      "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+    }
+  ],
+  "issue_summary": {
+    "attention_priority": 0,
+    "visual_hierarchy": 1,
+    "cognitive_load": 2
+  },
+  "recommendations": [
+    {
+      "category": "Visual Hierarchy",
+      "priority": "high",
+      "title": "Improve Visual Hierarchy",
+      "description": "Strengthen visual hierarchy to guide user attention",
+      "action": "Use size, color, and positioning to create clear information hierarchy",
+      "impact": "Helps users quickly understand content structure and importance",
+      "resources": [
+        "https://www.interaction-design.org/literature/article/visual-hierarchy"
+      ]
+    },
+    {
+      "category": "Cognitive Load",
+      "priority": "high",
+      "title": "Reduce Cognitive Load",
+      "description": "Current cognitive load: High - May overwhelm some users",
+      "action": "Simplify design by reducing elements, colors, and visual complexity",
+      "impact": "Improves user comprehension and task completion rates",
+      "resources": [
+        "https://www.nngroup.com/articles/minimize-cognitive-load/",
+        "https://lawsofux.com/millers-law/"
+      ]
+    }
+  ]
+}

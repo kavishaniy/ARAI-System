@@ -1,0 +1,348 @@
+{
+  "score": 32.96,
+  "saliency_heatmap": "heatmap_overlay_path",
+  "attention_distribution": {
+    "high_attention_percentage": 20.0,
+    "average_attention": 0.407,
+    "max_attention": 0.516,
+    "attention_concentration": 0.033
+  },
+  "critical_elements": [
+    {
+      "id": "element_14",
+      "type": "Text Block",
+      "location": {
+        "x": 0,
+        "y": 739,
+        "width": 1200,
+        "height": 1
+      },
+      "importance": "high",
+      "attention_score": 0.48,
+      "max_attention": 0.508,
+      "area": 1200
+    },
+    {
+      "id": "element_21",
+      "type": "Text Block",
+      "location": {
+        "x": 99,
+        "y": 269,
+        "width": 202,
+        "height": 62
+      },
+      "importance": "high",
+      "attention_score": 0.446,
+      "max_attention": 0.476,
+      "area": 12524
+    },
+    {
+      "id": "element_19",
+      "type": "Button/CTA",
+      "location": {
+        "x": 321,
+        "y": 271,
+        "width": 198,
+        "height": 58
+      },
+      "importance": "high",
+      "attention_score": 0.396,
+      "max_attention": 0.412,
+      "area": 11484
+    },
+    {
+      "id": "element_20",
+      "type": "Text Block",
+      "location": {
+        "x": 319,
+        "y": 269,
+        "width": 202,
+        "height": 62
+      },
+      "importance": "high",
+      "attention_score": 0.396,
+      "max_attention": 0.413,
+      "area": 12524
+    }
+  ],
+  "visual_hierarchy": {
+    "attention_distribution": {
+      "top": 0.404,
+      "middle": 0.393,
+      "bottom": 0.422,
+      "left": 0.403,
+      "center": 0.413,
+      "right": 0.404
+    },
+    "f_pattern_compliance": 0.403,
+    "hierarchy_clarity": 0.0001,
+    "issues": [
+      {
+        "id": "hierarchy_inverted",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Inverted Visual Hierarchy",
+        "description": "Bottom of design receives more attention than top",
+        "top_attention": 0.404,
+        "bottom_attention": 0.422,
+        "confidence": 0.75,
+        "explanation": "Users typically start at the top. Important content should be placed higher.",
+        "fix_suggestion": "Move critical elements to the top third of the design."
+      },
+      {
+        "id": "hierarchy_flat",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Flat Visual Hierarchy",
+        "description": "Lack of clear visual hierarchy",
+        "attention_variance": 0.0001,
+        "confidence": 0.7,
+        "explanation": "All areas receive similar attention, making it unclear what's most important.",
+        "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+      }
+    ]
+  },
+  "cognitive_load": {
+    "cognitive_load_score": 66.81,
+    "level": "High - May overwhelm some users",
+    "metrics": {
+      "element_count": 149,
+      "dominant_colors": 29,
+      "visual_density": 0.021,
+      "attention_entropy": 4.41,
+      "text_density": 0.2
+    },
+    "issues": [
+      {
+        "id": "cognitive_too_many_elements",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "high",
+        "type": "Too Many Elements",
+        "description": "Design contains 149 distinct elements",
+        "element_count": 149,
+        "recommended_max": 30,
+        "confidence": 0.75,
+        "explanation": "Too many elements increase cognitive load and make it hard for users to focus.",
+        "fix_suggestion": "Simplify design by grouping related elements or removing non-essential items."
+      },
+      {
+        "id": "cognitive_too_many_colors",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Excessive Color Palette",
+        "description": "Design uses 29 dominant colors",
+        "color_count": 29,
+        "recommended_max": 5,
+        "confidence": 0.8,
+        "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+        "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+      }
+    ]
+  },
+  "issues": [
+    {
+      "id": "attention_priority_element_14",
+      "category": "Attention",
+      "subcategory": "Priority Mismatch",
+      "severity": "high",
+      "type": "Low Attention to Critical Element",
+      "description": "Critical Text Block not receiving enough visual attention",
+      "element": {
+        "id": "element_14",
+        "type": "Text Block",
+        "location": {
+          "x": 0,
+          "y": 739,
+          "width": 1200,
+          "height": 1
+        },
+        "importance": "high",
+        "attention_score": 0.48,
+        "max_attention": 0.508,
+        "area": 1200
+      },
+      "expected_attention": "high",
+      "actual_attention": 0.48,
+      "confidence": 0.8,
+      "explanation": "This Text Block is important but only receives 48.0% attention. Users may miss it.",
+      "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
+    },
+    {
+      "id": "attention_priority_element_21",
+      "category": "Attention",
+      "subcategory": "Priority Mismatch",
+      "severity": "high",
+      "type": "Low Attention to Critical Element",
+      "description": "Critical Text Block not receiving enough visual attention",
+      "element": {
+        "id": "element_21",
+        "type": "Text Block",
+        "location": {
+          "x": 99,
+          "y": 269,
+          "width": 202,
+          "height": 62
+        },
+        "importance": "high",
+        "attention_score": 0.446,
+        "max_attention": 0.476,
+        "area": 12524
+      },
+      "expected_attention": "high",
+      "actual_attention": 0.446,
+      "confidence": 0.8,
+      "explanation": "This Text Block is important but only receives 44.6% attention. Users may miss it.",
+      "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
+    },
+    {
+      "id": "attention_priority_element_19",
+      "category": "Attention",
+      "subcategory": "Priority Mismatch",
+      "severity": "high",
+      "type": "Low Attention to Critical Element",
+      "description": "Critical Button/CTA not receiving enough visual attention",
+      "element": {
+        "id": "element_19",
+        "type": "Button/CTA",
+        "location": {
+          "x": 321,
+          "y": 271,
+          "width": 198,
+          "height": 58
+        },
+        "importance": "high",
+        "attention_score": 0.396,
+        "max_attention": 0.412,
+        "area": 11484
+      },
+      "expected_attention": "high",
+      "actual_attention": 0.396,
+      "confidence": 0.8,
+      "explanation": "This Button/CTA is important but only receives 39.6% attention. Users may miss it.",
+      "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
+    },
+    {
+      "id": "attention_priority_element_20",
+      "category": "Attention",
+      "subcategory": "Priority Mismatch",
+      "severity": "high",
+      "type": "Low Attention to Critical Element",
+      "description": "Critical Text Block not receiving enough visual attention",
+      "element": {
+        "id": "element_20",
+        "type": "Text Block",
+        "location": {
+          "x": 319,
+          "y": 269,
+          "width": 202,
+          "height": 62
+        },
+        "importance": "high",
+        "attention_score": 0.396,
+        "max_attention": 0.413,
+        "area": 12524
+      },
+      "expected_attention": "high",
+      "actual_attention": 0.396,
+      "confidence": 0.8,
+      "explanation": "This Text Block is important but only receives 39.6% attention. Users may miss it.",
+      "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
+    },
+    {
+      "id": "hierarchy_inverted",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "severity": "medium",
+      "type": "Inverted Visual Hierarchy",
+      "description": "Bottom of design receives more attention than top",
+      "top_attention": 0.404,
+      "bottom_attention": 0.422,
+      "confidence": 0.75,
+      "explanation": "Users typically start at the top. Important content should be placed higher.",
+      "fix_suggestion": "Move critical elements to the top third of the design."
+    },
+    {
+      "id": "hierarchy_flat",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "severity": "medium",
+      "type": "Flat Visual Hierarchy",
+      "description": "Lack of clear visual hierarchy",
+      "attention_variance": 0.0001,
+      "confidence": 0.7,
+      "explanation": "All areas receive similar attention, making it unclear what's most important.",
+      "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+    },
+    {
+      "id": "cognitive_too_many_elements",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "severity": "high",
+      "type": "Too Many Elements",
+      "description": "Design contains 149 distinct elements",
+      "element_count": 149,
+      "recommended_max": 30,
+      "confidence": 0.75,
+      "explanation": "Too many elements increase cognitive load and make it hard for users to focus.",
+      "fix_suggestion": "Simplify design by grouping related elements or removing non-essential items."
+    },
+    {
+      "id": "cognitive_too_many_colors",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "severity": "medium",
+      "type": "Excessive Color Palette",
+      "description": "Design uses 29 dominant colors",
+      "color_count": 29,
+      "recommended_max": 5,
+      "confidence": 0.8,
+      "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+      "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+    }
+  ],
+  "issue_summary": {
+    "attention_priority": 4,
+    "visual_hierarchy": 2,
+    "cognitive_load": 2
+  },
+  "recommendations": [
+    {
+      "category": "Attention Priority",
+      "priority": "high",
+      "title": "Emphasize Critical Elements",
+      "description": "Found 4 critical elements not receiving enough attention",
+      "action": "Increase size, contrast, or use color to make important elements more prominent",
+      "impact": "Ensures users notice and interact with key features",
+      "resources": [
+        "https://www.nngroup.com/articles/visual-hierarchy/"
+      ]
+    },
+    {
+      "category": "Visual Hierarchy",
+      "priority": "high",
+      "title": "Improve Visual Hierarchy",
+      "description": "Strengthen visual hierarchy to guide user attention",
+      "action": "Use size, color, and positioning to create clear information hierarchy",
+      "impact": "Helps users quickly understand content structure and importance",
+      "resources": [
+        "https://www.interaction-design.org/literature/article/visual-hierarchy"
+      ]
+    },
+    {
+      "category": "Cognitive Load",
+      "priority": "high",
+      "title": "Reduce Cognitive Load",
+      "description": "Current cognitive load: High - May overwhelm some users",
+      "action": "Simplify design by reducing elements, colors, and visual complexity",
+      "impact": "Improves user comprehension and task completion rates",
+      "resources": [
+        "https://www.nngroup.com/articles/minimize-cognitive-load/",
+        "https://lawsofux.com/millers-law/"
+      ]
+    }
+  ]
+}
