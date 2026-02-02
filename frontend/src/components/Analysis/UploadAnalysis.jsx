@@ -102,7 +102,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         }
       );
 
-      console.log('✅ Analysis completed:', response.data);
+      console.log(' Analysis completed:', response.data);
       
       // Notify parent component
       if (onAnalysisComplete) {
@@ -115,8 +115,8 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       setDesignName('');
       
     } catch (err) {
-      console.error('❌ Analysis error:', err);
-      console.error('❌ Error response:', err.response?.data);
+      console.error(' Analysis error:', err);
+      console.error(' Error response:', err.response?.data);
       
       if (err.response?.status === 401) {
         setError('Authentication failed. Please login again.');
@@ -144,7 +144,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">
             AI-Powered UX Design Critique
           </h2>
           <p className="text-gray-600">
@@ -163,7 +163,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
               <div
                 className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
                   dragActive 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'border-gray-500 bg-gray-50' 
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onDragEnter={handleDrag}
@@ -175,7 +175,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
                 <p className="text-gray-600 mb-2">
                   Drag and drop your design file here, or
                 </p>
-                <label className="cursor-pointer text-blue-600 hover:text-blue-700 font-medium">
+                <label className="cursor-pointer text-gray-600 hover:text-gray-700 font-medium">
                   browse files
                   <input
                     type="file"
@@ -198,7 +198,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600"
+                  className="absolute top-2 right-2 bg-gray-500 text-white px-3 py-1 rounded-md text-sm hover:bg-gray-600"
                 >
                   Remove
                 </button>
@@ -223,19 +223,19 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
 
           {/* Error Message */}
           {error && (
-            <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-md">
-              <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
-              <p className="text-red-700 text-sm">{error}</p>
+            <div className="flex items-center gap-2 p-4 bg-gray-50 border border-gray-200 rounded-md">
+              <AlertCircle className="h-5 w-5 text-gray-500 flex-shrink-0" />
+              <p className="text-gray-700 text-sm">{error}</p>
             </div>
           )}
 
           {/* Analysis Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-            <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+            <h3 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
               <CheckCircle className="h-5 w-5" />
               What We'll Analyze:
             </h3>
-            <ul className="space-y-1 text-sm text-blue-800 ml-7">
+            <ul className="space-y-1 text-sm text-gray-800 ml-7">
               <li>• <strong>Accessibility:</strong> WCAG 2.1 compliance (contrast, text size, touch targets)</li>
               <li>• <strong>Readability:</strong> Text clarity, reading level, content density</li>
               <li>• <strong>Attention:</strong> Visual hierarchy, predicted user focus, cognitive load</li>
@@ -249,7 +249,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
             className={`w-full py-3 px-4 rounded-md font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
               !file || isAnalyzing
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-gray-600 hover:bg-gray-700'
             }`}
           >
             {isAnalyzing ? (

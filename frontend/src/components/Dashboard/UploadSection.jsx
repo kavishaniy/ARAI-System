@@ -45,7 +45,7 @@ const UploadSection = () => {
       <h2 className="text-2xl font-bold mb-6">Upload Design for Analysis</h2>
       
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-4">
+        <div className="bg-gray-50 border border-gray-200 text-gray-600 px-4 py-3 rounded mb-4">
           {error}
         </div>
       )}
@@ -60,7 +60,7 @@ const UploadSection = () => {
             value={designName}
             onChange={(e) => setDesignName(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-700"
             placeholder="My Dashboard Design"
           />
         </div>
@@ -95,7 +95,7 @@ const UploadSection = () => {
                 </svg>
               )}
               <div className="flex text-sm text-gray-600">
-                <label className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                <label className="relative cursor-pointer bg-white rounded-md font-medium text-gray-800 hover:text-gray-800 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-gray-500">
                   <span>Upload a file</span>
                   <input
                     type="file"
@@ -115,7 +115,7 @@ const UploadSection = () => {
         <button
           type="submit"
           disabled={loading || !file}
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>

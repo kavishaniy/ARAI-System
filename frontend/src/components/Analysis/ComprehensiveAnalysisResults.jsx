@@ -39,30 +39,30 @@ const ComprehensiveAnalysisResults = ({ results }) => {
 
   // Helper Functions
   const getScoreColor = (score) => {
-    if (score >= 90) return 'text-green-600 bg-green-50 border-green-300';
-    if (score >= 80) return 'text-blue-600 bg-blue-50 border-blue-300';
-    if (score >= 70) return 'text-yellow-600 bg-yellow-50 border-yellow-300';
-    if (score >= 60) return 'text-orange-600 bg-orange-50 border-orange-300';
-    return 'text-red-600 bg-red-50 border-red-300';
+    if (score >= 90) return 'text-gray-600 bg-gray-50 border-gray-300';
+    if (score >= 80) return 'text-gray-600 bg-gray-50 border-gray-300';
+    if (score >= 70) return 'text-gray-600 bg-gray-50 border-gray-300';
+    if (score >= 60) return 'text-gray-600 bg-gray-50 border-gray-300';
+    return 'text-gray-600 bg-gray-50 border-gray-300';
   };
 
   const getGradeBadgeColor = (grade) => {
     const colors = {
-      'A': 'bg-green-500 text-white',
-      'B': 'bg-blue-500 text-white',
-      'C': 'bg-yellow-500 text-white',
-      'D': 'bg-orange-500 text-white',
-      'F': 'bg-red-500 text-white'
+      'A': 'bg-gray-500 text-white',
+      'B': 'bg-gray-500 text-white',
+      'C': 'bg-gray-500 text-white',
+      'D': 'bg-gray-500 text-white',
+      'F': 'bg-gray-500 text-white'
     };
     return colors[grade] || 'bg-gray-500 text-white';
   };
 
   const getSeverityBadge = (severity) => {
     const styles = {
-      critical: 'bg-red-100 text-red-800 border-red-300',
-      high: 'bg-orange-100 text-orange-800 border-orange-300',
-      medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      low: 'bg-blue-100 text-blue-800 border-blue-300',
+      critical: 'bg-gray-100 text-gray-800 border-gray-300',
+      high: 'bg-gray-100 text-gray-800 border-gray-300',
+      medium: 'bg-gray-100 text-gray-800 border-gray-300',
+      low: 'bg-gray-100 text-gray-800 border-gray-300',
       info: 'bg-gray-100 text-gray-800 border-gray-300'
     };
     return styles[severity] || styles.info;
@@ -70,10 +70,10 @@ const ComprehensiveAnalysisResults = ({ results }) => {
 
   const getSeverityIcon = (severity) => {
     const icons = {
-      critical: <XCircle className="h-5 w-5 text-red-500" />,
-      high: <AlertTriangle className="h-5 w-5 text-orange-500" />,
-      medium: <AlertCircle className="h-5 w-5 text-yellow-500" />,
-      low: <Info className="h-5 w-5 text-blue-500" />,
+      critical: <XCircle className="h-5 w-5 text-gray-500" />,
+      high: <AlertTriangle className="h-5 w-5 text-gray-500" />,
+      medium: <AlertCircle className="h-5 w-5 text-gray-500" />,
+      low: <Info className="h-5 w-5 text-gray-500" />,
       info: <Info className="h-5 w-5 text-gray-500" />
     };
     return icons[severity] || icons.info;
@@ -126,7 +126,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
               <Award className="h-8 w-8" />
               <h1 className="text-4xl font-bold">{results.design_name}</h1>
             </div>
-            <p className="text-indigo-100 text-lg">
+            <p className="text-gray-100 text-lg">
               {arai_breakdown?.interpretation || 'AI-Powered Accessibility Analysis'}
             </p>
             
@@ -138,7 +138,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                   <span className="text-sm font-medium">Accessibility</span>
                 </div>
                 <div className="text-3xl font-bold">{arai_breakdown?.accessibility || 0}</div>
-                <div className="text-xs text-indigo-100 mt-1">40% weight</div>
+                <div className="text-xs text-gray-100 mt-1">40% weight</div>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -146,7 +146,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                   <span className="text-sm font-medium">Readability</span>
                 </div>
                 <div className="text-3xl font-bold">{arai_breakdown?.readability || 0}</div>
-                <div className="text-xs text-indigo-100 mt-1">30% weight</div>
+                <div className="text-xs text-gray-100 mt-1">30% weight</div>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -154,7 +154,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                   <span className="text-sm font-medium">Attention</span>
                 </div>
                 <div className="text-3xl font-bold">{arai_breakdown?.attention || 0}</div>
-                <div className="text-xs text-indigo-100 mt-1">30% weight</div>
+                <div className="text-xs text-gray-100 mt-1">30% weight</div>
               </div>
             </div>
           </div>
@@ -187,7 +187,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="text-5xl font-bold">{arai_score || 0}</div>
-                <div className="text-sm text-indigo-100">ARAI Score</div>
+                <div className="text-sm text-gray-100">ARAI Score</div>
               </div>
             </div>
             <div className={`mt-4 inline-block px-6 py-2 rounded-full text-2xl font-bold ${getGradeBadgeColor(overall_grade)}`}>
@@ -200,7 +200,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
         <div className="mt-6 flex gap-4">
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors"
+            className="flex items-center gap-2 bg-white text-gray-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
           >
             <FileText className="h-5 w-5" />
             Export PDF Report
@@ -217,8 +217,8 @@ const ComprehensiveAnalysisResults = ({ results }) => {
 
       {/* FR-023: Issue Summary Dashboard */}
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Target className="h-6 w-6 text-indigo-600" />
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <Target className="h-6 w-6 text-gray-600" />
           Issue Summary
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -238,30 +238,30 @@ const ComprehensiveAnalysisResults = ({ results }) => {
 
         {/* Category Breakdown */}
         <div className="mt-6 grid grid-cols-3 gap-4">
-          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center gap-2 mb-2">
-              <Shield className="h-5 w-5 text-blue-600" />
-              <span className="font-semibold text-gray-900">Accessibility</span>
+              <Shield className="h-5 w-5 text-gray-600" />
+              <span className="font-semibold text-gray-800">Accessibility</span>
             </div>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-gray-600">
               {issue_summary?.by_category?.Accessibility || 0} issues
             </div>
           </div>
-          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center gap-2 mb-2">
-              <BookOpen className="h-5 w-5 text-green-600" />
-              <span className="font-semibold text-gray-900">Readability</span>
+              <BookOpen className="h-5 w-5 text-gray-600" />
+              <span className="font-semibold text-gray-800">Readability</span>
             </div>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-gray-600">
               {issue_summary?.by_category?.Readability || 0} issues
             </div>
           </div>
-          <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center gap-2 mb-2">
-              <Eye className="h-5 w-5 text-purple-600" />
-              <span className="font-semibold text-gray-900">Attention</span>
+              <Eye className="h-5 w-5 text-gray-600" />
+              <span className="font-semibold text-gray-800">Attention</span>
             </div>
-            <div className="text-2xl font-bold text-purple-600">
+            <div className="text-2xl font-bold text-gray-600">
               {issue_summary?.by_category?.Attention || 0} issues
             </div>
           </div>
@@ -286,7 +286,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
-                    ? 'border-indigo-600 text-indigo-600'
+                    ? 'border-gray-600 text-gray-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -302,25 +302,25 @@ const ComprehensiveAnalysisResults = ({ results }) => {
           {activeTab === 'overview' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Analysis Overview</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Analysis Overview</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Accessibility Overview */}
-                  <div className="border-2 border-blue-200 rounded-lg p-6 bg-blue-50">
+                  <div className="border-2 border-gray-200 rounded-lg p-6 bg-gray-50">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 bg-blue-600 rounded-lg">
+                      <div className="p-3 bg-gray-600 rounded-lg">
                         <Shield className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900">Accessibility</h4>
+                        <h4 className="text-lg font-bold text-gray-800">Accessibility</h4>
                         <p className="text-sm text-gray-600">WCAG 2.1 Compliance</p>
                       </div>
                     </div>
-                    <div className="text-4xl font-bold text-blue-600 mb-2">
+                    <div className="text-4xl font-bold text-gray-600 mb-2">
                       {accessibility?.score || 0}/100
                     </div>
                     <div className="text-sm text-gray-700 mb-4">
                       {accessibility?.wcag_level && (
-                        <span className="inline-block px-3 py-1 bg-blue-600 text-white rounded-full font-semibold">
+                        <span className="inline-block px-3 py-1 bg-gray-600 text-white rounded-full font-semibold">
                           WCAG Level {accessibility.wcag_level}
                         </span>
                       )}
@@ -348,17 +348,17 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                   </div>
 
                   {/* Readability Overview */}
-                  <div className="border-2 border-green-200 rounded-lg p-6 bg-green-50">
+                  <div className="border-2 border-gray-200 rounded-lg p-6 bg-gray-50">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 bg-green-600 rounded-lg">
+                      <div className="p-3 bg-gray-600 rounded-lg">
                         <BookOpen className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900">Readability</h4>
+                        <h4 className="text-lg font-bold text-gray-800">Readability</h4>
                         <p className="text-sm text-gray-600">Content Clarity</p>
                       </div>
                     </div>
-                    <div className="text-4xl font-bold text-green-600 mb-2">
+                    <div className="text-4xl font-bold text-gray-600 mb-2">
                       {readability?.score || 0}/100
                     </div>
                     <div className="text-sm text-gray-700 mb-4">
@@ -387,25 +387,25 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                   </div>
 
                   {/* Attention Overview */}
-                  <div className="border-2 border-purple-200 rounded-lg p-6 bg-purple-50 md:col-span-2">
+                  <div className="border-2 border-gray-200 rounded-lg p-6 bg-gray-50 md:col-span-2">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 bg-purple-600 rounded-lg">
+                      <div className="p-3 bg-gray-600 rounded-lg">
                         <Eye className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900">Visual Attention & Cognitive Load</h4>
+                        <h4 className="text-lg font-bold text-gray-800">Visual Attention & Cognitive Load</h4>
                         <p className="text-sm text-gray-600">Eye-tracking prediction & complexity analysis</p>
                       </div>
                     </div>
                     <div className="grid md:grid-cols-3 gap-4">
                       <div>
-                        <div className="text-3xl font-bold text-purple-600 mb-1">
+                        <div className="text-3xl font-bold text-gray-600 mb-1">
                           {attention?.score || 0}/100
                         </div>
                         <div className="text-sm text-gray-700">Attention Score</div>
                       </div>
                       <div>
-                        <div className="text-3xl font-bold text-purple-600 mb-1">
+                        <div className="text-3xl font-bold text-gray-600 mb-1">
                           {attention?.cognitive_load?.cognitive_load_score || 0}
                         </div>
                         <div className="text-sm text-gray-700">Cognitive Load</div>
@@ -414,7 +414,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                         </div>
                       </div>
                       <div>
-                        <div className="text-3xl font-bold text-purple-600 mb-1">
+                        <div className="text-3xl font-bold text-gray-600 mb-1">
                           {attention?.critical_elements?.length || 0}
                         </div>
                         <div className="text-sm text-gray-700">Critical Elements</div>
@@ -430,7 +430,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
           {activeTab === 'issues' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-gray-800">
                   All Issues ({issues?.length || 0})
                 </h3>
                 <div className="text-sm text-gray-600">
@@ -490,11 +490,11 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                           {/* Explanation */}
                           {issue.explanation && (
                             <div>
-                              <h5 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                              <h5 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                                 <Info className="h-4 w-4" />
                                 Why This Matters
                               </h5>
-                              <p className="text-sm text-gray-700 bg-blue-50 p-3 rounded-lg">
+                              <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
                                 {issue.explanation}
                               </p>
                             </div>
@@ -503,11 +503,11 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                           {/* Fix Suggestion */}
                           {issue.fix_suggestion && (
                             <div>
-                              <h5 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                              <h5 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                                 <Lightbulb className="h-4 w-4" />
                                 How to Fix
                               </h5>
-                              <p className="text-sm text-gray-700 bg-green-50 p-3 rounded-lg">
+                              <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
                                 {issue.fix_suggestion}
                               </p>
                             </div>
@@ -516,7 +516,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                           {/* AI Reasoning */}
                           {issue.ai_reasoning && (
                             <div>
-                              <h5 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                              <h5 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                                 <Brain className="h-4 w-4" />
                                 AI Analysis Method
                               </h5>
@@ -529,7 +529,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                           {/* Additional Details */}
                           {issue.details && Object.keys(issue.details).length > 0 && (
                             <div>
-                              <h5 className="font-semibold text-gray-900 mb-2">Technical Details</h5>
+                              <h5 className="font-semibold text-gray-800 mb-2">Technical Details</h5>
                               <div className="bg-gray-50 p-3 rounded-lg">
                                 <pre className="text-xs text-gray-700 whitespace-pre-wrap">
                                   {JSON.stringify(issue.details, null, 2)}
@@ -544,7 +544,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                 ))
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-gray-500" />
                   <p className="text-lg font-semibold">No issues found!</p>
                   <p className="text-sm">Your design meets all analyzed criteria.</p>
                 </div>
@@ -556,7 +556,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
           {activeTab === 'education' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Learn About Accessibility</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Learn About Accessibility</h3>
                 <p className="text-gray-600 mb-6">
                   Understanding WCAG guidelines helps you create more inclusive designs
                 </p>
@@ -564,19 +564,19 @@ const ComprehensiveAnalysisResults = ({ results }) => {
 
               {education && education.length > 0 ? (
                 education.map((edu, index) => (
-                  <div key={index} className="border-2 border-indigo-200 rounded-lg overflow-hidden">
+                  <div key={index} className="border-2 border-gray-200 rounded-lg overflow-hidden">
                     <div
-                      className="p-4 bg-indigo-50 cursor-pointer hover:bg-indigo-100 transition-colors"
+                      className="p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                       onClick={() => setExpandedEducation(expandedEducation === index ? null : index)}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-indigo-600 rounded-lg">
+                          <div className="p-2 bg-gray-600 rounded-lg">
                             <BookMarked className="h-5 w-5 text-white" />
                           </div>
                           <div>
-                            <h4 className="font-bold text-lg text-gray-900">{edu.title}</h4>
-                            <span className="text-sm text-indigo-600 font-semibold">
+                            <h4 className="font-bold text-lg text-gray-800">{edu.title}</h4>
+                            <span className="text-sm text-gray-600 font-semibold">
                               WCAG Level {edu.level}
                             </span>
                           </div>
@@ -588,23 +588,23 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                     {expandedEducation === index && (
                       <div className="p-6 bg-white space-y-4">
                         <div>
-                          <h5 className="font-semibold text-gray-900 mb-2">What it means</h5>
+                          <h5 className="font-semibold text-gray-800 mb-2">What it means</h5>
                           <p className="text-gray-700">{edu.description || 'No description available'}</p>
                         </div>
 
                         <div>
-                          <h5 className="font-semibold text-gray-900 mb-2">Why it's important</h5>
+                          <h5 className="font-semibold text-gray-800 mb-2">Why it's important</h5>
                           <p className="text-gray-700">{edu.why_important || 'Improves accessibility and user experience'}</p>
                         </div>
 
                         <div>
-                          <h5 className="font-semibold text-gray-900 mb-2">How to fix</h5>
+                          <h5 className="font-semibold text-gray-800 mb-2">How to fix</h5>
                           <p className="text-gray-700">{edu.how_to_fix || 'Follow WCAG guidelines'}</p>
                         </div>
 
                         {edu.example && typeof edu.example === 'string' && (
                           <div>
-                            <h5 className="font-semibold text-gray-900 mb-2">Example</h5>
+                            <h5 className="font-semibold text-gray-800 mb-2">Example</h5>
                             <pre className="bg-gray-100 p-3 rounded-lg text-sm text-gray-800 overflow-x-auto">
                               {edu.example}
                             </pre>
@@ -613,7 +613,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
 
                         {edu.resources && Array.isArray(edu.resources) && edu.resources.length > 0 && (
                           <div>
-                            <h5 className="font-semibold text-gray-900 mb-2">Learn More</h5>
+                            <h5 className="font-semibold text-gray-800 mb-2">Learn More</h5>
                             <div className="space-y-2">
                               {edu.resources.map((resource, idx) => (
                                 <a
@@ -621,7 +621,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                                   href={typeof resource === 'string' ? resource : resource.url || '#'}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm"
+                                  className="flex items-center gap-2 text-gray-600 hover:text-gray-800 text-sm"
                                 >
                                   <ExternalLink className="h-4 w-4" />
                                   {typeof resource === 'string' ? resource : resource.title || 'Learn more'}
@@ -647,7 +647,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
           {activeTab === 'recommendations' && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Actionable Recommendations</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Actionable Recommendations</h3>
                 <p className="text-gray-600 mb-6">
                   Prioritized steps to improve your design's accessibility and usability
                 </p>
@@ -656,10 +656,10 @@ const ComprehensiveAnalysisResults = ({ results }) => {
               {recommendations && recommendations.length > 0 ? (
                 recommendations.map((rec, index) => {
                   const priorityColors = {
-                    critical: 'border-red-300 bg-red-50',
-                    high: 'border-orange-300 bg-orange-50',
-                    medium: 'border-yellow-300 bg-yellow-50',
-                    low: 'border-blue-300 bg-blue-50'
+                    critical: 'border-gray-300 bg-gray-50',
+                    high: 'border-gray-300 bg-gray-50',
+                    medium: 'border-gray-300 bg-gray-50',
+                    low: 'border-gray-300 bg-gray-50'
                   };
                   
                   return (
@@ -669,22 +669,22 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                     >
                       <div className="flex items-start gap-4">
                         <div className="p-3 bg-white rounded-lg shadow">
-                          <Lightbulb className="h-6 w-6 text-yellow-500" />
+                          <Lightbulb className="h-6 w-6 text-gray-500" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-bold text-lg text-gray-900">{rec.title}</h4>
+                            <h4 className="font-bold text-lg text-gray-800">{rec.title}</h4>
                             <span className={`text-xs px-2 py-1 rounded-full font-semibold uppercase ${
-                              rec.priority === 'high' ? 'bg-red-100 text-red-800' :
-                              rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-blue-100 text-blue-800'
+                              rec.priority === 'high' ? 'bg-gray-100 text-gray-800' :
+                              rec.priority === 'medium' ? 'bg-gray-100 text-gray-800' :
+                              'bg-gray-100 text-gray-800'
                             }`}>
                               {rec.priority} priority
                             </span>
                           </div>
                           <p className="text-gray-700 mb-3">{rec.description}</p>
                           <div className="bg-white p-3 rounded-lg mb-3">
-                            <p className="text-sm text-gray-900"><strong>Action:</strong> {rec.action}</p>
+                            <p className="text-sm text-gray-800"><strong>Action:</strong> {rec.action}</p>
                           </div>
                           {rec.wcag_reference && typeof rec.wcag_reference === 'string' && (
                             <p className="text-sm text-gray-600 mb-2">
@@ -704,7 +704,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                                   href={typeof resource === 'string' ? resource : resource.url || '#'}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                                  className="text-xs text-gray-600 hover:text-gray-800 flex items-center gap-1"
                                 >
                                   <ExternalLink className="h-3 w-3" />
                                   {typeof resource === 'string' ? 'Resource' : resource.title || 'Resource'}
@@ -719,7 +719,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
                 })
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-gray-500" />
                   <p>No specific recommendations - your design looks great!</p>
                 </div>
               )}

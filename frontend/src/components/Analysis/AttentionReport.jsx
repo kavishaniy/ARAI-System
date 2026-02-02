@@ -6,7 +6,7 @@ const AttentionReport = ({ data }) => {
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">
         Attention Analysis
       </h2>
 
@@ -20,7 +20,7 @@ const AttentionReport = ({ data }) => {
 
       {/* Heatmap Visualization */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">
           Attention Heatmap
         </h3>
         {heatmap ? (
@@ -54,11 +54,11 @@ const AttentionReport = ({ data }) => {
       </div>
 
       {/* Insights */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="text-sm font-semibold text-blue-900 mb-2">
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h4 className="text-sm font-semibold text-gray-800 mb-2">
           Key Insights
         </h4>
-        <ul className="list-disc list-inside text-sm text-blue-800 space-y-1">
+        <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
           <li>Primary focal points are well-distributed</li>
           <li>Call-to-action elements receive appropriate attention</li>
           <li>Visual hierarchy guides users effectively</li>

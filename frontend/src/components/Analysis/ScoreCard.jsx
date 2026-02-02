@@ -2,7 +2,7 @@ import React from 'react';
 
 const ScoreCard = ({ title, score, description }) => {
   const getScoreColor = (score) => {
-    if (score >= 80) return 'text-gray-900';
+    if (score >= 80) return 'text-gray-800';
     if (score >= 60) return 'text-gray-700';
     return 'text-gray-600';
   };
@@ -23,7 +23,7 @@ const ScoreCard = ({ title, score, description }) => {
     <div className={`${getScoreBgColor(score)} border ${getScoreBorderColor(score)} rounded-lg p-6`}>
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+          <h3 className="text-lg font-semibold text-gray-800 mb-1">
             {title}
           </h3>
           {description && (

@@ -6,7 +6,7 @@ const ReadabilityReport = ({ data }) => {
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">
         Readability Analysis
       </h2>
 
@@ -21,19 +21,19 @@ const ReadabilityReport = ({ data }) => {
       {/* Issues List */}
       {issues.length > 0 ? (
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Issues Found
           </h3>
           <div className="space-y-3">
             {issues.map((issue, index) => (
               <div
                 key={index}
-                className="border-l-4 border-yellow-400 bg-yellow-50 p-4"
+                className="border-l-4 border-gray-400 bg-gray-50 p-4"
               >
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
-                      className="h-5 w-5 text-yellow-400"
+                      className="h-5 w-5 text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -45,10 +45,10 @@ const ReadabilityReport = ({ data }) => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <h4 className="text-sm font-medium text-yellow-800">
+                    <h4 className="text-sm font-medium text-gray-800">
                       {issue.title}
                     </h4>
-                    <p className="mt-1 text-sm text-yellow-700">
+                    <p className="mt-1 text-sm text-gray-700">
                       {issue.description}
                     </p>
                   </div>
@@ -58,9 +58,9 @@ const ReadabilityReport = ({ data }) => {
           </div>
         </div>
       ) : (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-green-800">
-            ✓ No readability issues found
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <p className="text-gray-800">
+             No readability issues found
           </p>
         </div>
       )}

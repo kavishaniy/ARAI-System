@@ -17,7 +17,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold text-primary-600">
+              <span className="text-2xl font-bold text-gray-800">
                 ARAI
               </span>
             </Link>
@@ -26,7 +26,7 @@ const Navbar = () => {
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
                   to="/dashboard"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-800 hover:text-gray-800"
                 >
                   Dashboard
                 </Link>
@@ -38,7 +38,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
-                className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+                className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-800"
               >
                 Logout
               </button>
@@ -52,7 +52,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-800"
                 >
                   Sign Up
                 </Link>

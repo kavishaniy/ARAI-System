@@ -1,0 +1,924 @@
+{
+  "analysis_id": "1c0f1dec-5805-4b3c-9c93-a848ffdb8be1",
+  "design_name": "Frame 2162.png",
+  "filename": "Frame 2162.png",
+  "timestamp": "2026-02-01T19:43:23.799629",
+  "arai_score": 71.44,
+  "arai_breakdown": {
+    "overall": 71.44,
+    "accessibility": 59,
+    "readability": 92,
+    "attention": 67.48,
+    "weights": {
+      "accessibility": 40,
+      "readability": 30,
+      "attention": 30
+    },
+    "interpretation": "Fair - Design needs moderate improvements for accessibility"
+  },
+  "overall_grade": "C",
+  "accessibility": {
+    "score": 59,
+    "wcag_level": "A",
+    "compliance": {
+      "level": "A",
+      "level_a_compliant": false,
+      "level_aa_compliant": false,
+      "level_a_issues": 1,
+      "level_aa_issues": 3
+    },
+    "issues": [
+      {
+        "id": "alt_text_2",
+        "category": "Accessibility",
+        "subcategory": "Alternative Text",
+        "wcag_criterion": "1.1.1 Non-text Content",
+        "wcag_level": "A",
+        "severity": "high",
+        "type": "Missing Alt Text",
+        "description": "Image or icon requires alternative text description",
+        "location": {
+          "x": 28,
+          "y": 24,
+          "width": 24,
+          "height": 24
+        },
+        "element_type": "icon",
+        "confidence": 0.7,
+        "explanation": "All non-text content must have alternative text for screen readers and assistive technologies.",
+        "fix_suggestion": "Add descriptive alt text explaining the purpose or content of this visual element."
+      },
+      {
+        "id": "font_size_3",
+        "category": "Accessibility",
+        "subcategory": "Font Size",
+        "wcag_criterion": "1.4.4 Resize Text",
+        "wcag_level": "AA",
+        "severity": "medium",
+        "type": "Small Font Size",
+        "description": "Text may be too small (estimated 9px)",
+        "location": {
+          "x": 85,
+          "y": 685
+        },
+        "estimated_size": 9,
+        "minimum_size": 12,
+        "confidence": 0.6,
+        "explanation": "Text should be at least 12px for readability.",
+        "fix_suggestion": "Increase font size to at least 12px."
+      },
+      {
+        "id": "font_size_6",
+        "category": "Accessibility",
+        "subcategory": "Font Size",
+        "wcag_criterion": "1.4.4 Resize Text",
+        "wcag_level": "AA",
+        "severity": "medium",
+        "type": "Small Font Size",
+        "description": "Text may be too small (estimated 9px)",
+        "location": {
+          "x": 310,
+          "y": 598
+        },
+        "estimated_size": 9,
+        "minimum_size": 12,
+        "confidence": 0.6,
+        "explanation": "Text should be at least 12px for readability.",
+        "fix_suggestion": "Increase font size to at least 12px."
+      },
+      {
+        "id": "font_size_9",
+        "category": "Accessibility",
+        "subcategory": "Font Size",
+        "wcag_criterion": "1.4.4 Resize Text",
+        "wcag_level": "AA",
+        "severity": "medium",
+        "type": "Small Font Size",
+        "description": "Text may be too small (estimated 6px)",
+        "location": {
+          "x": 87,
+          "y": 668
+        },
+        "estimated_size": 6,
+        "minimum_size": 12,
+        "confidence": 0.6,
+        "explanation": "Text should be at least 12px for readability.",
+        "fix_suggestion": "Increase font size to at least 12px."
+      }
+    ],
+    "issue_summary": {
+      "critical": 0,
+      "high": 1,
+      "medium": 3,
+      "low": 0
+    },
+    "recommendations": [
+      {
+        "category": "Alternative Text",
+        "priority": "high",
+        "title": "Add Alternative Text",
+        "description": "Found 1 images/icons without alt text",
+        "action": "Provide descriptive alt text for all meaningful images and icons",
+        "wcag_reference": "1.1.1 Non-text Content",
+        "resources": [
+          "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+        ]
+      }
+    ],
+    "visualizations": {
+      "annotated_image": "annotated_image_path",
+      "color_vision_simulations": {
+        "protanopia": "protanopia_preview_path",
+        "deuteranopia": "deuteranopia_preview_path",
+        "tritanopia": "tritanopia_preview_path"
+      }
+    },
+    "wcag_criteria": [
+      {
+        "criterion": "1.1.1 Non-text Content",
+        "level": "A",
+        "passed": false,
+        "issue_count": 1
+      },
+      {
+        "criterion": "1.4.4 Resize Text",
+        "level": "AA",
+        "passed": false,
+        "issue_count": 3
+      },
+      {
+        "criterion": "1.4.1 Use of Color",
+        "level": "A",
+        "passed": true,
+        "issue_count": 0
+      },
+      {
+        "criterion": "1.4.3 Contrast (Minimum)",
+        "level": "AA",
+        "passed": true,
+        "issue_count": 0
+      },
+      {
+        "criterion": "2.5.5 Target Size",
+        "level": "AAA",
+        "passed": true,
+        "issue_count": 0
+      }
+    ]
+  },
+  "readability": {
+    "score": 92,
+    "text_found": true,
+    "text_preview": "NUMBER OF VISITS\n16 671 +15,1%\n\nRegion 1\nGROSS SALES 2022\nKR. 1,983,840,239 -5,09% |\n@ into the store \u00a9 out of the store\nDISPLAY UNITS NEW CUSTOMERS\n16671+5% 23 -5,09% |\nJS\n\nNUMBER OF ZERO SALES CUSTO...",
+    "word_count": 58,
+    "readability_scores": {
+      "word_count": 58,
+      "sentence_count": 1,
+      "character_count": 306,
+      "avg_sentence_length": 58.0,
+      "flesch_reading_ease": 78.4,
+      "flesch_kincaid_grade": 8.9,
+      "gunning_fog": 11.3,
+      "smog_index": 0.0,
+      "coleman_liau_index": 7.7,
+      "automated_readability_index": 14.0
+    },
+    "issues": [
+      {
+        "id": "long_sentence_1",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "high",
+        "type": "Long Sentence",
+        "description": "Sentence with 46 words exceeds recommended maximum",
+        "sentence_preview": "1,983,840,239 -5,09% |\n@ into the store \u00a9 out of the store\nDISPLAY UNITS NEW CUSTOMERS\n16671+5% 23 -...",
+        "word_count": 46,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 46 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "typography_line_length_short",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "low",
+        "type": "Short Line Length",
+        "description": "Average line length (19 chars) is below optimal range",
+        "current_value": 19.5,
+        "optimal_range": [
+          50,
+          75
+        ],
+        "confidence": 0.7,
+        "explanation": "Lines average 19 characters. Optimal is 50-75 characters.",
+        "fix_suggestion": "Increase line length to 50-75 characters for better readability."
+      },
+      {
+        "id": "typography_line_height",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "info",
+        "type": "Line Height Recommendation",
+        "description": "Ensure line height is 1.5-2.0x font size",
+        "optimal_range": [
+          1.5,
+          2.0
+        ],
+        "confidence": 1.0,
+        "explanation": "Line height (leading) should be 1.5-2.0 times the font size for optimal readability.",
+        "fix_suggestion": "Set line-height to 1.5-2.0 in your CSS or design tool."
+      },
+      {
+        "id": "typography_font",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "info",
+        "type": "Font Selection Guidance",
+        "description": "Use clear, readable fonts",
+        "confidence": 1.0,
+        "explanation": "Choose fonts designed for screen readability. Sans-serif fonts like Arial, Helvetica, or Open Sans work well for body text.",
+        "fix_suggestion": "Use readable sans-serif fonts for body text and ensure sufficient font weight."
+      }
+    ],
+    "issue_summary": {
+      "vocabulary": 0,
+      "sentence_length": 1,
+      "inclusive_language": 0,
+      "typography": 3
+    },
+    "recommendations": [
+      {
+        "category": "Sentence Structure",
+        "priority": "high",
+        "title": "Shorten Long Sentences",
+        "description": "Found 1 sentences exceeding 20 words",
+        "action": "Break long sentences into shorter, clearer statements",
+        "impact": "Significantly improves readability and comprehension",
+        "resources": []
+      },
+      {
+        "category": "Typography",
+        "priority": "medium",
+        "title": "Optimize Typography",
+        "description": "Improve text formatting for better readability",
+        "action": "Adjust line length (50-75 chars), line height (1.5-2.0x), and font selection",
+        "impact": "Enhances reading comfort and reduces eye strain",
+        "resources": [
+          "https://practicaltypography.com/"
+        ]
+      }
+    ],
+    "grade_level": "Grade 9 - Conversational (High school level)"
+  },
+  "attention": {
+    "score": 67.48,
+    "saliency_heatmap": "heatmap_overlay_path",
+    "attention_distribution": {
+      "high_attention_percentage": 20.0,
+      "average_attention": 0.419,
+      "max_attention": 0.496,
+      "attention_concentration": 0.036
+    },
+    "critical_elements": [
+      {
+        "id": "element_1",
+        "type": "Header/Navigation",
+        "location": {
+          "x": 20,
+          "y": 152,
+          "width": 334,
+          "height": 84
+        },
+        "importance": "high",
+        "attention_score": 0.43,
+        "max_attention": 0.479,
+        "area": 28056
+      }
+    ],
+    "visual_hierarchy": {
+      "attention_distribution": {
+        "top": 0.456,
+        "middle": 0.403,
+        "bottom": 0.397,
+        "left": 0.415,
+        "center": 0.424,
+        "right": 0.417
+      },
+      "f_pattern_compliance": 0.435,
+      "hierarchy_clarity": 0.0007,
+      "issues": [
+        {
+          "id": "hierarchy_flat",
+          "category": "Attention",
+          "subcategory": "Visual Hierarchy",
+          "severity": "medium",
+          "type": "Flat Visual Hierarchy",
+          "description": "Lack of clear visual hierarchy",
+          "attention_variance": 0.0007,
+          "confidence": 0.7,
+          "explanation": "All areas receive similar attention, making it unclear what's most important.",
+          "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+        }
+      ]
+    },
+    "cognitive_load": {
+      "cognitive_load_score": 45.05,
+      "level": "Moderate - Manageable complexity",
+      "metrics": {
+        "element_count": 3,
+        "dominant_colors": 36,
+        "visual_density": 0.064,
+        "attention_entropy": 5.05,
+        "text_density": 0.296
+      },
+      "issues": [
+        {
+          "id": "cognitive_too_many_colors",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "medium",
+          "type": "Excessive Color Palette",
+          "description": "Design uses 36 dominant colors",
+          "color_count": 36,
+          "recommended_max": 5,
+          "confidence": 0.8,
+          "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+          "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+        },
+        {
+          "id": "cognitive_fragmented_attention",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "medium",
+          "type": "Fragmented Attention",
+          "description": "Attention is scattered across many areas",
+          "entropy": 5.05,
+          "confidence": 0.75,
+          "explanation": "Scattered attention increases cognitive load and reduces task completion.",
+          "fix_suggestion": "Create clear focal points to guide user attention."
+        }
+      ]
+    },
+    "issues": [
+      {
+        "id": "attention_priority_element_1",
+        "category": "Attention",
+        "subcategory": "Priority Mismatch",
+        "severity": "high",
+        "type": "Low Attention to Critical Element",
+        "description": "Critical Header/Navigation not receiving enough visual attention",
+        "element": {
+          "id": "element_1",
+          "type": "Header/Navigation",
+          "location": {
+            "x": 20,
+            "y": 152,
+            "width": 334,
+            "height": 84
+          },
+          "importance": "high",
+          "attention_score": 0.43,
+          "max_attention": 0.479,
+          "area": 28056
+        },
+        "expected_attention": "high",
+        "actual_attention": 0.43,
+        "confidence": 0.8,
+        "explanation": "This Header/Navigation is important but only receives 43.0% attention. Users may miss it.",
+        "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
+      },
+      {
+        "id": "hierarchy_flat",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Flat Visual Hierarchy",
+        "description": "Lack of clear visual hierarchy",
+        "attention_variance": 0.0007,
+        "confidence": 0.7,
+        "explanation": "All areas receive similar attention, making it unclear what's most important.",
+        "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+      },
+      {
+        "id": "cognitive_too_many_colors",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Excessive Color Palette",
+        "description": "Design uses 36 dominant colors",
+        "color_count": 36,
+        "recommended_max": 5,
+        "confidence": 0.8,
+        "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+        "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+      },
+      {
+        "id": "cognitive_fragmented_attention",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Fragmented Attention",
+        "description": "Attention is scattered across many areas",
+        "entropy": 5.05,
+        "confidence": 0.75,
+        "explanation": "Scattered attention increases cognitive load and reduces task completion.",
+        "fix_suggestion": "Create clear focal points to guide user attention."
+      }
+    ],
+    "issue_summary": {
+      "attention_priority": 1,
+      "visual_hierarchy": 1,
+      "cognitive_load": 2
+    },
+    "recommendations": [
+      {
+        "category": "Attention Priority",
+        "priority": "high",
+        "title": "Emphasize Critical Elements",
+        "description": "Found 1 critical elements not receiving enough attention",
+        "action": "Increase size, contrast, or use color to make important elements more prominent",
+        "impact": "Ensures users notice and interact with key features",
+        "resources": [
+          "https://www.nngroup.com/articles/visual-hierarchy/"
+        ]
+      },
+      {
+        "category": "Visual Hierarchy",
+        "priority": "high",
+        "title": "Improve Visual Hierarchy",
+        "description": "Strengthen visual hierarchy to guide user attention",
+        "action": "Use size, color, and positioning to create clear information hierarchy",
+        "impact": "Helps users quickly understand content structure and importance",
+        "resources": [
+          "https://www.interaction-design.org/literature/article/visual-hierarchy"
+        ]
+      },
+      {
+        "category": "Cognitive Load",
+        "priority": "medium",
+        "title": "Reduce Cognitive Load",
+        "description": "Current cognitive load: Moderate - Manageable complexity",
+        "action": "Simplify design by reducing elements, colors, and visual complexity",
+        "impact": "Improves user comprehension and task completion rates",
+        "resources": [
+          "https://www.nngroup.com/articles/minimize-cognitive-load/",
+          "https://lawsofux.com/millers-law/"
+        ]
+      }
+    ]
+  },
+  "annotated_image": "annotated_image_path",
+  "issues": [
+    {
+      "id": "alt_text_2",
+      "category": "Accessibility",
+      "subcategory": "Alternative Text",
+      "type": "Missing Alt Text",
+      "severity": "high",
+      "description": "Image or icon requires alternative text description",
+      "wcag_criterion": "1.1.1 Non-text Content",
+      "wcag_level": "A",
+      "location": {
+        "x": 28,
+        "y": 24,
+        "width": 24,
+        "height": 24
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+      "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "attention_priority_element_1",
+      "category": "Attention",
+      "subcategory": "Priority Mismatch",
+      "type": "Low Attention to Critical Element",
+      "severity": "high",
+      "description": "Critical Header/Navigation not receiving enough visual attention",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "element": {
+          "id": "element_1",
+          "type": "Header/Navigation",
+          "location": {
+            "x": 20,
+            "y": 152,
+            "width": 334,
+            "height": 84
+          },
+          "importance": "high",
+          "attention_score": 0.43,
+          "max_attention": 0.479,
+          "area": 28056
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This high severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_1",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "high",
+      "description": "Sentence with 46 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 46,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "font_size_3",
+      "category": "Accessibility",
+      "subcategory": "Font Size",
+      "type": "Small Font Size",
+      "severity": "medium",
+      "description": "Text may be too small (estimated 9px)",
+      "wcag_criterion": "1.4.4 Resize Text",
+      "wcag_level": "AA",
+      "location": {
+        "x": 85,
+        "y": 685
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "font_size_6",
+      "category": "Accessibility",
+      "subcategory": "Font Size",
+      "type": "Small Font Size",
+      "severity": "medium",
+      "description": "Text may be too small (estimated 9px)",
+      "wcag_criterion": "1.4.4 Resize Text",
+      "wcag_level": "AA",
+      "location": {
+        "x": 310,
+        "y": 598
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "font_size_9",
+      "category": "Accessibility",
+      "subcategory": "Font Size",
+      "type": "Small Font Size",
+      "severity": "medium",
+      "description": "Text may be too small (estimated 6px)",
+      "wcag_criterion": "1.4.4 Resize Text",
+      "wcag_level": "AA",
+      "location": {
+        "x": 87,
+        "y": 668
+      },
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "hierarchy_flat",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "type": "Flat Visual Hierarchy",
+      "severity": "medium",
+      "description": "Lack of clear visual hierarchy",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_too_many_colors",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Excessive Color Palette",
+      "severity": "medium",
+      "description": "Design uses 36 dominant colors",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "recommended_max": 5
+      },
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_fragmented_attention",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Fragmented Attention",
+      "severity": "medium",
+      "description": "Attention is scattered across many areas",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_line_length_short",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Short Line Length",
+      "severity": "low",
+      "description": "Average line length (19 chars) is below optimal range",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "current_value": 19.5,
+        "optimal_range": [
+          50,
+          75
+        ]
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_line_height",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Line Height Recommendation",
+      "severity": "info",
+      "description": "Ensure line height is 1.5-2.0x font size",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "optimal_range": [
+          1.5,
+          2.0
+        ]
+      },
+      "confidence": 0.75,
+      "explanation": "This info severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_font",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Font Selection Guidance",
+      "severity": "info",
+      "description": "Use clear, readable fonts",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This info severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    }
+  ],
+  "issue_summary": {
+    "total": 12,
+    "by_severity": {
+      "high": 3,
+      "medium": 6,
+      "low": 1,
+      "info": 2
+    },
+    "by_category": {
+      "Accessibility": 4,
+      "Attention": 4,
+      "Readability": 4
+    },
+    "by_wcag_level": {
+      "A": 1,
+      "AA": 3
+    }
+  },
+  "education": [
+    {
+      "title": "Non-text Content",
+      "level": "A",
+      "description": "All non-text content must have a text alternative that serves the equivalent purpose.",
+      "why_important": "Screen readers and assistive technologies rely on text alternatives to describe images, icons, and other visual elements to users who cannot see them.",
+      "how_to_fix": "Add descriptive alt text to all images. Decorative images should have empty alt text (alt='').",
+      "example": "Good: <img src='logo.png' alt='ARAI System Logo'>\nBad: <img src='logo.png'>",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
+      ],
+      "related_issues": [
+        {
+          "id": "alt_text_2",
+          "category": "Accessibility",
+          "subcategory": "Alternative Text",
+          "type": "Missing Alt Text",
+          "severity": "high",
+          "description": "Image or icon requires alternative text description",
+          "wcag_criterion": "1.1.1 Non-text Content",
+          "wcag_level": "A",
+          "location": {
+            "x": 28,
+            "y": 24,
+            "width": 24,
+            "height": 24
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "Screen readers cannot describe this image to visually impaired users without alternative text.",
+          "fix_suggestion": "Add descriptive alt text explaining the image's purpose and content.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        }
+      ]
+    },
+    {
+      "title": "Resize Text",
+      "level": "AA",
+      "description": "Text can be resized up to 200% without loss of content or functionality.",
+      "why_important": "Users with low vision need to enlarge text to read comfortably.",
+      "how_to_fix": "Use relative units (em, rem, %) instead of fixed pixels. Ensure minimum font size of 12-14px.",
+      "example": "Good: font-size: 1rem;\nBad: font-size: 10px;",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html"
+      ],
+      "related_issues": [
+        {
+          "id": "font_size_3",
+          "category": "Accessibility",
+          "subcategory": "Font Size",
+          "type": "Small Font Size",
+          "severity": "medium",
+          "description": "Text may be too small (estimated 9px)",
+          "wcag_criterion": "1.4.4 Resize Text",
+          "wcag_level": "AA",
+          "location": {
+            "x": 85,
+            "y": 685
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "This medium severity issue may impact user experience.",
+          "fix_suggestion": "Review and address this issue according to best practices.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "font_size_6",
+          "category": "Accessibility",
+          "subcategory": "Font Size",
+          "type": "Small Font Size",
+          "severity": "medium",
+          "description": "Text may be too small (estimated 9px)",
+          "wcag_criterion": "1.4.4 Resize Text",
+          "wcag_level": "AA",
+          "location": {
+            "x": 310,
+            "y": 598
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "This medium severity issue may impact user experience.",
+          "fix_suggestion": "Review and address this issue according to best practices.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "font_size_9",
+          "category": "Accessibility",
+          "subcategory": "Font Size",
+          "type": "Small Font Size",
+          "severity": "medium",
+          "description": "Text may be too small (estimated 6px)",
+          "wcag_criterion": "1.4.4 Resize Text",
+          "wcag_level": "AA",
+          "location": {
+            "x": 87,
+            "y": 668
+          },
+          "details": {},
+          "confidence": 0.75,
+          "explanation": "This medium severity issue may impact user experience.",
+          "fix_suggestion": "Review and address this issue according to best practices.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "category": "Alternative Text",
+      "priority": "high",
+      "title": "Add Alternative Text",
+      "description": "Found 1 images/icons without alt text",
+      "action": "Provide descriptive alt text for all meaningful images and icons",
+      "wcag_reference": "1.1.1 Non-text Content",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content"
+      ]
+    },
+    {
+      "category": "Sentence Structure",
+      "priority": "high",
+      "title": "Shorten Long Sentences",
+      "description": "Found 1 sentences exceeding 20 words",
+      "action": "Break long sentences into shorter, clearer statements",
+      "impact": "Significantly improves readability and comprehension",
+      "resources": []
+    },
+    {
+      "category": "Attention Priority",
+      "priority": "high",
+      "title": "Emphasize Critical Elements",
+      "description": "Found 1 critical elements not receiving enough attention",
+      "action": "Increase size, contrast, or use color to make important elements more prominent",
+      "impact": "Ensures users notice and interact with key features",
+      "resources": [
+        "https://www.nngroup.com/articles/visual-hierarchy/"
+      ]
+    },
+    {
+      "category": "Visual Hierarchy",
+      "priority": "high",
+      "title": "Improve Visual Hierarchy",
+      "description": "Strengthen visual hierarchy to guide user attention",
+      "action": "Use size, color, and positioning to create clear information hierarchy",
+      "impact": "Helps users quickly understand content structure and importance",
+      "resources": [
+        "https://www.interaction-design.org/literature/article/visual-hierarchy"
+      ]
+    },
+    {
+      "category": "Typography",
+      "priority": "medium",
+      "title": "Optimize Typography",
+      "description": "Improve text formatting for better readability",
+      "action": "Adjust line length (50-75 chars), line height (1.5-2.0x), and font selection",
+      "impact": "Enhances reading comfort and reduces eye strain",
+      "resources": [
+        "https://practicaltypography.com/"
+      ]
+    },
+    {
+      "category": "Cognitive Load",
+      "priority": "medium",
+      "title": "Reduce Cognitive Load",
+      "description": "Current cognitive load: Moderate - Manageable complexity",
+      "action": "Simplify design by reducing elements, colors, and visual complexity",
+      "impact": "Improves user comprehension and task completion rates",
+      "resources": [
+        "https://www.nngroup.com/articles/minimize-cognitive-load/",
+        "https://lawsofux.com/millers-law/"
+      ]
+    }
+  ],
+  "status": "completed",
+  "metadata": {
+    "generated_at": "2026-02-01T19:43:25.330128",
+    "image_analyzed": "/Users/kavishani/Documents/FYP/arai-system/uploads/1c0f1dec-5805-4b3c-9c93-a848ffdb8be1/original.png",
+    "total_issues": 12
+  }
+}

@@ -1,0 +1,1712 @@
+{
+  "analysis_id": "1271cc69-1239-41a4-868e-9e7d5cf1bb4e",
+  "design_name": "About Us Page.png",
+  "filename": "About Us Page.png",
+  "timestamp": "2026-02-01T20:00:13.461486",
+  "arai_score": 34.44,
+  "arai_breakdown": {
+    "overall": 34.44,
+    "accessibility": 25,
+    "readability": 16,
+    "attention": 65.46,
+    "weights": {
+      "accessibility": 40,
+      "readability": 30,
+      "attention": 30
+    },
+    "interpretation": "Critical - Design requires major accessibility improvements"
+  },
+  "overall_grade": "F",
+  "accessibility": {
+    "score": 25,
+    "wcag_level": "A",
+    "compliance": {
+      "level": "A",
+      "level_a_compliant": true,
+      "level_aa_compliant": false,
+      "level_a_issues": 0,
+      "level_aa_issues": 5
+    },
+    "issues": [
+      {
+        "id": "contrast_23",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 1057,
+          "y": 38,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 2.03,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#000000",
+          "foreground_rgb": [
+            0,
+            0,
+            0
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 2.03:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_26",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 34,
+          "y": 5000,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 2.03,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#000000",
+          "foreground_rgb": [
+            0,
+            0,
+            0
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 2.03:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_28",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 40,
+          "y": 33,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 2.03,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#000000",
+          "foreground_rgb": [
+            0,
+            0,
+            0
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 2.03:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_32",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "high",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 631,
+          "y": 900,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 4.17,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#7c7c7c",
+          "foreground_rgb": [
+            124,
+            124,
+            124
+          ],
+          "background": "#ffffff",
+          "background_rgb": [
+            255,
+            255,
+            255
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 4.17:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      },
+      {
+        "id": "contrast_35",
+        "category": "Accessibility",
+        "subcategory": "Contrast",
+        "wcag_criterion": "1.4.3 Contrast (Minimum)",
+        "wcag_level": "AA",
+        "severity": "critical",
+        "type": "Low Contrast Ratio",
+        "description": "Insufficient contrast ratio for normal text",
+        "location": {
+          "x": 210,
+          "y": 8094,
+          "width": 100,
+          "height": 100
+        },
+        "current_ratio": 1.64,
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#1c1c1e",
+          "foreground_rgb": [
+            28,
+            28,
+            30
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        },
+        "confidence": 0.85,
+        "explanation": "WCAG 2.1 requires a contrast ratio of at least 4.5:1 for normal text. Current ratio is 1.64:1.",
+        "fix_suggestion": "Increase contrast to at least 4.5:1 by darkening text or lightening background."
+      }
+    ],
+    "issue_summary": {
+      "critical": 4,
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    },
+    "recommendations": [
+      {
+        "category": "Contrast",
+        "priority": "high",
+        "title": "Improve Color Contrast",
+        "description": "Found 5 areas with insufficient contrast",
+        "action": "Increase contrast ratios to meet WCAG AA standards (4.5:1 for normal text, 3:1 for large text)",
+        "wcag_reference": "1.4.3 Contrast (Minimum)",
+        "resources": [
+          "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum"
+        ]
+      }
+    ],
+    "visualizations": {
+      "annotated_image": "annotated_image_path",
+      "color_vision_simulations": {
+        "protanopia": "protanopia_preview_path",
+        "deuteranopia": "deuteranopia_preview_path",
+        "tritanopia": "tritanopia_preview_path"
+      }
+    },
+    "wcag_criteria": [
+      {
+        "criterion": "1.4.3 Contrast (Minimum)",
+        "level": "AA",
+        "passed": false,
+        "issue_count": 5
+      },
+      {
+        "criterion": "1.1.1 Non-text Content",
+        "level": "A",
+        "passed": true,
+        "issue_count": 0
+      },
+      {
+        "criterion": "1.4.1 Use of Color",
+        "level": "A",
+        "passed": true,
+        "issue_count": 0
+      },
+      {
+        "criterion": "1.4.4 Resize Text",
+        "level": "AA",
+        "passed": true,
+        "issue_count": 0
+      },
+      {
+        "criterion": "2.5.5 Target Size",
+        "level": "AAA",
+        "passed": true,
+        "issue_count": 0
+      }
+    ]
+  },
+  "readability": {
+    "score": 16,
+    "text_found": true,
+    "text_preview": "Desktop - Light Mode - 1440x900\n\n\u201c> Canvas'24 Save the date for Canvas '24 on Oct. 8 \u2014 our biggest user event of the year.\n\nMP miro whatis miro Solutions v Resources \u00bb Enterprise v Customers Pricing C...",
+    "word_count": 510,
+    "readability_scores": {
+      "word_count": 510,
+      "sentence_count": 11,
+      "character_count": 3198,
+      "avg_sentence_length": 46.4,
+      "flesch_reading_ease": 25.9,
+      "flesch_kincaid_grade": 20.8,
+      "gunning_fog": 21.4,
+      "smog_index": 17.3,
+      "coleman_liau_index": 14.1,
+      "automated_readability_index": 26.6
+    },
+    "issues": [
+      {
+        "id": "complex_organizations",
+        "category": "Readability",
+        "subcategory": "Vocabulary",
+        "severity": "low",
+        "type": "Complex Word",
+        "term": "organizations",
+        "description": "Complex word 'organizations' may reduce readability",
+        "confidence": 0.7,
+        "explanation": "'organizations' is a complex word. Consider using simpler alternatives.",
+        "fix_suggestion": "Consider using a simpler alternative if available"
+      },
+      {
+        "id": "complex_realtimeboard",
+        "category": "Readability",
+        "subcategory": "Vocabulary",
+        "severity": "low",
+        "type": "Complex Word",
+        "term": "realtimeboard",
+        "description": "Complex word 'realtimeboard' may reduce readability",
+        "confidence": 0.7,
+        "explanation": "'realtimeboard' is a complex word. Consider using simpler alternatives.",
+        "fix_suggestion": "Consider using a simpler alternative if available"
+      },
+      {
+        "id": "complex_accessibility",
+        "category": "Readability",
+        "subcategory": "Vocabulary",
+        "severity": "low",
+        "type": "Complex Word",
+        "term": "accessibility",
+        "description": "Complex word 'accessibility' may reduce readability",
+        "confidence": 0.7,
+        "explanation": "'accessibility' is a complex word. Consider using simpler alternatives.",
+        "fix_suggestion": "Consider using a simpler alternative if available"
+      },
+      {
+        "id": "complex_collaboration",
+        "category": "Readability",
+        "subcategory": "Vocabulary",
+        "severity": "low",
+        "type": "Complex Word",
+        "term": "collaboration",
+        "description": "Complex word 'collaboration' may reduce readability",
+        "confidence": 0.7,
+        "explanation": "'collaboration' is a complex word. Consider using simpler alternatives.",
+        "fix_suggestion": "Consider using a simpler alternative if available"
+      },
+      {
+        "id": "complex_transformation",
+        "category": "Readability",
+        "subcategory": "Vocabulary",
+        "severity": "low",
+        "type": "Complex Word",
+        "term": "transformation",
+        "description": "Complex word 'transformation' may reduce readability",
+        "confidence": 0.7,
+        "explanation": "'transformation' is a complex word. Consider using simpler alternatives.",
+        "fix_suggestion": "Consider using a simpler alternative if available"
+      },
+      {
+        "id": "long_sentence_2",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "high",
+        "type": "Long Sentence",
+        "description": "Sentence with 44 words exceeds recommended maximum",
+        "sentence_preview": "MP miro whatis miro Solutions v Resources \u00bb Enterprise v Customers Pricing Contact Sales\n\nSign up fr...",
+        "word_count": 44,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 44 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "long_sentence_3",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "medium",
+        "type": "Long Sentence",
+        "description": "Sentence with 25 words exceeds recommended maximum",
+        "sentence_preview": "1, \u00a5\n\nMiro AugLaunch a\n\n8 Q\n\nBS BGO @\u00a9 vom - BER\n\noe Continue\n\nLeading in the\nDigital Age\n=\n\nMarketi...",
+        "word_count": 25,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 25 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "long_sentence_4",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "high",
+        "type": "Long Sentence",
+        "description": "Sentence with 45 words exceeds recommended maximum",
+        "sentence_preview": "HreN BUH\n\nt+}\n\n\u201cj\n\nesc regons\n\n-\u2014=+@8\n\nOur mission is to empower teams\nto create the next big thing\n...",
+        "word_count": 45,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 45 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "long_sentence_6",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "high",
+        "type": "Long Sentence",
+        "description": "Sentence with 43 words exceeds recommended maximum",
+        "sentence_preview": "Today,\nmore than 70 million users in 200,000\norganizations including Nike, IKEA, Deloitte,\nWPP, and ...",
+        "word_count": 43,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 43 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "long_sentence_7",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "medium",
+        "type": "Long Sentence",
+        "description": "Sentence with 24 words exceeds recommended maximum",
+        "sentence_preview": "Miro's visual workspace\nenables distributed teams to come\ntogether to develop strategy, design\nprodu...",
+        "word_count": 24,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 24 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "long_sentence_8",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "high",
+        "type": "Long Sentence",
+        "description": "Sentence with 196 words exceeds recommended maximum",
+        "sentence_preview": "70M+ users trust Miro\n\nLeadership\n\nJustin Coulombe\n\nAndrey Khusid\n\nCEO and Co-1\n\nfounder, Amsterdam\n...",
+        "word_count": 196,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 196 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "long_sentence_11",
+        "category": "Readability",
+        "subcategory": "Sentence Length",
+        "severity": "high",
+        "type": "Long Sentence",
+        "description": "Sentence with 70 words exceeds recommended maximum",
+        "sentence_preview": "Miroverse\nMiro Developer Platform\nMiro for Dev\n\nEnterprise Guard\nAccessibility\n\nChangelog\n\nyoDHDaQaa...",
+        "word_count": 70,
+        "recommended_max": 20,
+        "confidence": 0.95,
+        "explanation": "This sentence has 70 words, which exceeds the recommended maximum of 20 words.",
+        "fix_suggestion": "Break this sentence into shorter, clearer sentences."
+      },
+      {
+        "id": "inclusive_gendered_692",
+        "category": "Readability",
+        "subcategory": "Inclusive Language",
+        "severity": "high",
+        "type": "Non-inclusive Language (Gendered)",
+        "term": "his",
+        "description": "Non-inclusive gendered language detected",
+        "context": "id needed a way for his\ndesign agency to co",
+        "position": 692,
+        "alternative": "their/his or her",
+        "category_type": "gendered",
+        "confidence": 0.8,
+        "explanation": "The term 'his' may not be inclusive. Consider using 'their/his or her' instead.",
+        "fix_suggestion": "Replace 'his' with 'their/his or her' for more inclusive language.",
+        "resources": [
+          "https://www.apa.org/about/apa/equity-diversity-inclusion/language-guidelines"
+        ]
+      },
+      {
+        "id": "typography_line_length_short",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "low",
+        "type": "Short Line Length",
+        "description": "Average line length (20 chars) is below optimal range",
+        "current_value": 19.6,
+        "optimal_range": [
+          50,
+          75
+        ],
+        "confidence": 0.7,
+        "explanation": "Lines average 20 characters. Optimal is 50-75 characters.",
+        "fix_suggestion": "Increase line length to 50-75 characters for better readability."
+      },
+      {
+        "id": "typography_line_height",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "info",
+        "type": "Line Height Recommendation",
+        "description": "Ensure line height is 1.5-2.0x font size",
+        "optimal_range": [
+          1.5,
+          2.0
+        ],
+        "confidence": 1.0,
+        "explanation": "Line height (leading) should be 1.5-2.0 times the font size for optimal readability.",
+        "fix_suggestion": "Set line-height to 1.5-2.0 in your CSS or design tool."
+      },
+      {
+        "id": "typography_font",
+        "category": "Readability",
+        "subcategory": "Typography",
+        "severity": "info",
+        "type": "Font Selection Guidance",
+        "description": "Use clear, readable fonts",
+        "confidence": 1.0,
+        "explanation": "Choose fonts designed for screen readability. Sans-serif fonts like Arial, Helvetica, or Open Sans work well for body text.",
+        "fix_suggestion": "Use readable sans-serif fonts for body text and ensure sufficient font weight."
+      }
+    ],
+    "issue_summary": {
+      "vocabulary": 5,
+      "sentence_length": 7,
+      "inclusive_language": 1,
+      "typography": 3
+    },
+    "recommendations": [
+      {
+        "category": "Sentence Structure",
+        "priority": "high",
+        "title": "Shorten Long Sentences",
+        "description": "Found 7 sentences exceeding 20 words",
+        "action": "Break long sentences into shorter, clearer statements",
+        "impact": "Significantly improves readability and comprehension",
+        "resources": []
+      },
+      {
+        "category": "Inclusive Language",
+        "priority": "high",
+        "title": "Use Inclusive Language",
+        "description": "Found 1 instances of potentially non-inclusive language",
+        "action": "Replace gendered, ableist, or insensitive terms with inclusive alternatives",
+        "impact": "Creates welcoming experience for all users",
+        "resources": [
+          "https://www.apa.org/about/apa/equity-diversity-inclusion/language-guidelines",
+          "https://buffer.com/resources/inclusive-language-tech/"
+        ]
+      },
+      {
+        "category": "Typography",
+        "priority": "medium",
+        "title": "Optimize Typography",
+        "description": "Improve text formatting for better readability",
+        "action": "Adjust line length (50-75 chars), line height (1.5-2.0x), and font selection",
+        "impact": "Enhances reading comfort and reduces eye strain",
+        "resources": [
+          "https://practicaltypography.com/"
+        ]
+      },
+      {
+        "category": "Overall Readability",
+        "priority": "high",
+        "title": "Simplify Text Complexity",
+        "description": "Content requires Grade 21 reading level",
+        "action": "Aim for Grade 8-10 reading level for general audiences",
+        "impact": "Makes content accessible to wider audience",
+        "resources": [
+          "https://www.nngroup.com/articles/legibility-readability-comprehension/"
+        ]
+      }
+    ],
+    "grade_level": "Grade 21 - Very Difficult (Professional/Academic level)"
+  },
+  "attention": {
+    "score": 65.46,
+    "saliency_heatmap": "heatmap_overlay_path",
+    "attention_distribution": {
+      "high_attention_percentage": 20.0,
+      "average_attention": 0.437,
+      "max_attention": 0.597,
+      "attention_concentration": 0.041
+    },
+    "critical_elements": [
+      {
+        "id": "element_1",
+        "type": "Button/CTA",
+        "location": {
+          "x": 40,
+          "y": 4,
+          "width": 90,
+          "height": 30
+        },
+        "importance": "high",
+        "attention_score": 0.454,
+        "max_attention": 0.458,
+        "area": 2700
+      }
+    ],
+    "visual_hierarchy": {
+      "attention_distribution": {
+        "top": 0.429,
+        "middle": 0.421,
+        "bottom": 0.462,
+        "left": 0.433,
+        "center": 0.423,
+        "right": 0.456
+      },
+      "f_pattern_compliance": 0.431,
+      "hierarchy_clarity": 0.0003,
+      "issues": [
+        {
+          "id": "hierarchy_inverted",
+          "category": "Attention",
+          "subcategory": "Visual Hierarchy",
+          "severity": "medium",
+          "type": "Inverted Visual Hierarchy",
+          "description": "Bottom of design receives more attention than top",
+          "top_attention": 0.429,
+          "bottom_attention": 0.462,
+          "confidence": 0.75,
+          "explanation": "Users typically start at the top. Important content should be placed higher.",
+          "fix_suggestion": "Move critical elements to the top third of the design."
+        },
+        {
+          "id": "hierarchy_flat",
+          "category": "Attention",
+          "subcategory": "Visual Hierarchy",
+          "severity": "medium",
+          "type": "Flat Visual Hierarchy",
+          "description": "Lack of clear visual hierarchy",
+          "attention_variance": 0.0003,
+          "confidence": 0.7,
+          "explanation": "All areas receive similar attention, making it unclear what's most important.",
+          "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+        }
+      ]
+    },
+    "cognitive_load": {
+      "cognitive_load_score": 38.47,
+      "level": "Moderate - Manageable complexity",
+      "metrics": {
+        "element_count": 2,
+        "dominant_colors": 258,
+        "visual_density": 0.017,
+        "attention_entropy": 4.66,
+        "text_density": 0.389
+      },
+      "issues": [
+        {
+          "id": "cognitive_too_many_colors",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "medium",
+          "type": "Excessive Color Palette",
+          "description": "Design uses 258 dominant colors",
+          "color_count": 258,
+          "recommended_max": 5,
+          "confidence": 0.8,
+          "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+          "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+        },
+        {
+          "id": "cognitive_fragmented_attention",
+          "category": "Attention",
+          "subcategory": "Cognitive Load",
+          "severity": "medium",
+          "type": "Fragmented Attention",
+          "description": "Attention is scattered across many areas",
+          "entropy": 4.66,
+          "confidence": 0.75,
+          "explanation": "Scattered attention increases cognitive load and reduces task completion.",
+          "fix_suggestion": "Create clear focal points to guide user attention."
+        }
+      ]
+    },
+    "issues": [
+      {
+        "id": "attention_priority_element_1",
+        "category": "Attention",
+        "subcategory": "Priority Mismatch",
+        "severity": "high",
+        "type": "Low Attention to Critical Element",
+        "description": "Critical Button/CTA not receiving enough visual attention",
+        "element": {
+          "id": "element_1",
+          "type": "Button/CTA",
+          "location": {
+            "x": 40,
+            "y": 4,
+            "width": 90,
+            "height": 30
+          },
+          "importance": "high",
+          "attention_score": 0.454,
+          "max_attention": 0.458,
+          "area": 2700
+        },
+        "expected_attention": "high",
+        "actual_attention": 0.454,
+        "confidence": 0.8,
+        "explanation": "This Button/CTA is important but only receives 45.4% attention. Users may miss it.",
+        "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
+      },
+      {
+        "id": "hierarchy_inverted",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Inverted Visual Hierarchy",
+        "description": "Bottom of design receives more attention than top",
+        "top_attention": 0.429,
+        "bottom_attention": 0.462,
+        "confidence": 0.75,
+        "explanation": "Users typically start at the top. Important content should be placed higher.",
+        "fix_suggestion": "Move critical elements to the top third of the design."
+      },
+      {
+        "id": "hierarchy_flat",
+        "category": "Attention",
+        "subcategory": "Visual Hierarchy",
+        "severity": "medium",
+        "type": "Flat Visual Hierarchy",
+        "description": "Lack of clear visual hierarchy",
+        "attention_variance": 0.0003,
+        "confidence": 0.7,
+        "explanation": "All areas receive similar attention, making it unclear what's most important.",
+        "fix_suggestion": "Create clear hierarchy using size, color, and contrast to emphasize important elements."
+      },
+      {
+        "id": "cognitive_too_many_colors",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Excessive Color Palette",
+        "description": "Design uses 258 dominant colors",
+        "color_count": 258,
+        "recommended_max": 5,
+        "confidence": 0.8,
+        "explanation": "Using more than 5 dominant colors can overwhelm users and reduce visual coherence.",
+        "fix_suggestion": "Limit color palette to 5 or fewer dominant colors."
+      },
+      {
+        "id": "cognitive_fragmented_attention",
+        "category": "Attention",
+        "subcategory": "Cognitive Load",
+        "severity": "medium",
+        "type": "Fragmented Attention",
+        "description": "Attention is scattered across many areas",
+        "entropy": 4.66,
+        "confidence": 0.75,
+        "explanation": "Scattered attention increases cognitive load and reduces task completion.",
+        "fix_suggestion": "Create clear focal points to guide user attention."
+      }
+    ],
+    "issue_summary": {
+      "attention_priority": 1,
+      "visual_hierarchy": 2,
+      "cognitive_load": 2
+    },
+    "recommendations": [
+      {
+        "category": "Attention Priority",
+        "priority": "high",
+        "title": "Emphasize Critical Elements",
+        "description": "Found 1 critical elements not receiving enough attention",
+        "action": "Increase size, contrast, or use color to make important elements more prominent",
+        "impact": "Ensures users notice and interact with key features",
+        "resources": [
+          "https://www.nngroup.com/articles/visual-hierarchy/"
+        ]
+      },
+      {
+        "category": "Visual Hierarchy",
+        "priority": "high",
+        "title": "Improve Visual Hierarchy",
+        "description": "Strengthen visual hierarchy to guide user attention",
+        "action": "Use size, color, and positioning to create clear information hierarchy",
+        "impact": "Helps users quickly understand content structure and importance",
+        "resources": [
+          "https://www.interaction-design.org/literature/article/visual-hierarchy"
+        ]
+      },
+      {
+        "category": "Cognitive Load",
+        "priority": "medium",
+        "title": "Reduce Cognitive Load",
+        "description": "Current cognitive load: Moderate - Manageable complexity",
+        "action": "Simplify design by reducing elements, colors, and visual complexity",
+        "impact": "Improves user comprehension and task completion rates",
+        "resources": [
+          "https://www.nngroup.com/articles/minimize-cognitive-load/",
+          "https://lawsofux.com/millers-law/"
+        ]
+      }
+    ]
+  },
+  "annotated_image": "annotated_image_path",
+  "issues": [
+    {
+      "id": "contrast_23",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 1057,
+        "y": 38,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#000000",
+          "foreground_rgb": [
+            0,
+            0,
+            0
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_26",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 34,
+        "y": 5000,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#000000",
+          "foreground_rgb": [
+            0,
+            0,
+            0
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_28",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 40,
+        "y": 33,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#000000",
+          "foreground_rgb": [
+            0,
+            0,
+            0
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_35",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "critical",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 210,
+        "y": 8094,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#1c1c1e",
+          "foreground_rgb": [
+            28,
+            28,
+            30
+          ],
+          "background": "#404040",
+          "background_rgb": [
+            64,
+            64,
+            64
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "contrast_32",
+      "category": "Accessibility",
+      "subcategory": "Contrast",
+      "type": "Low Contrast Ratio",
+      "severity": "high",
+      "description": "Insufficient contrast ratio for normal text",
+      "wcag_criterion": "1.4.3 Contrast (Minimum)",
+      "wcag_level": "AA",
+      "location": {
+        "x": 631,
+        "y": 900,
+        "width": 100,
+        "height": 100
+      },
+      "details": {
+        "required_ratio": 4.5,
+        "colors": {
+          "foreground": "#7c7c7c",
+          "foreground_rgb": [
+            124,
+            124,
+            124
+          ],
+          "background": "#ffffff",
+          "background_rgb": [
+            255,
+            255,
+            255
+          ]
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+      "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+      "confidence_level": "High",
+      "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "attention_priority_element_1",
+      "category": "Attention",
+      "subcategory": "Priority Mismatch",
+      "type": "Low Attention to Critical Element",
+      "severity": "high",
+      "description": "Critical Button/CTA not receiving enough visual attention",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "element": {
+          "id": "element_1",
+          "type": "Button/CTA",
+          "location": {
+            "x": 40,
+            "y": 4,
+            "width": 90,
+            "height": 30
+          },
+          "importance": "high",
+          "attention_score": 0.454,
+          "max_attention": 0.458,
+          "area": 2700
+        }
+      },
+      "confidence": 0.75,
+      "explanation": "This high severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_2",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "high",
+      "description": "Sentence with 44 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 44,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_4",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "high",
+      "description": "Sentence with 45 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 45,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_6",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "high",
+      "description": "Sentence with 43 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 43,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_8",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "high",
+      "description": "Sentence with 196 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 196,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_11",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "high",
+      "description": "Sentence with 70 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 70,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "inclusive_gendered_692",
+      "category": "Readability",
+      "subcategory": "Inclusive Language",
+      "type": "Non-inclusive Language (Gendered)",
+      "severity": "high",
+      "description": "Non-inclusive gendered language detected",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "his",
+        "alternative": "their/his or her"
+      },
+      "confidence": 0.75,
+      "explanation": "This high severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "hierarchy_inverted",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "type": "Inverted Visual Hierarchy",
+      "severity": "medium",
+      "description": "Bottom of design receives more attention than top",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "hierarchy_flat",
+      "category": "Attention",
+      "subcategory": "Visual Hierarchy",
+      "type": "Flat Visual Hierarchy",
+      "severity": "medium",
+      "description": "Lack of clear visual hierarchy",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_too_many_colors",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Excessive Color Palette",
+      "severity": "medium",
+      "description": "Design uses 258 dominant colors",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "recommended_max": 5
+      },
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "cognitive_fragmented_attention",
+      "category": "Attention",
+      "subcategory": "Cognitive Load",
+      "type": "Fragmented Attention",
+      "severity": "medium",
+      "description": "Attention is scattered across many areas",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This medium severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Predicted using deep learning saliency model trained on eye-tracking data. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_3",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "medium",
+      "description": "Sentence with 25 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 25,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "long_sentence_7",
+      "category": "Readability",
+      "subcategory": "Sentence Length",
+      "type": "Long Sentence",
+      "severity": "medium",
+      "description": "Sentence with 24 words exceeds recommended maximum",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "word_count": 24,
+        "recommended_max": 20
+      },
+      "confidence": 0.75,
+      "explanation": "Sentences longer than 20 words are harder to understand and reduce readability.",
+      "fix_suggestion": "Break into shorter sentences of 15-20 words for better readability.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "complex_organizations",
+      "category": "Readability",
+      "subcategory": "Vocabulary",
+      "type": "Complex Word",
+      "severity": "low",
+      "description": "Complex word 'organizations' may reduce readability",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "organizations"
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "complex_realtimeboard",
+      "category": "Readability",
+      "subcategory": "Vocabulary",
+      "type": "Complex Word",
+      "severity": "low",
+      "description": "Complex word 'realtimeboard' may reduce readability",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "realtimeboard"
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "complex_accessibility",
+      "category": "Readability",
+      "subcategory": "Vocabulary",
+      "type": "Complex Word",
+      "severity": "low",
+      "description": "Complex word 'accessibility' may reduce readability",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "accessibility"
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "complex_collaboration",
+      "category": "Readability",
+      "subcategory": "Vocabulary",
+      "type": "Complex Word",
+      "severity": "low",
+      "description": "Complex word 'collaboration' may reduce readability",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "collaboration"
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "complex_transformation",
+      "category": "Readability",
+      "subcategory": "Vocabulary",
+      "type": "Complex Word",
+      "severity": "low",
+      "description": "Complex word 'transformation' may reduce readability",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "term": "transformation"
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_line_length_short",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Short Line Length",
+      "severity": "low",
+      "description": "Average line length (20 chars) is below optimal range",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "current_value": 19.6,
+        "optimal_range": [
+          50,
+          75
+        ]
+      },
+      "confidence": 0.75,
+      "explanation": "This low severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_line_height",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Line Height Recommendation",
+      "severity": "info",
+      "description": "Ensure line height is 1.5-2.0x font size",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {
+        "optimal_range": [
+          1.5,
+          2.0
+        ]
+      },
+      "confidence": 0.75,
+      "explanation": "This info severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    },
+    {
+      "id": "typography_font",
+      "category": "Readability",
+      "subcategory": "Typography",
+      "type": "Font Selection Guidance",
+      "severity": "info",
+      "description": "Use clear, readable fonts",
+      "wcag_criterion": "N/A",
+      "wcag_level": "N/A",
+      "location": null,
+      "details": {},
+      "confidence": 0.75,
+      "explanation": "This info severity issue may impact user experience.",
+      "fix_suggestion": "Review and address this issue according to best practices.",
+      "confidence_level": "High",
+      "ai_reasoning": "Analyzed using OCR text extraction and NLP algorithms including Flesch-Kincaid readability scores. Confidence based on heuristic analysis and pattern recognition."
+    }
+  ],
+  "issue_summary": {
+    "total": 26,
+    "by_severity": {
+      "critical": 4,
+      "high": 8,
+      "medium": 6,
+      "low": 6,
+      "info": 2
+    },
+    "by_category": {
+      "Accessibility": 5,
+      "Attention": 5,
+      "Readability": 16
+    },
+    "by_wcag_level": {
+      "AA": 5
+    }
+  },
+  "education": [
+    {
+      "title": "Contrast (Minimum)",
+      "level": "AA",
+      "description": "Text and images of text have a contrast ratio of at least 4.5:1 (3:1 for large text).",
+      "why_important": "Low contrast makes text hard to read for users with low vision, color blindness, or in bright lighting conditions.",
+      "how_to_fix": "Use darker text on lighter backgrounds or vice versa. Test contrast ratios using tools like WebAIM's Contrast Checker.",
+      "example": "Good: Black text on white (21:1)\nBad: Light gray text on white (2:1)",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html"
+      ],
+      "related_issues": [
+        {
+          "id": "contrast_23",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 1057,
+            "y": 38,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#000000",
+              "foreground_rgb": [
+                0,
+                0,
+                0
+              ],
+              "background": "#404040",
+              "background_rgb": [
+                64,
+                64,
+                64
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_26",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 34,
+            "y": 5000,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#000000",
+              "foreground_rgb": [
+                0,
+                0,
+                0
+              ],
+              "background": "#404040",
+              "background_rgb": [
+                64,
+                64,
+                64
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_28",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 40,
+            "y": 33,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#000000",
+              "foreground_rgb": [
+                0,
+                0,
+                0
+              ],
+              "background": "#404040",
+              "background_rgb": [
+                64,
+                64,
+                64
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_35",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "critical",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 210,
+            "y": 8094,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#1c1c1e",
+              "foreground_rgb": [
+                28,
+                28,
+                30
+              ],
+              "background": "#404040",
+              "background_rgb": [
+                64,
+                64,
+                64
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        },
+        {
+          "id": "contrast_32",
+          "category": "Accessibility",
+          "subcategory": "Contrast",
+          "type": "Low Contrast Ratio",
+          "severity": "high",
+          "description": "Insufficient contrast ratio for normal text",
+          "wcag_criterion": "1.4.3 Contrast (Minimum)",
+          "wcag_level": "AA",
+          "location": {
+            "x": 631,
+            "y": 900,
+            "width": 100,
+            "height": 100
+          },
+          "details": {
+            "required_ratio": 4.5,
+            "colors": {
+              "foreground": "#7c7c7c",
+              "foreground_rgb": [
+                124,
+                124,
+                124
+              ],
+              "background": "#ffffff",
+              "background_rgb": [
+                255,
+                255,
+                255
+              ]
+            }
+          },
+          "confidence": 0.75,
+          "explanation": "This area has insufficient color contrast, making it difficult for users with visual impairments to read.",
+          "fix_suggestion": "Increase contrast by using darker text or lighter background to meet WCAG standards.",
+          "confidence_level": "High",
+          "ai_reasoning": "Detected using WCAG 2.1 compliance algorithms including contrast calculation and visual analysis. Confidence based on heuristic analysis and pattern recognition."
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "category": "Contrast",
+      "priority": "high",
+      "title": "Improve Color Contrast",
+      "description": "Found 5 areas with insufficient contrast",
+      "action": "Increase contrast ratios to meet WCAG AA standards (4.5:1 for normal text, 3:1 for large text)",
+      "wcag_reference": "1.4.3 Contrast (Minimum)",
+      "resources": [
+        "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum"
+      ]
+    },
+    {
+      "category": "Sentence Structure",
+      "priority": "high",
+      "title": "Shorten Long Sentences",
+      "description": "Found 7 sentences exceeding 20 words",
+      "action": "Break long sentences into shorter, clearer statements",
+      "impact": "Significantly improves readability and comprehension",
+      "resources": []
+    },
+    {
+      "category": "Inclusive Language",
+      "priority": "high",
+      "title": "Use Inclusive Language",
+      "description": "Found 1 instances of potentially non-inclusive language",
+      "action": "Replace gendered, ableist, or insensitive terms with inclusive alternatives",
+      "impact": "Creates welcoming experience for all users",
+      "resources": [
+        "https://www.apa.org/about/apa/equity-diversity-inclusion/language-guidelines",
+        "https://buffer.com/resources/inclusive-language-tech/"
+      ]
+    },
+    {
+      "category": "Overall Readability",
+      "priority": "high",
+      "title": "Simplify Text Complexity",
+      "description": "Content requires Grade 21 reading level",
+      "action": "Aim for Grade 8-10 reading level for general audiences",
+      "impact": "Makes content accessible to wider audience",
+      "resources": [
+        "https://www.nngroup.com/articles/legibility-readability-comprehension/"
+      ]
+    },
+    {
+      "category": "Attention Priority",
+      "priority": "high",
+      "title": "Emphasize Critical Elements",
+      "description": "Found 1 critical elements not receiving enough attention",
+      "action": "Increase size, contrast, or use color to make important elements more prominent",
+      "impact": "Ensures users notice and interact with key features",
+      "resources": [
+        "https://www.nngroup.com/articles/visual-hierarchy/"
+      ]
+    },
+    {
+      "category": "Visual Hierarchy",
+      "priority": "high",
+      "title": "Improve Visual Hierarchy",
+      "description": "Strengthen visual hierarchy to guide user attention",
+      "action": "Use size, color, and positioning to create clear information hierarchy",
+      "impact": "Helps users quickly understand content structure and importance",
+      "resources": [
+        "https://www.interaction-design.org/literature/article/visual-hierarchy"
+      ]
+    },
+    {
+      "category": "Typography",
+      "priority": "medium",
+      "title": "Optimize Typography",
+      "description": "Improve text formatting for better readability",
+      "action": "Adjust line length (50-75 chars), line height (1.5-2.0x), and font selection",
+      "impact": "Enhances reading comfort and reduces eye strain",
+      "resources": [
+        "https://practicaltypography.com/"
+      ]
+    },
+    {
+      "category": "Cognitive Load",
+      "priority": "medium",
+      "title": "Reduce Cognitive Load",
+      "description": "Current cognitive load: Moderate - Manageable complexity",
+      "action": "Simplify design by reducing elements, colors, and visual complexity",
+      "impact": "Improves user comprehension and task completion rates",
+      "resources": [
+        "https://www.nngroup.com/articles/minimize-cognitive-load/",
+        "https://lawsofux.com/millers-law/"
+      ]
+    }
+  ],
+  "status": "completed",
+  "metadata": {
+    "generated_at": "2026-02-01T20:00:37.603423",
+    "image_analyzed": "/Users/kavishani/Documents/FYP/arai-system/uploads/1271cc69-1239-41a4-868e-9e7d5cf1bb4e/original.png",
+    "total_issues": 26
+  }
+}

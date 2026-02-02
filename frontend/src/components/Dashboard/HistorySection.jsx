@@ -87,7 +87,7 @@ const HistorySection = () => {
         <tbody className="bg-white divide-y divide-gray-200">
           {analyses.map((analysis) => (
             <tr key={analysis.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                 {analysis.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -95,9 +95,9 @@ const HistorySection = () => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  analysis.score >= 80 ? 'bg-green-100 text-green-800' :
-                  analysis.score >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
+                  analysis.score >= 80 ? 'bg-gray-100 text-gray-800' :
+                  analysis.score >= 60 ? 'bg-gray-100 text-gray-800' :
+                  'bg-gray-100 text-gray-800'
                 }`}>
                   {analysis.score}/100
                 </span>
@@ -108,7 +108,7 @@ const HistorySection = () => {
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
                   onClick={() => handleViewReport(analysis.id)}
-                  className="text-primary-600 hover:text-primary-900"
+                  className="text-gray-800 hover:text-gray-800"
                 >
                   View Report
                 </button>
