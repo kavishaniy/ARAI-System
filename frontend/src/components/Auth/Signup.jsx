@@ -58,7 +58,37 @@ const Signup = () => {
         response: err.response?.data,
         status: err.response?.status
       });
-      setError(err.response?.data?.detail || err.message || 'Signup failed. Please try again.');
+      
+      // Handle different error formats
+      let errorMessage = 'Signup failed. Please try again.';
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        
+        // Handle validation errors (array of objects)
+        if (Array.isArray(data.detail)) {
+          errorMessage = data.detail.map(error => {
+            const field = error.loc ? error.loc[error.loc.length - 1] : 'Field';
+            return `${field}: ${error.msg}`;
+          }).join(', ');
+        } 
+        // Handle string error message
+        else if (typeof data.detail === 'string') {
+          errorMessage = data.detail;
+        }
+        // Handle object error
+        else if (data.detail && typeof data.detail === 'object') {
+          errorMessage = data.detail.msg || JSON.stringify(data.detail);
+        }
+        // Handle simple error message
+        else if (data.message) {
+          errorMessage = data.message;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -70,6 +100,9 @@ const Signup = () => {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-800">
             Create your account
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            You'll need to confirm your email address before logging in
+          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
@@ -111,8 +144,9 @@ const Signup = () => {
                 name="password"
                 type="password"
                 required
+                minLength="8"
                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                placeholder="Password (min. 8 characters)"
                 value={formData.password}
                 onChange={handleChange}
               />

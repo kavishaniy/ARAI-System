@@ -37,7 +37,41 @@ const Login = () => {
         response: err.response?.data,
         status: err.response?.status
       });
-      setError(err.response?.data?.detail || err.message || 'Login failed');
+      
+      // Handle different error formats
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        
+        // Handle validation errors (array of objects)
+        if (Array.isArray(data.detail)) {
+          errorMessage = data.detail.map(error => {
+            const field = error.loc ? error.loc[error.loc.length - 1] : 'Field';
+            return `${field}: ${error.msg}`;
+          }).join(', ');
+        } 
+        // Handle string error message
+        else if (typeof data.detail === 'string') {
+          errorMessage = data.detail;
+          // Add helpful hint for email confirmation errors
+          if (errorMessage.toLowerCase().includes('email') && errorMessage.toLowerCase().includes('confirm')) {
+            errorMessage += '. Check your inbox for the confirmation email.';
+          }
+        }
+        // Handle object error
+        else if (data.detail && typeof data.detail === 'object') {
+          errorMessage = data.detail.msg || JSON.stringify(data.detail);
+        }
+        // Handle simple error message
+        else if (data.message) {
+          errorMessage = data.message;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };

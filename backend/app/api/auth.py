@@ -65,7 +65,12 @@ async def signup(user_data: UserSignup):
     except Exception as e:
         error_msg = str(e)
         # Provide more helpful error messages
-        if "already registered" in error_msg.lower() or "already exists" in error_msg.lower():
+        if "Email logins are disabled" in error_msg or "logins are disabled" in error_msg:
+            raise HTTPException(
+                status_code=400,
+                detail="Email/password authentication is currently disabled. Please contact the administrator or enable email provider in Supabase Authentication settings."
+            )
+        elif "already registered" in error_msg.lower() or "already exists" in error_msg.lower():
             raise HTTPException(status_code=400, detail="This email is already registered")
         elif "rate limit" in error_msg.lower() or "email_rate_limit" in error_msg.lower():
             raise HTTPException(
@@ -133,10 +138,15 @@ async def login(credentials: UserLogin):
         error_msg = str(e)
         
         # Provide more specific error messages
-        if "Email not confirmed" in error_msg:
+        if "Email logins are disabled" in error_msg or "logins are disabled" in error_msg:
+            raise HTTPException(
+                status_code=401,
+                detail="Email/password authentication is currently disabled. Please contact the administrator or enable email provider in Supabase Authentication settings."
+            )
+        elif "Email not confirmed" in error_msg:
             raise HTTPException(
                 status_code=401, 
-                detail="Please confirm your email before logging in. Check your inbox for the confirmation link, or disable email confirmation in Supabase settings for development."
+                detail="Please confirm your email before logging in. Check your inbox for the confirmation link."
             )
         elif "Invalid login credentials" in error_msg or "invalid" in error_msg.lower():
             raise HTTPException(status_code=401, detail="Invalid email or password")
