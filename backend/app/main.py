@@ -10,14 +10,15 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Configure CORS
+# Configure CORS - Updated for Render deployment
 print(f"🔧 CORS Configuration:")
 print(f"   ALLOWED_ORIGINS env var: {settings.ALLOWED_ORIGINS}")
 print(f"   Configured origins: {settings.BACKEND_CORS_ORIGINS}")
+print(f"   Environment: {settings.ENVIRONMENT}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origins=settings.BACKEND_CORS_ORIGINS if settings.ENVIRONMENT != "production" else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

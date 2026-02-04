@@ -29,11 +29,18 @@ class Settings(BaseSettings):
         origins = [
             "http://localhost:3000",
             "http://localhost:5173",
+            "https://*.vercel.app",  # All Vercel deployments
+            "https://*.onrender.com",  # Render deployments
         ]
         # Add origins from environment variable
         if self.ALLOWED_ORIGINS:
             env_origins = [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
             origins.extend(env_origins)
+        
+        # For production, allow all origins temporarily (remove after testing)
+        if self.ENVIRONMENT == "production":
+            origins.append("*")
+        
         return list(set(origins))  # Remove duplicates
     
     # Supabase
