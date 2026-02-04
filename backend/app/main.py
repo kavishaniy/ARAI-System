@@ -10,18 +10,27 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Configure CORS - Updated for Render deployment
+# Configure CORS - Updated for production deployment
+cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://arai-system.vercel.app",
+    "https://*.vercel.app",
+    "*"  # Allow all origins for now
+]
+
 print(f"🔧 CORS Configuration:")
 print(f"   ALLOWED_ORIGINS env var: {settings.ALLOWED_ORIGINS}")
-print(f"   Configured origins: {settings.BACKEND_CORS_ORIGINS}")
+print(f"   Configured origins: {cors_origins}")
 print(f"   Environment: {settings.ENVIRONMENT}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS if settings.ENVIRONMENT != "production" else ["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 
