@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:3000"
+    ALLOWED_ORIGINS: Optional[str] = None
     
     @property
     def BACKEND_CORS_ORIGINS(self) -> list:
