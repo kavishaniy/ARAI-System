@@ -320,6 +320,7 @@ class ComprehensiveAttentionAnalyzer:
             
             # High importance elements should have high attention
             if importance == "high" and attention < 0.5:
+                attention_percent = round(attention * 100, 1)
                 issues.append({
                     "id": f"attention_priority_{element['id']}",
                     "category": "Attention",
@@ -331,12 +332,13 @@ class ComprehensiveAttentionAnalyzer:
                     "expected_attention": "high",
                     "actual_attention": attention,
                     "confidence": 0.80,
-                    "explanation": f"This {element['type']} is important but only receives {attention:.1%} attention. Users may miss it.",
+                    "explanation": f"This {element['type']} is important but only receives {attention_percent}% of user attention. Users may miss it.",
                     "fix_suggestion": "Increase visual prominence through size, color, contrast, or position."
                 })
             
             # Medium importance with very high attention might be over-emphasized
             elif importance == "medium" and attention > 0.8:
+                attention_percent = round(attention * 100, 1)
                 issues.append({
                     "id": f"attention_overemphasis_{element['id']}",
                     "category": "Attention",
@@ -348,7 +350,7 @@ class ComprehensiveAttentionAnalyzer:
                     "expected_attention": "medium",
                     "actual_attention": attention,
                     "confidence": 0.65,
-                    "explanation": f"This element receives {attention:.1%} attention, which might distract from more important content.",
+                    "explanation": f"This element receives {attention_percent}% of user attention, which might distract from more important content.",
                     "fix_suggestion": "Consider reducing visual prominence if not a primary action."
                 })
         

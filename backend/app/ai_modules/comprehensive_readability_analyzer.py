@@ -354,17 +354,19 @@ class ComprehensiveReadabilityAnalyzer:
         text_density = min(1.0, estimated_text_area / total_area) if total_area > 0 else 0
         
         if text_density > self.MAX_TEXT_DENSITY:
+            text_density_percent = round(text_density * 100, 1)
+            max_density_percent = round(self.MAX_TEXT_DENSITY * 100, 1)
             issues.append({
                 "id": "typography_density",
                 "category": "Readability",
                 "subcategory": "Typography",
                 "severity": "medium",
                 "type": "High Text Density",
-                "description": f"Text density ({text_density:.1%}) is too high",
-                "current_value": round(text_density * 100, 1),
-                "maximum_recommended": round(self.MAX_TEXT_DENSITY * 100, 1),
+                "description": f"Text density ({text_density_percent}%) is too high",
+                "current_value": text_density_percent,
+                "maximum_recommended": max_density_percent,
                 "confidence": 0.65,
-                "explanation": f"Text covers approximately {text_density:.1%} of the design. This may overwhelm users.",
+                "explanation": f"Text covers approximately {text_density_percent}% of the design. This may overwhelm users and reduce readability.",
                 "fix_suggestion": "Reduce text amount or increase white space for better readability."
             })
         
