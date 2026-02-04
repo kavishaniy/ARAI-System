@@ -39,6 +39,15 @@ async def health_check():
     return {"status": "healthy"}
 
 
+@app.get("/debug/cors")
+async def debug_cors():
+    """Debug endpoint to check CORS configuration"""
+    return {
+        "allowed_origins_env": settings.ALLOWED_ORIGINS,
+        "backend_cors_origins": settings.BACKEND_CORS_ORIGINS
+    }
+
+
 # Include routers
 app.include_router(
     auth.router,
