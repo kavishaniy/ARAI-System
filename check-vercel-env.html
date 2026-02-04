@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Environment Variable Checker</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #00ff00;
+        }
+        .error { color: #ff0000; }
+        .success { color: #00ff00; }
+        .warning { color: #ffaa00; }
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0;
+            background: #2d2d2d;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+        button {
+            padding: 10px 20px;
+            background: #00ff00;
+            color: #1e1e1e;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Vercel Environment Variable Verification</h1>
+    
+    <p>Enter your Vercel deployment URL to check what API URL it's using:</p>
+    
+    <input type="text" id="vercelUrl" placeholder="https://arai-system.vercel.app" value="https://arai-system.vercel.app">
+    
+    <button onclick="checkEnv()">Check Environment</button>
+    
+    <div id="result" style="margin-top: 20px;"></div>
+    
+    <script>
+        async function checkEnv() {
+            const url = document.getElementById('vercelUrl').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<p>🔍 Checking...</p>';
+            
+            try {
+                // Fetch the main page
+                const response = await fetch(url);
+                const html = await response.text();
+                
+                // Try to find any API calls in the JavaScript
+                const scriptMatches = html.match(/static\/js\/main\.[a-z0-9]+\.js/);
+                
+                if (scriptMatches) {
+                    const scriptUrl = url + '/' + scriptMatches[0];
+                    const scriptResponse = await fetch(scriptUrl);
+                    const scriptContent = await scriptResponse.text();
+                    
+                    // Look for localhost references
+                    const hasLocalhost = scriptContent.includes('localhost:8000');
+                    const hasRenderUrl = scriptContent.includes('arai-system.onrender.com');
+                    
+                    let result = '<h2>Results:</h2>';
+                    
+                    if (hasLocalhost) {
+                        result += '<p class="error">❌ PROBLEM FOUND: Your deployment still has localhost hardcoded!</p>';
+                        result += '<p class="error">This means REACT_APP_API_URL was NOT set when the app was built.</p>';
+                    }
+                    
+                    if (hasRenderUrl) {
+                        result += '<p class="success">✅ Found production URL in code!</p>';
+                    }
+                    
+                    if (hasLocalhost && !hasRenderUrl) {
+                        result += '<h3 class="error">CRITICAL: Environment variable not working!</h3>';
+                        result += '<p>Follow these steps EXACTLY:</p>';
+                        result += '<ol>';
+                        result += '<li>Go to Vercel Dashboard</li>';
+                        result += '<li>Settings → Environment Variables</li>';
+                        result += '<li>Look for REACT_APP_API_URL</li>';
+                        result += '<li>If it exists, DELETE it and re-add it</li>';
+                        result += '<li>If not, add: Name=REACT_APP_API_URL, Value=https://arai-system.onrender.com/api/v1</li>';
+                        result += '<li>Check ALL THREE boxes (Production, Preview, Development)</li>';
+                        result += '<li>Click Save</li>';
+                        result += '<li>Go to Deployments</li>';
+                        result += '<li>Click ⋯ → Redeploy</li>';
+                        result += '<li>Wait for "Ready"</li>';
+                        result += '<li>Run this check again</li>';
+                        result += '</ol>';
+                    }
+                    
+                    resultDiv.innerHTML = result;
+                } else {
+                    resultDiv.innerHTML = '<p class="error">Could not find JavaScript bundle to check.</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
