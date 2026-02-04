@@ -22,10 +22,19 @@ class Settings(BaseSettings):
     
     # CORS
     ALLOWED_ORIGINS: str = "http://localhost:3000"
-    BACKEND_CORS_ORIGINS: list = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-    ]
+    
+    @property
+    def BACKEND_CORS_ORIGINS(self) -> list:
+        """Parse ALLOWED_ORIGINS from comma-separated string"""
+        origins = [
+            "http://localhost:3000",
+            "http://localhost:5173",
+        ]
+        # Add origins from environment variable
+        if self.ALLOWED_ORIGINS:
+            env_origins = [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
+            origins.extend(env_origins)
+        return list(set(origins))  # Remove duplicates
     
     # Supabase
     SUPABASE_URL: str
