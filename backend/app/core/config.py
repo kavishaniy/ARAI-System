@@ -29,7 +29,6 @@ class Settings(BaseSettings):
         origins = [
             "http://localhost:3000",
             "http://localhost:5173",
-            "https://*.vercel.app",  # All Vercel deployments
             "https://*.onrender.com",  # Render deployments
         ]
         # Add origins from environment variable
