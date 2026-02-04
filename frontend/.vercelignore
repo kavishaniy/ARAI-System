@@ -1,3 +1,4 @@
+# Files and directories to ignore during Vercel deployment
 node_modules
 .env
 .env.local
