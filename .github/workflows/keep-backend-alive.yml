@@ -1,0 +1,23 @@
+name: Keep Backend Alive
+
+on:
+  schedule:
+    # Run every 10 minutes (adjust as needed)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Backend Health Endpoint
+        run: |
+          echo "Pinging backend to keep it alive..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://arai-system.onrender.com/health)
+          echo "Response code: $response"
+          if [ $response -eq 200 ]; then
+            echo "✅ Backend is alive!"
+          else
+            echo "❌ Backend returned $response"
+            exit 1
+          fi
