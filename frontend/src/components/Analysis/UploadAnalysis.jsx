@@ -87,12 +87,15 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         formData.append('design_name', designName);
       }
 
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://arai-system.onrender.com/api/v1';
+      
       console.log('🚀 Uploading design for analysis...');
       console.log('📁 File:', file.name);
       console.log('🔑 Token exists:', !!token);
+      console.log('🌐 API URL:', apiUrl);
       
       const response = await axios.post(
-        'http://localhost:8000/api/v1/analysis/upload',
+        `${apiUrl}/analysis/upload`,
         formData,
         {
           headers: {

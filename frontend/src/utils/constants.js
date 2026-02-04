@@ -1,5 +1,5 @@
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://arai-system.onrender.com/api/v1';
 
 // File Upload Configuration
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
