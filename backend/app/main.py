@@ -11,13 +11,18 @@ app = FastAPI(
 )
 
 # Configure CORS - Updated for production deployment
+# Explicitly list all allowed origins (wildcards don't work with credentials)
 cors_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://arai-system.vercel.app",
-    "https://*.vercel.app",
-    "*"  # Allow all origins for now
+    "https://arai-system-git-main-kavishaniy.vercel.app",
 ]
+
+# Add any additional origins from environment variable
+if settings.ALLOWED_ORIGINS:
+    env_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",")]
+    cors_origins.extend(env_origins)
 
 print(f"🔧 CORS Configuration:")
 print(f"   ALLOWED_ORIGINS env var: {settings.ALLOWED_ORIGINS}")
@@ -28,7 +33,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
     expose_headers=["*"]
 )
