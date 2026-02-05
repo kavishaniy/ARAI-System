@@ -25,20 +25,54 @@ from app.core.database import (
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Initialize comprehensive analyzers
-wcag_analyzer = ComprehensiveWCAGAnalyzer()  # FR-009 to FR-012
-readability_analyzer = ComprehensiveReadabilityAnalyzer()  # FR-013 to FR-016
+# Initialize analyzers as None - will be lazy loaded when needed
+wcag_analyzer = None
+readability_analyzer = None
+attention_analyzer = None
+report_generator = None
 
 # Path to saliency model (will be created during training)
 MODEL_PATH = Path(__file__).parent.parent.parent / "models" / "saliency_model.pth"
-attention_analyzer = ComprehensiveAttentionAnalyzer(str(MODEL_PATH))  # FR-017 to FR-020
-
-# Report generator for FR-021 to FR-027
-report_generator = ComprehensiveReportGenerator()
 
 # Upload directory
 UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+def get_wcag_analyzer():
+    """Lazy load WCAG analyzer"""
+    global wcag_analyzer
+    if wcag_analyzer is None:
+        logger.info("🔄 Lazy loading WCAG analyzer...")
+        wcag_analyzer = ComprehensiveWCAGAnalyzer()
+    return wcag_analyzer
+
+
+def get_readability_analyzer():
+    """Lazy load readability analyzer"""
+    global readability_analyzer
+    if readability_analyzer is None:
+        logger.info("🔄 Lazy loading readability analyzer...")
+        readability_analyzer = ComprehensiveReadabilityAnalyzer()
+    return readability_analyzer
+
+
+def get_attention_analyzer():
+    """Lazy load attention analyzer"""
+    global attention_analyzer
+    if attention_analyzer is None:
+        logger.info("🔄 Lazy loading attention analyzer...")
+        attention_analyzer = ComprehensiveAttentionAnalyzer(str(MODEL_PATH))
+    return attention_analyzer
+
+
+def get_report_generator():
+    """Lazy load report generator"""
+    global report_generator
+    if report_generator is None:
+        logger.info("🔄 Lazy loading report generator...")
+        report_generator = ComprehensiveReportGenerator()
+    return report_generator
 
 
 async def get_current_user(authorization: Optional[str] = Header(None)):
@@ -171,15 +205,15 @@ async def upload_design(
         
         # 1. Comprehensive WCAG 2.1 Accessibility Analysis (FR-009 to FR-012)
         logger.info("♿ Running comprehensive WCAG 2.1 analysis (Contrast, Color Blindness, Alt Text)...")
-        accessibility_results = wcag_analyzer.analyze_design(str(local_file_path))
+        accessibility_results = get_wcag_analyzer().analyze_design(str(local_file_path))
         
         # 2. Comprehensive Readability Analysis (FR-013 to FR-016)
         logger.info("📖 Running readability analysis (Flesch-Kincaid, Vocabulary, Inclusive Language, Typography)...")
-        readability_results = readability_analyzer.analyze_design(str(local_file_path))
+        readability_results = get_readability_analyzer().analyze_design(str(local_file_path))
         
         # 3. Comprehensive Attention Analysis (FR-017 to FR-020)
         logger.info("👁️ Running attention analysis (Saliency, Visual Hierarchy, Cognitive Load)...")
-        attention_results = attention_analyzer.analyze_design(str(local_file_path))
+        attention_results = get_attention_analyzer().analyze_design(str(local_file_path))
         
         # Compile comprehensive results
         analysis_results = {
@@ -190,7 +224,7 @@ async def upload_design(
         
         # 4. Generate Comprehensive Report (FR-021 to FR-027)
         logger.info("📊 Generating comprehensive report with ARAI score, annotations, and exports...")
-        comprehensive_report = report_generator.generate_comprehensive_report(
+        comprehensive_report = get_report_generator().generate_comprehensive_report(
             analysis_results,
             str(local_file_path)
         )
@@ -410,7 +444,7 @@ async def export_pdf(
         pdf_path = analysis_dir / f"report_{analysis_id}.pdf"
         
         # Use report generator to create PDF
-        report_generator.export_to_pdf(results, str(pdf_path))
+        get_report_generator().export_to_pdf(results, str(pdf_path))
         
         # Return file for download
         from fastapi.responses import FileResponse
@@ -452,7 +486,7 @@ async def export_csv(
         csv_path = analysis_dir / f"issues_{analysis_id}.csv"
         
         # Use report generator to create CSV
-        report_generator.export_to_csv(results, str(csv_path))
+        get_report_generator().export_to_csv(results, str(csv_path))
         
         # Return file for download
         from fastapi.responses import FileResponse
