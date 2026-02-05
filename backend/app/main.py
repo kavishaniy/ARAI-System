@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api import auth, analysis
+import re
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -11,12 +12,13 @@ app = FastAPI(
 )
 
 # Configure CORS - Updated for production deployment
-# Explicitly list all allowed origins (wildcards don't work with credentials)
+# Explicitly list all allowed origins
 cors_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://arai-system.vercel.app",
     "https://arai-system-git-main-kavishaniy.vercel.app",
+    "https://arai-system-kavishaniy.vercel.app",
 ]
 
 # Add any additional origins from environment variable
@@ -29,13 +31,68 @@ print(f"   ALLOWED_ORIGINS env var: {settings.ALLOWED_ORIGINS}")
 print(f"   Configured origins: {cors_origins}")
 print(f"   Environment: {settings.ENVIRONMENT}")
 
+# Custom CORS middleware to handle Vercel preview URLs dynamically
+@app.middleware("http")
+async def dynamic_cors_middleware(request: Request, call_next):
+    origin = request.headers.get("origin")
+    
+    # Check if origin is allowed
+    allowed = False
+    if origin:
+        # Allow if in explicit list
+        if origin in cors_origins:
+            allowed = True
+        # Allow Vercel preview URLs (pattern: https://*-kavishaniy.vercel.app)
+        elif re.match(r"https://.*\.vercel\.app$", origin):
+            allowed = True
+            print(f"✅ Allowing Vercel preview URL: {origin}")
+    
+    response = await call_next(request)
+    
+    # Add CORS headers if allowed
+    if allowed and origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Expose-Headers"] = "*"
+        response.headers["Access-Control-Max-Age"] = "3600"
+    
+    return response
+
+# Handle preflight OPTIONS requests
+@app.options("/{full_path:path}")
+async def preflight_handler(request: Request, full_path: str):
+    origin = request.headers.get("origin")
+    
+    # Check if origin is allowed
+    allowed = False
+    if origin:
+        if origin in cors_origins or re.match(r"https://.*\.vercel\.app$", origin):
+            allowed = True
+    
+    if allowed:
+        return JSONResponse(
+            content={},
+            headers={
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Max-Age": "3600",
+            }
+        )
+    
+    return JSONResponse(content={"detail": "Origin not allowed"}, status_code=403)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
-    expose_headers=["*"]
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 
