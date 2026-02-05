@@ -11,6 +11,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [retryMessage, setRetryMessage] = useState('');
 
   const handleFileChange = (selectedFile) => {
     if (!selectedFile) return;
@@ -109,28 +110,80 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       console.log('🔑 Token exists:', !!token);
       console.log('🌐 API URL:', apiUrl);
       
-      const response = await axios.post(
-        `${apiUrl}/analysis/upload`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
+      // Retry logic for 502 errors (Render free tier wake-up)
+      let retries = 3;
+      let lastError = null;
+      
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          console.log(`📡 Attempt ${attempt}/${retries}...`);
+          
+          if (attempt > 1) {
+            setRetryMessage(`Retrying... (Attempt ${attempt}/${retries})`);
+          } else {
+            setRetryMessage('');
+          }
+          
+          const response = await axios.post(
+            `${apiUrl}/analysis/upload`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+              },
+              timeout: 60000, // 60 second timeout
+            }
+          );
+
+          console.log('✅ Analysis completed:', response.data);
+          
+          // Success! Break out of retry loop
+          lastError = null;
+          
+          // Notify parent component
+          if (onAnalysisComplete) {
+            onAnalysisComplete(response.data);
+          }
+
+          // Reset form
+          setFile(null);
+          setPreview(null);
+          setDesignName('');
+          
+          break; // Exit retry loop on success
+          
+        } catch (retryErr) {
+          lastError = retryErr;
+          console.warn(`⚠️ Attempt ${attempt} failed:`, retryErr.message);
+          
+          // Check if it's a 502 or network error that we should retry
+          const shouldRetry = (
+            retryErr.code === 'ERR_NETWORK' ||
+            retryErr.code === 'ECONNABORTED' ||
+            retryErr.response?.status === 502 ||
+            retryErr.response?.status === 503 ||
+            retryErr.response?.status === 504
+          );
+          
+          if (shouldRetry && attempt < retries) {
+            // Wait before retrying (exponential backoff)
+            const waitTime = attempt * 2000; // 2s, 4s, 6s
+            setRetryMessage(`Server is waking up... Waiting ${waitTime/1000}s before next attempt`);
+            console.log(`⏳ Waiting ${waitTime/1000}s before retry (server may be waking up)...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+            continue;
+          } else {
+            // Don't retry for other errors (401, 400, etc.)
+            throw retryErr;
           }
         }
-      );
-
-      console.log('✅ Analysis completed:', response.data);
-      
-      // Notify parent component
-      if (onAnalysisComplete) {
-        onAnalysisComplete(response.data);
       }
-
-      // Reset form
-      setFile(null);
-      setPreview(null);
-      setDesignName('');
+      
+      // If we exhausted all retries, throw the last error
+      if (lastError) {
+        throw lastError;
+      }
       
     } catch (err) {
       console.error('❌ Analysis error:', err);
@@ -156,13 +209,16 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         setError('File size too large. Please upload a smaller image.');
       } else if (err.response?.status === 500) {
         setError('Server error. Please try again later or contact support.');
-      } else if (err.code === 'ERR_NETWORK') {
-        setError('Network error. Please check your internet connection and try again.');
+      } else if (err.response?.status === 502 || err.response?.status === 503 || err.response?.status === 504) {
+        setError('Server is temporarily unavailable. This usually happens when the server is waking up. Please try again in a few seconds.');
+      } else if (err.code === 'ERR_NETWORK' || err.code === 'ECONNABORTED') {
+        setError('Unable to connect to server. The server may be starting up (this can take 30-60 seconds on first request). Please wait a moment and try again.');
       } else {
         setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.');
       }
     } finally {
       setIsAnalyzing(false);
+      setRetryMessage('');
     }
   };
 
@@ -297,6 +353,14 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
               </>
             )}
           </button>
+
+          {/* Retry Message */}
+          {retryMessage && (
+            <div className="flex items-center gap-2 p-4 bg-blue-50 border border-blue-200 rounded-md">
+              <Loader2 className="h-5 w-5 text-blue-500 animate-spin flex-shrink-0" />
+              <p className="text-blue-700 text-sm">{retryMessage}</p>
+            </div>
+          )}
         </form>
       </div>
     </div>
