@@ -84,7 +84,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
     try {
       const response = await fetch(`/api/v1/analysis/export/pdf/${results.analysis_id}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       });
       const blob = await response.blob();
@@ -102,7 +102,7 @@ const ComprehensiveAnalysisResults = ({ results }) => {
     try {
       const response = await fetch(`/api/v1/analysis/export/csv/${results.analysis_id}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       });
       const blob = await response.blob();
