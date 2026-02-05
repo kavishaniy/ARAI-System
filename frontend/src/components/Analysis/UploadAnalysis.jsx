@@ -132,7 +132,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${token}`
               },
-              timeout: 60000, // 60 second timeout
+              timeout: 180000, // 3 minutes timeout (analysis can be slow)
             }
           );
 
@@ -157,6 +157,9 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
           lastError = retryErr;
           console.warn(`⚠️ Attempt ${attempt} failed:`, retryErr.message);
           
+          // Check if it's a timeout error
+          const isTimeout = retryErr.code === 'ECONNABORTED' || retryErr.message?.includes('timeout');
+          
           // Check if it's a 502 or network error that we should retry
           const shouldRetry = (
             retryErr.code === 'ERR_NETWORK' ||
@@ -167,11 +170,14 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
           );
           
           if (shouldRetry && attempt < retries) {
-            // Wait before retrying (exponential backoff)
-            const waitTime = attempt * 2000; // 2s, 4s, 6s
-            setRetryMessage(`Server is waking up... Waiting ${waitTime/1000}s before next attempt`);
-            console.log(`⏳ Waiting ${waitTime/1000}s before retry (server may be waking up)...`);
-            await new Promise(resolve => setTimeout(resolve, waitTime));
+            // Adjust message based on error type
+            if (isTimeout) {
+              setRetryMessage(`Analysis is taking longer than expected. Retrying... (Attempt ${attempt + 1}/${retries})`);
+            } else {
+              const waitTime = attempt * 2000; // 2s, 4s, 6s
+              setRetryMessage(`Server is waking up... Waiting ${waitTime/1000}s before next attempt`);
+              await new Promise(resolve => setTimeout(resolve, waitTime));
+            }
             continue;
           } else {
             // Don't retry for other errors (401, 400, etc.)
@@ -211,7 +217,9 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         setError('Server error. Please try again later or contact support.');
       } else if (err.response?.status === 502 || err.response?.status === 503 || err.response?.status === 504) {
         setError('Server is temporarily unavailable. This usually happens when the server is waking up. Please try again in a few seconds.');
-      } else if (err.code === 'ERR_NETWORK' || err.code === 'ECONNABORTED') {
+      } else if (err.code === 'ECONNABORTED' && err.message?.includes('timeout')) {
+        setError('Analysis is taking longer than expected. This may happen on the first request when AI models are loading. Please try again - subsequent attempts will be faster.');
+      } else if (err.code === 'ERR_NETWORK') {
         setError('Unable to connect to server. The server may be starting up (this can take 30-60 seconds on first request). Please wait a moment and try again.');
       } else {
         setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.');
@@ -329,6 +337,9 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
               <li>• <strong>Readability:</strong> Text clarity, reading level, content density</li>
               <li>• <strong>Attention:</strong> Visual hierarchy, predicted user focus, cognitive load</li>
             </ul>
+            <p className="text-xs text-gray-600 mt-3 italic">
+              ⏱️ Analysis typically takes 1-3 minutes on the first request while AI models load. Subsequent analyses are much faster!
+            </p>
           </div>
 
           {/* Submit Button */}
@@ -344,7 +355,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
             {isAnalyzing ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Analyzing Design...
+                Analyzing Design... (This may take 1-3 minutes)
               </>
             ) : (
               <>
