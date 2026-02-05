@@ -18,15 +18,13 @@ opencv-python-headless==4.10.0.84
 
 # Scientific Computing (Python 3.11 compatible)
 numpy==1.26.4
-pandas==2.2.3
-scipy==1.14.1
-
-# AI/ML Models (CPU-only for Render) - Updated versions
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.5.1+cpu
-torchvision==0.20.1+cpu
 
 # Document Generation & Text Analysis
 reportlab>=4.0.7
 pytesseract>=0.3.10
 textstat>=0.7.3
+
+# NOTE: PyTorch removed to fit within Render free tier memory limits (512MB)
+# For full attention analysis with saliency maps, install locally:
+# pip install torch==2.5.1+cpu torchvision==0.20.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+# Also removed: pandas, scipy (not essential for core analysis)

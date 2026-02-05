@@ -9,6 +9,11 @@ import numpy as np
 import logging
 import gc
 
+# Check for LITE_MODE (skips PyTorch to save memory on free tier hosting)
+LITE_MODE = os.getenv("LITE_MODE", "false").lower() == "true"
+if LITE_MODE:
+    logging.info("🚀 Running in LITE_MODE - PyTorch-based analysis disabled to save memory")
+
 # Lazy imports for memory optimization
 ComprehensiveWCAGAnalyzer = None
 ComprehensiveReadabilityAnalyzer = None
@@ -34,6 +39,9 @@ def _import_readability_analyzer():
 
 def _import_attention_analyzer():
     global ComprehensiveAttentionAnalyzer
+    if LITE_MODE:
+        # In LITE_MODE, return None to skip PyTorch
+        return None
     if ComprehensiveAttentionAnalyzer is None:
         from app.ai_modules.comprehensive_attention_analyzer import ComprehensiveAttentionAnalyzer as _Attn
         ComprehensiveAttentionAnalyzer = _Attn
@@ -100,12 +108,49 @@ def get_readability_analyzer():
 def get_attention_analyzer():
     """Lazy load attention analyzer with memory cleanup"""
     global attention_analyzer
+    if LITE_MODE:
+        logger.info("⚡ LITE_MODE: Skipping attention analyzer (PyTorch)")
+        return None
     if attention_analyzer is None:
         logger.info("🔄 Lazy loading attention analyzer...")
         gc.collect()  # Free memory before loading
         AttnClass = _import_attention_analyzer()
+        if AttnClass is None:
+            return None
         attention_analyzer = AttnClass(str(MODEL_PATH))
     return attention_analyzer
+
+
+def get_lite_attention_results():
+    """Return simplified attention results for LITE_MODE"""
+    return {
+        "score": 70,
+        "lite_mode": True,
+        "message": "Attention analysis skipped in LITE_MODE to conserve memory",
+        "saliency_heatmap": None,
+        "attention_distribution": {
+            "high_attention_percentage": 20,
+            "average_attention": 0.5,
+            "max_attention": 0.8,
+            "attention_concentration": 0.3
+        },
+        "critical_elements": [],
+        "visual_hierarchy": {
+            "attention_distribution": {"top": 0.6, "middle": 0.4, "bottom": 0.3},
+            "f_pattern_compliance": 0.5,
+            "hierarchy_clarity": 0.02,
+            "issues": []
+        },
+        "cognitive_load": {
+            "cognitive_load_score": 40,
+            "level": "Moderate - Manageable complexity",
+            "metrics": {},
+            "issues": []
+        },
+        "issues": [],
+        "issue_summary": {"attention_priority": 0, "visual_hierarchy": 0, "cognitive_load": 0},
+        "recommendations": []
+    }
 
 
 def get_report_generator():
@@ -279,17 +324,25 @@ async def upload_design(
 
         # 3. Comprehensive Attention Analysis (FR-017 to FR-020)
         logger.info("👁️ Running attention analysis (Saliency, Visual Hierarchy, Cognitive Load)...")
-        try:
-            attention_results = get_attention_analyzer().analyze_design(str(local_file_path))
-            gc.collect()  # Free memory after analysis
-        except MemoryError as e:
-            logger.error(f"❌ Memory error in attention analysis: {e}")
-            analysis_errors.append("attention")
-            attention_results = {"score": 50, "issues": [], "error": "Memory limit exceeded - partial analysis"}
-        except Exception as e:
-            logger.error(f"❌ Error in attention analysis: {e}")
-            analysis_errors.append("attention")
-            attention_results = {"score": 50, "issues": [], "error": str(e)}
+        attention_analyzer = get_attention_analyzer()
+        if attention_analyzer is None:
+            # LITE_MODE or PyTorch not available
+            logger.info("⚡ Using lite attention results (LITE_MODE or PyTorch unavailable)")
+            attention_results = get_lite_attention_results()
+        else:
+            try:
+                attention_results = attention_analyzer.analyze_design(str(local_file_path))
+                gc.collect()  # Free memory after analysis
+            except MemoryError as e:
+                logger.error(f"❌ Memory error in attention analysis: {e}")
+                analysis_errors.append("attention")
+                attention_results = get_lite_attention_results()
+                attention_results["error"] = "Memory limit exceeded - using lite analysis"
+            except Exception as e:
+                logger.error(f"❌ Error in attention analysis: {e}")
+                analysis_errors.append("attention")
+                attention_results = get_lite_attention_results()
+                attention_results["error"] = str(e)
 
         # Log any errors
         if analysis_errors:

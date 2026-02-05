@@ -9,106 +9,131 @@ Features:
 - FR-020: Cognitive load estimation
 """
 
-import torch
-import torch.nn as nn
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-import torchvision.transforms as transforms
 import numpy as np
 from typing import Dict, List, Tuple
 import cv2
 import os
 
+# Try to import PyTorch (optional - for saliency model)
+PYTORCH_AVAILABLE = False
+try:
+    import torch
+    import torch.nn as nn
+    import torchvision.transforms as transforms
+    PYTORCH_AVAILABLE = True
+except ImportError:
+    print("⚠️ PyTorch not available - using heuristic-based attention analysis")
+    torch = None
+    nn = None
+    transforms = None
 
-class SaliencyModel(nn.Module):
-    """U-Net architecture for saliency prediction"""
-    
-    def __init__(self):
-        super(SaliencyModel, self).__init__()
-        
-        # Encoder
-        self.enc1 = self._conv_block(3, 64)
-        self.pool1 = nn.MaxPool2d(2, 2)
-        
-        self.enc2 = self._conv_block(64, 128)
-        self.pool2 = nn.MaxPool2d(2, 2)
-        
-        self.enc3 = self._conv_block(128, 256)
-        self.pool3 = nn.MaxPool2d(2, 2)
-        
-        # Bottleneck
-        self.bottleneck = self._conv_block(256, 512)
-        
-        # Decoder
-        self.upconv3 = nn.ConvTranspose2d(512, 256, 2, stride=2)
-        self.dec3 = self._conv_block(512, 256)
-        
-        self.upconv2 = nn.ConvTranspose2d(256, 128, 2, stride=2)
-        self.dec2 = self._conv_block(256, 128)
-        
-        self.upconv1 = nn.ConvTranspose2d(128, 64, 2, stride=2)
-        self.dec1 = self._conv_block(128, 64)
-        
-        # Output
-        self.out = nn.Conv2d(64, 1, 1)
-        self.sigmoid = nn.Sigmoid()
-    
-    def _conv_block(self, in_channels, out_channels):
-        return nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, 3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels, 3, padding=1),
-            nn.ReLU(inplace=True)
-        )
-    
-    def forward(self, x):
-        # Encoder
-        enc1 = self.enc1(x)
-        enc2 = self.enc2(self.pool1(enc1))
-        enc3 = self.enc3(self.pool2(enc2))
-        
-        # Bottleneck
-        bottleneck = self.bottleneck(self.pool3(enc3))
-        
-        # Decoder with skip connections
-        dec3 = self.upconv3(bottleneck)
-        dec3 = torch.cat([dec3, enc3], dim=1)
-        dec3 = self.dec3(dec3)
-        
-        dec2 = self.upconv2(dec3)
-        dec2 = torch.cat([dec2, enc2], dim=1)
-        dec2 = self.dec2(dec2)
-        
-        dec1 = self.upconv1(dec2)
-        dec1 = torch.cat([dec1, enc1], dim=1)
-        dec1 = self.dec1(dec1)
-        
-        return self.sigmoid(self.out(dec1))
+
+# Only define SaliencyModel if PyTorch is available
+if PYTORCH_AVAILABLE:
+    class SaliencyModel(nn.Module):
+        """U-Net architecture for saliency prediction"""
+
+        def __init__(self):
+            super(SaliencyModel, self).__init__()
+
+            # Encoder
+            self.enc1 = self._conv_block(3, 64)
+            self.pool1 = nn.MaxPool2d(2, 2)
+
+            self.enc2 = self._conv_block(64, 128)
+            self.pool2 = nn.MaxPool2d(2, 2)
+
+            self.enc3 = self._conv_block(128, 256)
+            self.pool3 = nn.MaxPool2d(2, 2)
+
+            # Bottleneck
+            self.bottleneck = self._conv_block(256, 512)
+
+            # Decoder
+            self.upconv3 = nn.ConvTranspose2d(512, 256, 2, stride=2)
+            self.dec3 = self._conv_block(512, 256)
+
+            self.upconv2 = nn.ConvTranspose2d(256, 128, 2, stride=2)
+            self.dec2 = self._conv_block(256, 128)
+
+            self.upconv1 = nn.ConvTranspose2d(128, 64, 2, stride=2)
+            self.dec1 = self._conv_block(128, 64)
+
+            # Output
+            self.out = nn.Conv2d(64, 1, 1)
+            self.sigmoid = nn.Sigmoid()
+
+        def _conv_block(self, in_channels, out_channels):
+            return nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, 3, padding=1),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(out_channels, out_channels, 3, padding=1),
+                nn.ReLU(inplace=True)
+            )
+
+        def forward(self, x):
+            # Encoder
+            enc1 = self.enc1(x)
+            enc2 = self.enc2(self.pool1(enc1))
+            enc3 = self.enc3(self.pool2(enc2))
+
+            # Bottleneck
+            bottleneck = self.bottleneck(self.pool3(enc3))
+
+            # Decoder with skip connections
+            dec3 = self.upconv3(bottleneck)
+            dec3 = torch.cat([dec3, enc3], dim=1)
+            dec3 = self.dec3(dec3)
+
+            dec2 = self.upconv2(dec3)
+            dec2 = torch.cat([dec2, enc2], dim=1)
+            dec2 = self.dec2(dec2)
+
+            dec1 = self.upconv1(dec2)
+            dec1 = torch.cat([dec1, enc1], dim=1)
+            dec1 = self.dec1(dec1)
+
+            return self.sigmoid(self.out(dec1))
+else:
+    SaliencyModel = None
 
 
 class ComprehensiveAttentionAnalyzer:
     """
     Complete Visual Attention and Cognitive Load Analyzer
     """
-    
+
     def __init__(self, model_path: str):
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        
-        # Load saliency model
-        self.model = SaliencyModel().to(self.device)
-        if os.path.exists(model_path):
-            self.model.load_state_dict(torch.load(model_path, map_location=self.device))
-            self.model.eval()
-            print(f"✅ Loaded saliency model from {model_path}")
+        self.model = None
+        self.transform = None
+
+        # Only use PyTorch if available
+        if PYTORCH_AVAILABLE and SaliencyModel is not None:
+            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+            # Load saliency model
+            if os.path.exists(model_path):
+                try:
+                    self.model = SaliencyModel().to(self.device)
+                    self.model.load_state_dict(torch.load(model_path, map_location=self.device))
+                    self.model.eval()
+                    print(f"✅ Loaded saliency model from {model_path}")
+                except Exception as e:
+                    print(f"⚠️ Failed to load model: {e}. Using heuristic-based analysis.")
+                    self.model = None
+            else:
+                print(f"⚠️ Model not found at {model_path}. Using heuristic-based analysis.")
+
+            # Image preprocessing
+            if transforms is not None:
+                self.transform = transforms.Compose([
+                    transforms.Resize((256, 256)),
+                    transforms.ToTensor(),
+                ])
         else:
-            print(f"⚠️  Model not found at {model_path}. Using heuristic-based analysis.")
-            self.model = None
-        
-        # Image preprocessing
-        self.transform = transforms.Compose([
-            transforms.Resize((256, 256)),
-            transforms.ToTensor(),
-        ])
-        
+            print("⚠️ PyTorch not available. Using heuristic-based attention analysis.")
+
         # Cognitive load thresholds
         self.MAX_ELEMENTS = 7  # Miller's Law: 7±2 items
         self.MAX_COLORS = 5
