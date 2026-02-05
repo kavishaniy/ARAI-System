@@ -20,19 +20,26 @@ const Login = () => {
       
       const response = await authService.login(email, password);
       
-      console.log(' Login response:', response);
-      console.log(' Token saved:', localStorage.getItem('access_token'));
-      console.log(' User saved:', localStorage.getItem('user'));
-      console.log('🔄 Navigating to /dashboard...');
+      console.log('✅ Login response:', response);
+      console.log('✅ Token saved:', localStorage.getItem('access_token'));
+      console.log('✅ User saved:', localStorage.getItem('user'));
       
-      // Navigate to dashboard using React Router
-      navigate('/dashboard', { replace: true });
+      // Check if there's a redirect path stored (from expired session)
+      const redirectPath = localStorage.getItem('redirect_after_login');
+      if (redirectPath) {
+        console.log('🔄 Redirecting to stored path:', redirectPath);
+        localStorage.removeItem('redirect_after_login');
+        navigate(redirectPath, { replace: true });
+      } else {
+        console.log('🔄 Navigating to /dashboard...');
+        navigate('/dashboard', { replace: true });
+      }
       
-      console.log(' Navigate called!');
+      console.log('✅ Navigate called!');
       
     } catch (err) {
-      console.error(' Login error:', err);
-      console.error(' Error details:', {
+      console.error('❌ Login error:', err);
+      console.error('❌ Error details:', {
         message: err.message,
         response: err.response?.data,
         status: err.response?.status

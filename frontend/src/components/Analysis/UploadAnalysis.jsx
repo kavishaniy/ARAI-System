@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, FileImage, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import { authService } from '../../services/auth';
 
 // Upload and Analysis Component - Production Ready
 const UploadAnalysis = ({ onAnalysisComplete }) => {
@@ -78,6 +79,19 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       return;
     }
 
+    // Check if token might be expired
+    if (authService.isTokenExpired()) {
+      setError('Your session has expired. Please login again.');
+      authService.clearSession();
+      // Store current path for redirect after login
+      localStorage.setItem('redirect_after_login', window.location.pathname);
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+      return;
+    }
+
     setIsAnalyzing(true);
     setError(null);
 
@@ -106,7 +120,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         }
       );
 
-      console.log(' Analysis completed:', response.data);
+      console.log('✅ Analysis completed:', response.data);
       
       // Notify parent component
       if (onAnalysisComplete) {
@@ -119,16 +133,31 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       setDesignName('');
       
     } catch (err) {
-      console.error(' Analysis error:', err);
-      console.error(' Error response:', err.response?.data);
+      console.error('❌ Analysis error:', err);
+      console.error('❌ Error response:', err.response?.data);
       
       if (err.response?.status === 401) {
-        setError('Authentication failed. Please login again.');
-        // Clear invalid token
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
+        const errorDetail = err.response?.data?.detail || '';
+        
+        // Check if it's a token expiration issue
+        if (errorDetail.includes('expired') || errorDetail.includes('invalid JWT')) {
+          setError('Your session has expired. Please login again.');
+          authService.clearSession();
+          // Redirect to login after showing error
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+        } else {
+          setError('Authentication failed. Please login again.');
+        }
       } else if (err.response?.status === 400) {
         setError(err.response?.data?.detail || 'Invalid file or parameters');
+      } else if (err.response?.status === 413) {
+        setError('File size too large. Please upload a smaller image.');
+      } else if (err.response?.status === 500) {
+        setError('Server error. Please try again later or contact support.');
+      } else if (err.code === 'ERR_NETWORK') {
+        setError('Network error. Please check your internet connection and try again.');
       } else {
         setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.');
       }
