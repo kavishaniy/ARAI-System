@@ -7,7 +7,7 @@ import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
 import AnalysisReport from './components/Analysis/AnalysisReport';
-import Navbar from './components/Common/Navbar';
+// Navbar removed - using left sidebar instead
 
 // Protected Route
 const ProtectedRoute = ({ children }) => {
@@ -25,7 +25,6 @@ function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route 

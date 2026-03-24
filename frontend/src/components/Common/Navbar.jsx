@@ -12,51 +12,30 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="border-b bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold text-gray-800">
-                ARAI
-              </span>
-            </Link>
-            
-            {isAuthenticated && (
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  to="/dashboard"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-800 hover:text-gray-800"
-                >
-                  Dashboard
-                </Link>
-              </div>
-            )}
-          </div>
+        <div className="flex items-center justify-between h-14">
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-md bg-primary-500 flex items-center justify-center text-white font-semibold">A</div>
+            <span className="text-lg font-medium text-gray-800">ARAI</span>
+          </Link>
 
-          <div className="flex items-center">
+          <div className="flex items-center space-x-3">
             {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-800"
-              >
-                Logout
-              </button>
+              <>
+                <Link to="/dashboard" className="text-sm text-gray-600 hover:text-gray-800">Dashboard</Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-gray-600 hover:text-gray-800 border rounded px-3 py-1"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
-              <div className="flex space-x-3">
-                <Link
-                  to="/login"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-800"
-                >
-                  Sign Up
-                </Link>
-              </div>
+              <>
+                <Link to="/login" className="text-sm text-gray-600 hover:text-gray-800">Login</Link>
+                <Link to="/signup" className="text-sm text-gray-600 hover:text-gray-800">Sign Up</Link>
+              </>
             )}
           </div>
         </div>

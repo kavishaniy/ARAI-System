@@ -48,7 +48,7 @@ const HistorySection = () => {
 
   if (loading) {
     return (
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white shadow-sm rounded-lg p-6">
         <p className="text-gray-500 text-center">Loading history...</p>
       </div>
     );
@@ -56,67 +56,26 @@ const HistorySection = () => {
 
   if (analyses.length === 0) {
     return (
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white shadow-sm rounded-lg p-6">
         <p className="text-gray-500 text-center">No analyses yet. Upload a design to get started!</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Design Name
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Date
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Score
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Status
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {analyses.map((analysis) => (
-            <tr key={analysis.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                {analysis.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {analysis.date}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  analysis.score >= 80 ? 'bg-gray-100 text-gray-800' :
-                  analysis.score >= 60 ? 'bg-gray-100 text-gray-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
-                  {analysis.score}/100
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <span className="capitalize">{analysis.status}</span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button
-                  onClick={() => handleViewReport(analysis.id)}
-                  className="text-gray-800 hover:text-gray-800"
-                >
-                  View Report
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      {analyses.map((analysis) => (
+        <div key={analysis.id} className="bg-white rounded-lg shadow-sm p-4 flex items-center justify-between">
+          <div>
+            <h4 className="text-sm font-medium text-gray-800">{analysis.name}</h4>
+            <p className="text-xs text-gray-500 mt-1">{analysis.date} • <span className="capitalize">{analysis.status}</span></p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-gray-700">{analysis.score}/100</div>
+            <button onClick={() => handleViewReport(analysis.id)} className="text-sm text-primary-600 hover:underline">View</button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
