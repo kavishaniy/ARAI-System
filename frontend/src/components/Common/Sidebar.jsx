@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Upload, Clock, Settings, LogOut, Menu } from 'lucide-react';
+import { Home, Upload, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
@@ -35,8 +35,9 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
       <div className="lg:hidden bg-white border-b">
         <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md bg-primary-500 text-white flex items-center justify-center font-semibold">A</div>
-            <div className="text-sm font-medium">ARAI</div>
+            <div className="w-10 h-10 rounded-md flex items-center justify-center p-1 -mt-2">
+              <img src="/nobg-arai.jpeg" alt="ARAI" title="ARAI" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.onerror=null; e.target.style.display='none'; }} />
+            </div>
           </div>
           <button onClick={() => setOpen(true)} className="p-2 rounded-md">
             <Menu className="h-5 w-5 text-gray-600" />
@@ -48,10 +49,8 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
       <aside className="hidden lg:block w-64 bg-white border-r border-gray-100 min-h-screen px-4 py-6">
         <div className="mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-md bg-primary-500 text-white flex items-center justify-center font-semibold">A</div>
-            <div>
-              <div className="text-sm font-semibold text-gray-800">ARAI</div>
-              <div className="text-xs text-gray-500">Design Critique</div>
+            <div className="w-24 h-24 rounded-md flex items-center justify-center p-1 -mt-4">
+              <img src="/nobg-arai.jpeg" alt="ARAI" title="ARAI" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.onerror=null; e.target.style.display='none'; }} />
             </div>
           </div>
         </div>
@@ -84,13 +83,16 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div className="absolute inset-0 bg-black opacity-30" onClick={() => setOpen(false)}></div>
           <div className="relative w-64 bg-white border-r border-gray-100 p-4">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-md bg-primary-500 text-white flex items-center justify-center font-semibold">A</div>
-                <div className="text-sm font-medium">ARAI</div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-16 rounded-md flex items-center justify-center p-1 -mt-2">
+                    <img src="/nobg-arai.jpeg" alt="ARAI" title="ARAI" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.onerror=null; e.target.style.display='none'; }} />
+                  </div>
+                </div>
+                <button onClick={() => setOpen(false)} className="p-2" aria-label="Close sidebar">
+                  <X className="h-5 w-5 text-gray-600" />
+                </button>
               </div>
-              <button onClick={() => setOpen(false)} className="p-2">Close</button>
-            </div>
             <nav className="space-y-1">
               {navItem('/dashboard', 'Home', Home, 'dashboard')}
               {navItem('#upload', 'Upload', Upload, 'upload')}
