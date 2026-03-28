@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, FilePlus, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
+import { MessageSquare, Folder, FilePlus, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
 const navItems = [
-  { to: '/', label: 'Home', Icon: Home, id: 'home' },
-  { to: '/dashboard', label: 'Dashboard', Icon: Home, id: 'dashboard' },
+  { to: '/chat', label: 'New Chat', Icon: MessageSquare, id: 'chat' },
+  { to: '/projects', label: 'Projects', Icon: Folder, id: 'projects' },
   { to: '/history', label: 'History', Icon: Clock, id: 'history' },
   { to: '/settings', label: 'Settings', Icon: Settings, id: 'settings' },
 ];
@@ -48,22 +48,26 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         <div className={`brand-mark ${collapsed ? 'hidden' : ''}`}>A</div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 8 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 8 }}>
         {navItems.map(({ to, label, Icon, id }) => {
           const isActive = active === id;
           return (
-            <Link key={id} to={to} onClick={() => onNavigate(id)} style={{ textDecoration: 'none' }}>
-              <div className={`rail-item ${isActive ? 'active' : ''}`} title={label}>
-                <Icon className="h-5 w-5" />
+            <Link key={id} to={to} onClick={() => onNavigate(id)} style={{ textDecoration: 'none', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10 }}>
+                <div className={`rail-item ${isActive ? 'active' : ''}`} title={label}>
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div className="rail-label">{label}</div>
               </div>
             </Link>
           );
         })}
       </div>
 
-      <div style={{ marginBottom: 6 }}>
-        <div className="rail-item" onClick={handleNewAnalysis} title="New Analysis">
-          <FilePlus className="h-5 w-5" />
+      <div style={{ marginBottom: 6, width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10, cursor: 'pointer' }} onClick={handleNewAnalysis} title="New Analysis">
+          <div className="rail-item"><FilePlus className="h-5 w-5" /></div>
+          <div className="rail-label">New Analysis</div>
         </div>
       </div>
 
@@ -73,13 +77,14 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         </div>
       </div>
 
-      <div style={{ marginTop: 12 }}>
-        <div className="rail-item" onClick={() => {
+      <div style={{ marginTop: 12, width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10, cursor: 'pointer' }} onClick={() => {
           const next = !collapsed;
           setCollapsed(next);
           try { localStorage.setItem('sidebar_collapsed', next ? 'true' : 'false'); } catch (e) {}
         }} title={collapsed ? 'Expand' : 'Collapse'}>
-          {collapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+          <div className="rail-item">{collapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}</div>
+          <div className="rail-label">{collapsed ? 'Expand' : 'Collapse'}</div>
         </div>
       </div>
     </div>

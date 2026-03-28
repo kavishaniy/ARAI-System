@@ -42,7 +42,7 @@ const Dashboard = () => {
     <div className="app-shell">
       <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
 
-  <main className="content-area" style={{ marginLeft: collapsed ? 48 : 72 }}>
+      <main className="content-area" style={{ marginLeft: collapsed ? 72 : 200 }}>
         <div className="container">
           <div className="hero" style={{ marginBottom: 20 }}>
             <div>
