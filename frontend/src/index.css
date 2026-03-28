@@ -116,3 +116,103 @@ code, pre, kbd, samp {
   box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
   border-color: var(--accent);
 }
+
+/* Modern unique minimal tokens and utilities */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-base);
+  color: var(--text-primary);
+}
+
+.side-rail {
+  width: 72px;
+  background: linear-gradient(180deg, var(--bg-surface), var(--bg-elevated));
+  border-right: 1px solid rgba(255,255,255,0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+}
+
+.rail-item {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.rail-item.active {
+  background: rgba(37,99,235,0.12);
+  color: var(--accent);
+  box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+}
+
+.rail-item:hover {
+  transform: translateY(-2px);
+}
+
+.content-area {
+  flex: 1;
+  padding: 48px 40px;
+}
+
+.glass-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.6));
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px) saturate(120%);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.auth-split {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 32px;
+  align-items: center;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.auth-visual {
+  padding: 36px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(37,99,235,0.04));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand-mark {
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  background: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .auth-split {
+    grid-template-columns: 1fr;
+    padding: 0 16px;
+  }
+
+  .side-rail { display: none; }
+  .content-area { padding: 20px; }
+}

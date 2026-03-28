@@ -84,61 +84,43 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '48px 16px' }}>
-      <div className="card" style={{ maxWidth: 420, width: '100%' }}>
-        <div style={{ textAlign: 'center', marginBottom: 18 }}>
-          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>Sign in to ARAI</h2>
-          <div className="muted" style={{ marginTop: 6 }}>AI-Powered UX Design Critique</div>
+    <div style={{ padding: 48 }}>
+      <div className="auth-split">
+        <div className="auth-visual">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div className="brand-mark">A</div>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>ARAI</div>
+              <div className="muted">AI-powered UX design critique</div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 12 }} className="muted">Upload a design and see concise, actionable suggestions that improve clarity, accessibility, and hierarchy.</div>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
-          {error && (
-            <div className="card" style={{ background: '#FFF6F6', borderColor: 'var(--danger)', color: 'var(--danger)' }}>{error}</div>
-          )}
+        <div>
+          <div className="glass-card">
+            <h2 style={{ marginTop: 0, marginBottom: 6, fontSize: 20, fontWeight: 800 }}>Sign in</h2>
+            <div className="muted" style={{ marginBottom: 16 }}>Sign in to access your analyses</div>
 
-          <div>
-            <label htmlFor="email" className="sr-only">Email address</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-input"
-              placeholder="Email address"
-            />
-          </div>
+            <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
+              {error && (
+                <div className="card" style={{ background: '#FFF6F6', borderColor: 'var(--danger)', color: 'var(--danger)' }}>{error}</div>
+              )}
 
-          <div>
-            <label htmlFor="password" className="sr-only">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-input"
-              placeholder="Password"
-            />
-          </div>
+              <input id="email" name="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="form-input" placeholder="Email address" />
+              <input id="password" name="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="form-input" placeholder="Password" />
 
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary"
-              style={{ flex: 1 }}
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button type="submit" disabled={loading} className="btn-primary" style={{ flex: 1 }}>{loading ? 'Signing in...' : 'Sign in'}</button>
+              </div>
 
-          <div style={{ textAlign: 'center' }}>
-            <Link to="/signup" className="muted">Don't have an account? Sign up</Link>
+              <div style={{ textAlign: 'center' }}>
+                <Link to="/signup" className="muted">Don't have an account? Sign up</Link>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
