@@ -17,7 +17,7 @@
   --accent: #2563EB;
   --accent-hover: #1D4FCC;
   --accent-dim: #1E3A8A;
-  --text-primary: #080C14; /* dark text for white background */
+  --text-primary: #000000; /* pure black for primary text on white background */
   --text-secondary: #243B66; /* navy-tinged secondary */
   --text-muted: #4A6090;
   --success: #22C55E;

@@ -55,11 +55,8 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
     <div className="flex flex-col h-full text-sm">
       {/* Logo area */}
       <div className="h-14 flex items-center gap-3 border-b" style={{ borderColor: 'var(--border)', padding: '0 12px' }}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center">
-            <img src="/nobg-arai.jpeg" alt="ARAI" className="w-full h-full object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
-          </div>
-          <div className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>ARAI</div>
+        <div className="w-10 h-10 flex items-center justify-center">
+          <img src="/nobg-arai.jpeg" alt="ARAI" className="w-full h-full object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
         </div>
       </div>
 
