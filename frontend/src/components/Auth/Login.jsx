@@ -84,65 +84,59 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-800">
-            Sign in to ARAI
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            AI-Powered UX Design Critique
-          </p>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '48px 16px' }}>
+      <div className="card" style={{ maxWidth: 420, width: '100%' }}>
+        <div style={{ textAlign: 'center', marginBottom: 18 }}>
+          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>Sign in to ARAI</h2>
+          <div className="muted" style={{ marginTop: 6 }}>AI-Powered UX Design Critique</div>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
           {error && (
-            <div className="bg-gray-100 border border-gray-400 text-gray-800 px-4 py-3 rounded">
-              {error}
-            </div>
+            <div className="card" style={{ background: '#FFF6F6', borderColor: 'var(--danger)', color: 'var(--danger)' }}>{error}</div>
           )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-t-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-b-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
+
+          <div>
+            <label htmlFor="email" className="sr-only">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+              placeholder="Email address"
+            />
           </div>
 
           <div>
+            <label htmlFor="password" className="sr-only">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input"
+              placeholder="Password"
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: 8 }}>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="btn-primary"
+              style={{ flex: 1 }}
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
 
-          <div className="text-center">
-            <Link to="/signup" className="font-medium text-gray-800 hover:text-gray-800">
-              Don't have an account? Sign up
-            </Link>
+          <div style={{ textAlign: 'center' }}>
+            <Link to="/signup" className="muted">Don't have an account? Sign up</Link>
           </div>
         </form>
       </div>

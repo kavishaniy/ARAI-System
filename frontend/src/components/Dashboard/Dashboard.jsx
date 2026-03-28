@@ -21,18 +21,24 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--bg-base)' }}>
       <div className="flex">
-  <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
+        <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
 
-  <main className="flex-1 flex items-start justify-center py-10 lg:ml-[240px]" style={{ background: 'var(--bg-base)', padding: '32px 40px', minHeight: '100vh' }}>
-          <div className="w-full max-w-5xl px-6">
-            <div className="bg-white rounded-xl shadow p-10">
+        <main className="flex-1 lg:ml-[240px] py-10" style={{ minHeight: '100vh' }}>
+          <div className="container">
+            <div className="card solid-card">
               <div className="flex items-center justify-between mb-6">
-                <div />
-                {activeTab === 'results' && (
-                  <button onClick={handleNewAnalysis} className="text-sm px-3 py-1 border rounded text-gray-700 hover:bg-gray-50">New Analysis</button>
-                )}
+                <div>
+                  <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Dashboard</h1>
+                  <div className="muted text-sm">Upload designs and view analysis</div>
+                </div>
+
+                <div>
+                  {activeTab === 'results' && (
+                    <button onClick={handleNewAnalysis} className="btn-secondary">New Analysis</button>
+                  )}
+                </div>
               </div>
 
               <div>

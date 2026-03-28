@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen" style={{ background: 'var(--bg-base)' }}>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route 

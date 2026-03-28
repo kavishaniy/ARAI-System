@@ -52,27 +52,23 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   };
 
   const SidebarContent = (
-    <div className="flex flex-col h-full text-sm">
-      {/* Logo area */}
-      <div className="h-14 flex items-center gap-3 border-b" style={{ borderColor: 'var(--border)', padding: '0 12px' }}>
-        <div className="w-10 h-10 flex items-center justify-center">
+    <div className="flex flex-col h-full text-sm" style={{ padding: 12 }}>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 flex items-center justify-center" style={{ borderRadius: 8, background: 'var(--bg-surface)', padding: 6 }}>
           <img src="/nobg-arai.jpeg" alt="ARAI" className="w-full h-full object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
         </div>
+        <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>ARAI</div>
       </div>
 
-      <div className="p-3">
-        <button
-          onClick={handleNewAnalysis}
-          className="w-full h-9 flex items-center justify-center gap-2 rounded transition-150"
-          style={{ background: 'var(--accent)', color: '#fff', borderRadius: '6px' }}
-        >
+      <div className="mb-4">
+        <button onClick={handleNewAnalysis} className="btn-primary w-full" style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
           <FilePlus className="h-4 w-4" />
-          <span className="text-sm font-medium">New Analysis</span>
+          <span>New Analysis</span>
         </button>
       </div>
 
-      <nav className="px-3 flex-1 flex flex-col overflow-auto">
-        <div className="text-xs uppercase tracking-widest mb-2 px-1" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>Navigation</div>
+      <nav className="flex-1 overflow-auto">
+        <div className="muted text-xs uppercase mb-3">Navigation</div>
         <div className="flex flex-col gap-2">
           {navItems.map(({ to, label, Icon, id }) => {
             const isActive = active === id;
@@ -82,9 +78,9 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
                 to={to}
                 onClick={() => onNavigate(id)}
                 className="flex items-center gap-3 px-3"
-                style={{ height: '36px', borderRadius: '6px', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', background: isActive ? 'var(--bg-active)' : 'transparent' }}
+                style={{ height: 44, borderRadius: 8, color: isActive ? 'var(--accent)' : 'var(--text-secondary)', background: isActive ? 'rgba(37,99,235,0.06)' : 'transparent' }}
               >
-                <div style={{ width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: isActive ? 'var(--accent)' : 'var(--text-secondary)' }}>
+                <div style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon className="h-4 w-4" />
                 </div>
                 <span className="truncate">{label}</span>
@@ -93,18 +89,18 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
           })}
         </div>
 
-        <div className="mt-4">
-          <div className="text-xs uppercase tracking-widest mb-2 px-1" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>Recent</div>
+        <div className="mt-6">
+          <div className="muted text-xs uppercase mb-2">Recent</div>
           <div className="flex flex-col gap-1">
             {recent.length === 0 && (
-              <div className="text-sm text-[13px]" style={{ color: 'var(--text-muted)' }}>No recent uploads</div>
+              <div className="text-sm muted">No recent uploads</div>
             )}
             {recent.map((r) => (
               <button
                 key={r.analysis_id}
                 onClick={() => navigate(`/results/${r.analysis_id}`)}
                 className="text-sm text-left truncate px-2 py-1"
-                style={{ color: 'var(--text-secondary)', borderRadius: '6px' }}
+                style={{ color: 'var(--text-secondary)', borderRadius: 6 }}
               >
                 {r.filename || r.design_name}
               </button>
@@ -113,7 +109,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         </div>
       </nav>
 
-      <div className="px-3 pb-4 pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+      <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
@@ -121,12 +117,12 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
             </div>
             <div className="min-w-0">
               <div className="text-sm truncate" style={{ color: 'var(--text-primary)' }}>{user?.name ?? user?.email ?? 'Account'}</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>View profile</div>
+              <div className="text-xs muted">View profile</div>
             </div>
           </div>
 
           <div>
-            <button onClick={() => setShowLogoutModal(true)} className="p-1 text-sm" style={{ color: 'var(--text-muted)' }} title="Logout">
+            <button onClick={() => setShowLogoutModal(true)} className="p-1 text-sm muted" title="Logout">
               <LogOut className="h-4 w-4" />
             </button>
           </div>

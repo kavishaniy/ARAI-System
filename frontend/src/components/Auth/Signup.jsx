@@ -94,93 +94,30 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-800">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            You'll need to confirm your email address before logging in
-          </p>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '48px 16px' }}>
+      <div className="card" style={{ maxWidth: 480, width: '100%' }}>
+        <div style={{ textAlign: 'center', marginBottom: 18 }}>
+          <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>Create your account</h2>
+          <div className="muted" style={{ marginTop: 6 }}>You'll need to confirm your email address before logging in</div>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
           {error && (
-            <div className="bg-gray-100 border border-gray-400 text-gray-800 px-4 py-3 rounded">
-              {error}
-            </div>
+            <div className="card" style={{ background: '#FFF6F6', borderColor: 'var(--danger)', color: 'var(--danger)' }}>{error}</div>
           )}
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="name" className="sr-only">Full Name</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength="8"
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Password (min. 8 characters)"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-700 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
+
+          <input className="form-input" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
+          <input className="form-input" name="email" placeholder="Email address" value={formData.email} onChange={handleChange} required />
+          <input className="form-input" name="password" type="password" placeholder="Password (min. 8 characters)" value={formData.password} onChange={handleChange} minLength={8} required />
+          <input className="form-input" name="confirmPassword" type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required />
+
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="submit" disabled={loading} className="btn-primary" style={{ flex: 1 }}>{loading ? 'Signing up...' : 'Sign up'}</button>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing up...' : 'Sign up'}
-            </button>
-          </div>
-
-          <div className="text-center text-sm">
-            <span className="text-gray-600">Already have an account? </span>
-            <Link to="/login" className="font-medium text-gray-800 hover:text-gray-800">
-              Sign in
-            </Link>
+          <div style={{ textAlign: 'center' }}>
+            <span className="muted">Already have an account? </span>
+            <Link to="/login" className="muted" style={{ fontWeight: 600, marginLeft: 6 }}>Sign in</Link>
           </div>
         </form>
       </div>

@@ -62,3 +62,57 @@ code, pre, kbd, samp {
 .transition-150 {
   transition: all 150ms ease;
 }
+
+/* Minimal design helpers for the new aesthetic */
+.container {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.card {
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.solid-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  outline: none;
+}
+
+.form-input:focus {
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+  border-color: var(--accent);
+}
