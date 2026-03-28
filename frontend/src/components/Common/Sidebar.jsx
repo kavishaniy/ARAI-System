@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Upload, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Home, FilePlus, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
 const navItems = [
-  { to: '/dashboard', label: 'Home', Icon: Home, id: 'dashboard' },
-  { to: '#upload', label: 'Upload', Icon: Upload, id: 'upload' },
-  { to: '/dashboard?tab=history', label: 'History', Icon: Clock, id: 'history' },
+  { to: '/', label: 'Home', Icon: Home, id: 'home' },
+  { to: '/dashboard', label: 'Dashboard', Icon: Home, id: 'dashboard' },
+  { to: '/history', label: 'History', Icon: Clock, id: 'history' },
   { to: '/settings', label: 'Settings', Icon: Settings, id: 'settings' },
 ];
 
-const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
+const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false); // drawer open for mobile
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [user, setUser] = useState(null);
+  const [recent, setRecent] = useState([]);
 
   useEffect(() => {
     try {
@@ -24,51 +25,58 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
     } catch (e) {
       setUser(null);
     }
+
+    // fetch recent analyses (last 5)
+    const fetchRecent = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch(`/api/v1/analysis/history?limit=5`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setRecent(data.analyses || []);
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    fetchRecent();
   }, []);
 
-  return (
-    <>
-      {/* Mobile top bar */}
-      <div className="lg:hidden bg-white border-b">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center -mt-1">
-              <img
-                src="/nobg-arai.jpeg"
-                alt="ARAI"
-                title="ARAI"
-                className="max-w-full max-h-full object-contain"
-                onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
-              />
-            </div>
-            {/* logo only */}
-          </div>
+  const handleNewAnalysis = () => {
+    // navigate to upload flow or open upload modal anchor
+    onNavigate('upload');
+    navigate('/');
+  };
 
-          <button
-            onClick={() => setOpen(true)}
-            className="p-2 rounded-md text-slate-600 hover:bg-slate-50"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+  const SidebarContent = (
+    <div className="flex flex-col h-full text-sm">
+      {/* Logo area */}
+      <div className="h-14 flex items-center gap-3 border-b" style={{ borderColor: 'var(--border)', padding: '0 12px' }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center">
+            <img src="/nobg-arai.jpeg" alt="ARAI" className="w-full h-full object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+          </div>
+          <div className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>ARAI</div>
         </div>
       </div>
 
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-56 bg-white border-r border-slate-100 min-h-screen px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 flex items-center justify-center -mt-1">
-            <img
-              src="/nobg-arai.jpeg"
-              alt="ARAI"
-              title="ARAI"
-              className="max-w-full max-h-full object-contain"
-              onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
-            />
-          </div>
-        </div>
+      <div className="p-3">
+        <button
+          onClick={handleNewAnalysis}
+          className="w-full h-9 flex items-center justify-center gap-2 rounded transition-150"
+          style={{ background: 'var(--accent)', color: '#fff', borderRadius: '6px' }}
+        >
+          <FilePlus className="h-4 w-4" />
+          <span className="text-sm font-medium">New Analysis</span>
+        </button>
+      </div>
 
-        <nav className="flex-1 flex flex-col gap-1" aria-label="Main navigation">
+      <nav className="px-3 flex-1 flex flex-col overflow-auto">
+        <div className="text-xs uppercase tracking-widest mb-2 px-1" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>Navigation</div>
+        <div className="flex flex-col gap-2">
           {navItems.map(({ to, label, Icon, id }) => {
             const isActive = active === id;
             return (
@@ -76,83 +84,101 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
                 key={id}
                 to={to}
                 onClick={() => onNavigate(id)}
-                className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${
-                  isActive ? 'bg-slate-50 text-slate-900 border-l-2 border-blue-600 pl-[calc(0.75rem-2px)]' : 'text-slate-600 hover:bg-slate-50'
-                }`}
+                className="flex items-center gap-3 px-3"
+                style={{ height: '36px', borderRadius: '6px', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', background: isActive ? 'var(--bg-active)' : 'transparent' }}
               >
-                <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-slate-500 group-hover:text-slate-700'}`} />
+                <div style={{ width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: isActive ? 'var(--accent)' : 'var(--text-secondary)' }}>
+                  <Icon className="h-4 w-4" />
+                </div>
                 <span className="truncate">{label}</span>
               </Link>
             );
           })}
+        </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-3 px-3 py-2">
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 text-sm">
-                {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm text-slate-900 truncate">{user?.email ?? 'Account'}</div>
-                <div className="text-xs text-slate-500">View profile</div>
-              </div>
-            </div>
-
-            <div className="mt-3 px-3">
+        <div className="mt-4">
+          <div className="text-xs uppercase tracking-widest mb-2 px-1" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>Recent</div>
+          <div className="flex flex-col gap-1">
+            {recent.length === 0 && (
+              <div className="text-sm text-[13px]" style={{ color: 'var(--text-muted)' }}>No recent uploads</div>
+            )}
+            {recent.map((r) => (
               <button
-                onClick={() => setShowLogoutModal(true)}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50"
+                key={r.analysis_id}
+                onClick={() => navigate(`/results/${r.analysis_id}`)}
+                className="text-sm text-left truncate px-2 py-1"
+                style={{ color: 'var(--text-secondary)', borderRadius: '6px' }}
               >
-                <LogOut className="h-4 w-4 text-slate-600" />
-                <span>Logout</span>
+                {r.filename || r.design_name}
               </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      <div className="px-3 pb-4 pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+              {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm truncate" style={{ color: 'var(--text-primary)' }}>{user?.name ?? user?.email ?? 'Account'}</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>View profile</div>
             </div>
           </div>
-        </nav>
+
+          <div>
+            <button onClick={() => setShowLogoutModal(true)} className="p-1 text-sm" style={{ color: 'var(--text-muted)' }} title="Logout">
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="lg:hidden bg-[var(--bg-surface)] border-b" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setDrawerOpen(true)} className="p-2" aria-label="Open menu">
+              <Menu className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <img src="/nobg-arai.jpeg" alt="ARAI" className="w-8 h-8 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+              <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
+            </div>
+          </div>
+
+          <div>
+            <div className="w-8 h-8 rounded-full" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>{user?.email ? user.email.charAt(0).toUpperCase() : 'U'}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop fixed sidebar */}
+      <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full" style={{ width: 240, background: 'var(--bg-surface)', borderRight: '1px solid var(--border)', paddingTop: 12 }}>
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {SidebarContent}
+        </div>
       </aside>
 
       {/* Mobile drawer */}
-      {open && (
+      {drawerOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div className="absolute inset-0 bg-black opacity-30" onClick={() => setOpen(false)} />
-          <div className="relative w-64 bg-white border-r border-slate-100 p-4">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 flex items-center justify-center -mt-1">
-                  <img
-                    src="/nobg-arai.jpeg"
-                    alt="ARAI"
-                    title="ARAI"
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
-                  />
-                </div>
-                {/* logo only */}
+          <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.35)' }} onClick={() => setDrawerOpen(false)} />
+          <div className="relative w-64" style={{ background: 'var(--bg-surface)', borderRight: '1px solid var(--border)' }}>
+            <div className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <img src="/nobg-arai.jpeg" alt="ARAI" className="w-10 h-10 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
-              <button onClick={() => setOpen(false)} className="p-2" aria-label="Close sidebar">
-                <X className="h-5 w-5 text-slate-600" />
-              </button>
+              <button onClick={() => setDrawerOpen(false)} className="p-2"><X className="h-5 w-5" /></button>
             </div>
-
-            <nav className="flex flex-col gap-1">
-              {navItems.map(({ to, label, Icon, id }) => (
-                <Link
-                  key={id}
-                  to={to}
-                  onClick={() => { onNavigate(id); setOpen(false); }}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${active === id ? 'bg-slate-50 text-slate-900' : 'text-slate-600 hover:bg-slate-50'}`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{label}</span>
-                </Link>
-              ))}
-
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                <button onClick={() => setShowLogoutModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50">
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </button>
-              </div>
-            </nav>
+            <div style={{ height: 'calc(100% - 64px)', overflow: 'auto' }}>{SidebarContent}</div>
           </div>
         </div>
       )}

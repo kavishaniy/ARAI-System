@@ -2,16 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design system tokens */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-base: #080C14;
+  --bg-surface: #0D1526;
+  --bg-elevated: #111E38;
+  --bg-hover: #162544;
+  --bg-active: #1A2D52;
+  --border: #1E3260;
+  --border-strong: #2A4580;
+  --accent: #2563EB;
+  --accent-hover: #1D4FCC;
+  --accent-dim: #1E3A8A;
+  --text-primary: #F0F4FF;
+  --text-secondary: #8BA3CC;
+  --text-muted: #4A6090;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --score-ring: #2563EB;
+
+  /* Base typography */
+  --base-font-size: 14px;
+  --base-line-height: 1.6;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-size: var(--base-font-size);
+  line-height: var(--base-line-height);
+  background: var(--bg-base);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+code, pre, kbd, samp {
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace;
+}
+
+/* Utility: visually-hidden (for accessibility) */
+.sr-only {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* Small helper to ensure transitions match spec */
+.transition-150 {
+  transition: all 150ms ease;
 }

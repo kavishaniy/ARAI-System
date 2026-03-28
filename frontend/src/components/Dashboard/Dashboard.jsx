@@ -23,9 +23,9 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex">
-        <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
+  <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
 
-        <main className="flex-1 flex items-start justify-center py-10">
+  <main className="flex-1 flex items-start justify-center py-10 lg:ml-[240px]" style={{ background: 'var(--bg-base)', padding: '32px 40px', minHeight: '100vh' }}>
           <div className="w-full max-w-5xl px-6">
             <div className="bg-white rounded-xl shadow p-10">
               <div className="flex items-center justify-between mb-6">
