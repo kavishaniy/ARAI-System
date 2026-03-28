@@ -71,9 +71,10 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         </div>
       </div>
 
-      <div style={{ marginTop: 8 }}>
-        <div className="rail-item" onClick={() => setShowLogoutModal(true)} title="Logout">
-          <LogOut className="h-5 w-5" />
+      <div style={{ marginTop: 8, width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10, cursor: 'pointer' }} onClick={() => setShowLogoutModal(true)} title="Logout">
+          <div className="rail-item"><LogOut className="h-5 w-5" /></div>
+          <div className="rail-label">Logout</div>
         </div>
       </div>
 
@@ -124,7 +125,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
                 <img src="/nobg-arai.jpeg" alt="ARAI" className="w-10 h-10 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
-              <button onClick={() => setDrawerOpen(false)} className="p-2"><X className="h-5 w-5" /></button>
+              <button onClick={() => setDrawerOpen(false)} className="p-2" title="Close" aria-label="Close"><X className="h-5 w-5" /></button>
             </div>
             <div style={{ height: 'calc(100% - 64px)', overflow: 'auto' }}>{Rail}</div>
           </div>
