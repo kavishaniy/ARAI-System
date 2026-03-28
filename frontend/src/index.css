@@ -6,8 +6,9 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg-base: #080C14;
-  --bg-surface: #0D1526;
+  /* App background should be white; surfaces (sidebar/cards) remain navy */
+  --bg-base: #FFFFFF; /* page background */
+  --bg-surface: #0D1526; /* sidebar, cards (navy) */
   --bg-elevated: #111E38;
   --bg-hover: #162544;
   --bg-active: #1A2D52;
@@ -16,8 +17,8 @@
   --accent: #2563EB;
   --accent-hover: #1D4FCC;
   --accent-dim: #1E3A8A;
-  --text-primary: #F0F4FF;
-  --text-secondary: #8BA3CC;
+  --text-primary: #080C14; /* dark text for white background */
+  --text-secondary: #243B66; /* navy-tinged secondary */
   --text-muted: #4A6090;
   --success: #22C55E;
   --warning: #F59E0B;
