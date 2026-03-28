@@ -16,6 +16,14 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [user, setUser] = useState(null);
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      const v = localStorage.getItem('sidebar_collapsed');
+      return v === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
 
   useEffect(() => {
     try {
@@ -37,7 +45,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   const Rail = (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
       <div style={{ marginBottom: 8 }}>
-        <div className="brand-mark">A</div>
+        <div className={`brand-mark ${collapsed ? 'hidden' : ''}`}>A</div>
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 8 }}>
@@ -64,6 +72,16 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
           <LogOut className="h-5 w-5" />
         </div>
       </div>
+
+      <div style={{ marginTop: 12 }}>
+        <div className="rail-item" onClick={() => {
+          const next = !collapsed;
+          setCollapsed(next);
+          try { localStorage.setItem('sidebar_collapsed', next ? 'true' : 'false'); } catch (e) {}
+        }} title={collapsed ? 'Expand' : 'Collapse'}>
+          {collapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+        </div>
+      </div>
     </div>
   );
 
@@ -88,8 +106,8 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         </div>
       </div>
 
-      {/* Slim rail for desktop */}
-      <aside className="hidden lg:flex side-rail fixed left-0 top-0 h-full">{Rail}</aside>
+  {/* Slim rail for desktop */}
+  <aside className={`hidden lg:flex side-rail fixed left-0 top-0 h-full ${collapsed ? 'collapsed' : ''}`}>{Rail}</aside>
 
       {/* Mobile drawer */}
       {drawerOpen && (

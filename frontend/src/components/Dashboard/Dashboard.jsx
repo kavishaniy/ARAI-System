@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UploadAnalysis from '../Analysis/UploadAnalysis';
 import AnalysisResults from '../Analysis/AnalysisResults';
 import HistorySection from './HistorySection';
@@ -20,11 +20,29 @@ const Dashboard = () => {
     setActiveTab('upload');
   };
 
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const read = () => {
+      try {
+        const v = localStorage.getItem('sidebar_collapsed');
+        setCollapsed(v === 'true');
+      } catch (e) {
+        setCollapsed(false);
+      }
+    };
+
+    read();
+    const onStorage = (e) => { if (e.key === 'sidebar_collapsed') read(); };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
   return (
     <div className="app-shell">
       <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
 
-      <main className="content-area" style={{ marginLeft: 72 }}>
+  <main className="content-area" style={{ marginLeft: collapsed ? 48 : 72 }}>
         <div className="container">
           <div className="hero" style={{ marginBottom: 20 }}>
             <div>

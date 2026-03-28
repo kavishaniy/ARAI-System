@@ -135,6 +135,12 @@ code, pre, kbd, samp {
   padding: 14px 8px;
 }
 
+.side-rail.collapsed {
+  width: 48px;
+}
+
+.brand-mark.hidden { display: none; }
+
 .rail-item {
   width: 48px;
   height: 48px;
