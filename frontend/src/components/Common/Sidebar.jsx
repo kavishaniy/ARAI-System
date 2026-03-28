@@ -141,7 +141,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="lg:hidden bg-[var(--bg-surface)] border-b" style={{ borderColor: 'var(--border)' }}>
+  <div className="lg:hidden bg-[var(--bg-base)] border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <button onClick={() => setDrawerOpen(true)} className="p-2" aria-label="Open menu">
@@ -160,7 +160,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
       </div>
 
       {/* Desktop fixed sidebar */}
-      <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full" style={{ width: 240, background: 'var(--bg-surface)', borderRight: '1px solid var(--border)', paddingTop: 12 }}>
+  <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full" style={{ width: 240, background: 'var(--bg-base)', borderRight: '1px solid var(--border)', paddingTop: 12 }}>
         <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           {SidebarContent}
         </div>
@@ -170,7 +170,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
       {drawerOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.35)' }} onClick={() => setDrawerOpen(false)} />
-          <div className="relative w-64" style={{ background: 'var(--bg-surface)', borderRight: '1px solid var(--border)' }}>
+          <div className="relative w-64" style={{ background: 'var(--bg-base)', borderRight: '1px solid var(--border)' }}>
             <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src="/nobg-arai.jpeg" alt="ARAI" className="w-10 h-10 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
