@@ -41,7 +41,7 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
                 onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
               />
             </div>
-            <div className="text-sm font-medium text-slate-700">ARAI</div>
+            {/* logo only */}
           </div>
 
           <button
@@ -65,10 +65,6 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
               className="max-w-full max-h-full object-contain"
               onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
             />
-          </div>
-          <div>
-            <div className="text-base font-semibold text-slate-900">ARAI</div>
-            <div className="text-xs text-slate-500">Design analysis · Minimal</div>
           </div>
         </div>
 
@@ -130,7 +126,7 @@ const Sidebar = ({ active = 'dashboard', onNavigate = () => {} }) => {
                     onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                   />
                 </div>
-                <div className="text-sm font-medium text-slate-700">ARAI</div>
+                {/* logo only */}
               </div>
               <button onClick={() => setOpen(false)} className="p-2" aria-label="Close sidebar">
                 <X className="h-5 w-5 text-slate-600" />
