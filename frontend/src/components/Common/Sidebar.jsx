@@ -45,7 +45,12 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   const Rail = (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
       <div style={{ marginBottom: 8 }}>
-        <div className={`brand-mark ${collapsed ? 'hidden' : ''}`}>A</div>
+        <img
+          src="/nobg-arai.jpeg"
+          alt="ARAI"
+          className={`brand-mark ${collapsed ? 'hidden' : ''}`}
+          onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
+        />
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 8 }}>
