@@ -44,14 +44,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
 
   const Rail = (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', height: '100%' }}>
-    <div style={{ marginBottom: 4 }}>
-        <img
-          src="/arai.png"
-          alt="ARAI"
-          className={`brand-mark ${collapsed ? 'hidden' : ''}`}
-          onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
-        />
-      </div>
+      {/* logo removed - intentionally left blank to keep minimal rail */}
 
   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 2 }}>
         {navItems.map(({ to, label, Icon, id }) => {
@@ -106,7 +99,6 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
               <Menu className="h-5 w-5" />
             </button>
               <div className="flex items-center gap-2">
-                <img src="/arai.png" alt="ARAI" className="w-24 h-24 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
           </div>
@@ -126,8 +118,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
           <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.35)' }} onClick={() => setDrawerOpen(false)} />
           <div className="relative w-64" style={{ background: 'var(--bg-base)', borderRight: '1px solid var(--border)' }}>
             <div className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img src="/arai.png" alt="ARAI" className="w-28 h-28 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <div className="flex items-center gap-2">
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
               <button onClick={() => setDrawerOpen(false)} className="p-2" title="Close" aria-label="Close"><X className="h-5 w-5" /></button>
