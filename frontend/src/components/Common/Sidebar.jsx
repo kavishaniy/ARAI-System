@@ -106,7 +106,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
               <Menu className="h-5 w-5" />
             </button>
               <div className="flex items-center gap-2">
-                <img src="/arai.jpeg" alt="ARAI" className="w-12 h-12 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <img src="/arai.jpeg" alt="ARAI" className="w-20 h-20 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
           </div>
