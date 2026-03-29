@@ -220,12 +220,10 @@ code, pre, kbd, samp {
   width: 68px;
   height: 68px;
   border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: white;
-  background: var(--accent);
+  display: block;
+  object-fit: contain;
+  padding: 0;
+  background: none; /* no background color for the logo image */
 }
 
 @media (max-width: 900px) {

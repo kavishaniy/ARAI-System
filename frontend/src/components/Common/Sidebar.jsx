@@ -46,7 +46,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
       <div style={{ marginBottom: 8 }}>
         <img
-          src="/nobg-arai.jpeg"
+          src="/arai.png"
           alt="ARAI"
           className={`brand-mark ${collapsed ? 'hidden' : ''}`}
           onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
@@ -105,10 +105,10 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
             <button onClick={() => setDrawerOpen(true)} className="p-2" aria-label="Open menu">
               <Menu className="h-5 w-5" />
             </button>
-            <div className="flex items-center gap-2">
-              <img src="/nobg-arai.jpeg" alt="ARAI" className="w-8 h-8 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
-              <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
-            </div>
+              <div className="flex items-center gap-2">
+                <img src="/arai.png" alt="ARAI" className="w-8 h-8 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
+              </div>
           </div>
 
           <div>
@@ -127,7 +127,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
           <div className="relative w-64" style={{ background: 'var(--bg-base)', borderRight: '1px solid var(--border)' }}>
             <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <img src="/nobg-arai.jpeg" alt="ARAI" className="w-10 h-10 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <img src="/arai.png" alt="ARAI" className="w-10 h-10 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
               <button onClick={() => setDrawerOpen(false)} className="p-2" title="Close" aria-label="Close"><X className="h-5 w-5" /></button>
