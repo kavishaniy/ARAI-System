@@ -43,7 +43,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   };
 
   const Rail = (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', height: '100%' }}>
     <div style={{ marginBottom: 4 }}>
         <img
           src="/arai.png"

@@ -139,8 +139,8 @@ code, pre, kbd, samp {
 
 .side-rail.collapsed {
   width: 72px; /* collapsed narrow rail */
-  align-items: center;
-  padding-left: 8px;
+  align-items: flex-start; /* keep left alignment so icons don't shift */
+  padding-left: 12px; /* keep same left padding as expanded state */
 }
 
 .brand-mark.hidden { display: none; }
