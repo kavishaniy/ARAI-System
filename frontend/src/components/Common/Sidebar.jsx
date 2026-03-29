@@ -106,7 +106,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
               <Menu className="h-5 w-5" />
             </button>
               <div className="flex items-center gap-2">
-                <img src="/arai.jpeg" alt="ARAI" className="w-20 h-20 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <img src="/arai.png" alt="ARAI" className="w-24 h-24 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
           </div>
@@ -127,7 +127,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
           <div className="relative w-64" style={{ background: 'var(--bg-base)', borderRight: '1px solid var(--border)' }}>
             <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <img src="/arai.png" alt="ARAI" className="w-14 h-14 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
+                <img src="/arai.png" alt="ARAI" className="w-28 h-28 object-contain" onError={(e)=>{e.target.onerror=null;e.target.style.display='none'}} />
                 <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>ARAI</div>
               </div>
               <button onClick={() => setDrawerOpen(false)} className="p-2" title="Close" aria-label="Close"><X className="h-5 w-5" /></button>

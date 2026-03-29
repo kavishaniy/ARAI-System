@@ -217,8 +217,8 @@ code, pre, kbd, samp {
 }
 
 .brand-mark {
-  width: 92px;
-  height: 92px;
+  width: 160px;
+  height: 160px;
   border-radius: 12px;
   display: block;
   object-fit: contain;
