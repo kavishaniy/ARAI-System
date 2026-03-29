@@ -53,7 +53,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         />
       </div>
 
-  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 4 }}>
+  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 2 }}>
         {navItems.map(({ to, label, Icon, id }) => {
           const isActive = active === id;
           return (
