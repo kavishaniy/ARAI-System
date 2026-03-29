@@ -44,7 +44,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
 
   const Rail = (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-      <div style={{ marginBottom: 8 }}>
+    <div style={{ marginBottom: 4 }}>
         <img
           src="/arai.png"
           alt="ARAI"
@@ -53,7 +53,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         />
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 8 }}>
+  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 4 }}>
         {navItems.map(({ to, label, Icon, id }) => {
           const isActive = active === id;
           return (
