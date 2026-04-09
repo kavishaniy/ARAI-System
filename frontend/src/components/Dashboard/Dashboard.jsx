@@ -8,15 +8,21 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('upload');
   const [refreshHistory, setRefreshHistory] = useState(0);
   const [currentAnalysis, setCurrentAnalysis] = useState(null);
+  const [analysisKey, setAnalysisKey] = useState(0); // Key to force re-render of AnalysisResults
 
   const handleAnalysisComplete = (analysisData) => {
     setCurrentAnalysis(analysisData);
+    setAnalysisKey(prev => prev + 1); // Force re-render with new key
     setRefreshHistory(prev => prev + 1);
-    setActiveTab('results');
+    // Use setTimeout to ensure state updates are batched before switching tab
+    setTimeout(() => {
+      setActiveTab('results');
+    }, 0);
   };
 
   const handleNewAnalysis = () => {
     setCurrentAnalysis(null);
+    setAnalysisKey(prev => prev + 1); // Reset the key when starting new analysis
     setActiveTab('upload');
   };
 
@@ -62,7 +68,7 @@ const Dashboard = () => {
               <UploadAnalysis onAnalysisComplete={handleAnalysisComplete} />
             )}
             {activeTab === 'results' && currentAnalysis && (
-              <AnalysisResults results={currentAnalysis} />
+              <AnalysisResults key={analysisKey} results={currentAnalysis} />
             )}
             {activeTab === 'history' && (
               <HistorySection key={refreshHistory} onSelectAnalysis={setCurrentAnalysis} />

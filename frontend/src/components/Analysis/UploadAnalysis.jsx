@@ -141,15 +141,21 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
           // Success! Break out of retry loop
           lastError = null;
           
-          // Notify parent component
-          if (onAnalysisComplete) {
-            onAnalysisComplete(response.data);
-          }
-
-          // Reset form
+          // Reset form FIRST (clear any lingering state)
           setFile(null);
           setPreview(null);
           setDesignName('');
+          setError(null);
+          setIsAnalyzing(false);
+          setRetryMessage('');
+          
+          // Notify parent component with a slight delay to ensure state is cleared
+          setTimeout(() => {
+            if (onAnalysisComplete) {
+              console.log('📤 Calling onAnalysisComplete callback with response data');
+              onAnalysisComplete(response.data);
+            }
+          }, 100);
           
           break; // Exit retry loop on success
           
