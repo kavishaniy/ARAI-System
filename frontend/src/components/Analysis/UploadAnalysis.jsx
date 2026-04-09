@@ -4,7 +4,7 @@ import axios from 'axios';
 import { authService } from '../../services/auth';
 
 // Upload and Analysis Component - Production Ready
-const UploadAnalysis = ({ onAnalysisComplete }) => {
+const UploadAnalysis = ({ onAnalysisStart, onAnalysisComplete, onAnalysisError }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [designName, setDesignName] = useState('');
@@ -95,6 +95,11 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
 
     setIsAnalyzing(true);
     setError(null);
+
+    // Call the parent callback to show loading screen
+    if (onAnalysisStart) {
+      onAnalysisStart();
+    }
 
     try {
       const formData = new FormData();
@@ -223,6 +228,11 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         setError('Unable to connect to server. The server may be starting up (this can take 30-60 seconds on first request). Please wait a moment and try again.');
       } else {
         setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.');
+      }
+      
+      // Call parent error handler
+      if (onAnalysisError) {
+        onAnalysisError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.');
       }
     } finally {
       setIsAnalyzing(false);

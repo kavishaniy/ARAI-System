@@ -713,8 +713,8 @@ const AnalysisResults = ({ results }) => {
           <div className="flex items-center gap-3 mb-6">
             <Target className="h-8 w-8 text-gray-800" />
             <div>
-              <h2 className="text-2xl font-bold text-gray-800"> Top 5 Priority Fixes</h2>
-              <p className="text-sm text-gray-600">Address these issues first for maximum impact</p>
+              <h2 className="text-2xl font-bold text-gray-800"> Top 5 Things to Fix (In Order)</h2>
+              <p className="text-sm text-gray-600">Start with these to get the biggest improvement 🚀</p>
             </div>
           </div>
           <div className="space-y-3">
@@ -882,31 +882,31 @@ const AnalysisResults = ({ results }) => {
               <div className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg p-6">
                 <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-lg">
                   <TrendingUp className="h-5 w-5 text-gray-800" />
-                  How to Read Your Scores
+                  How to Read Your Scores (Simple Version)
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-start gap-3 bg-white p-4 rounded-lg border border-gray-300">
-                    <div className="text-4xl"></div>
+                    <div className="text-4xl">✅</div>
                     <div>
                       <div className="font-bold text-gray-800 text-lg">80-100</div>
                       <div className="text-sm text-gray-800 font-semibold">Excellent!</div>
-                      <div className="text-sm text-gray-600">Keep it up! This area is great.</div>
+                      <div className="text-sm text-gray-600">Keep doing what you're doing!</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 bg-white p-4 rounded-lg border border-gray-300">
-                    <div className="text-4xl"></div>
+                    <div className="text-4xl">⚠️</div>
                     <div>
                       <div className="font-bold text-gray-800 text-lg">60-79</div>
                       <div className="text-sm text-gray-800 font-semibold">Pretty Good</div>
-                      <div className="text-sm text-gray-600">Some tweaks will make it better.</div>
+                      <div className="text-sm text-gray-600">Some fixes will help.</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 bg-white p-4 rounded-lg border border-gray-400">
-                    <div className="text-4xl"></div>
+                    <div className="text-4xl">⛔</div>
                     <div>
                       <div className="font-bold text-gray-800 text-lg">Below 60</div>
-                      <div className="text-sm text-gray-800 font-semibold">Needs Fixing</div>
-                      <div className="text-sm text-gray-600">Users might struggle here.</div>
+                      <div className="text-sm text-gray-800 font-semibold">Needs Work</div>
+                      <div className="text-sm text-gray-600">Important to fix soon.</div>
                     </div>
                   </div>
                 </div>
