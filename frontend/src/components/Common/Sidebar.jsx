@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MessageSquare, Folder, FilePlus, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
 const navItems = [
-  { to: '/dashboard', label: 'New Chat', Icon: MessageSquare, id: 'chat' },
+  { to: '/', label: 'New Analysis', Icon: FilePlus, id: 'new-analysis' },
   { to: '/projects', label: 'Projects', Icon: Folder, id: 'projects' },
   { to: '/history', label: 'History', Icon: Clock, id: 'history' },
   { to: '/settings', label: 'Settings', Icon: Settings, id: 'settings' },
@@ -50,7 +50,14 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         {navItems.map(({ to, label, Icon, id }) => {
           const isActive = active === id;
           return (
-            <Link key={id} to={to} onClick={() => { if (id === 'history' && typeof onNavigate === 'function') onNavigate(id); }} style={{ textDecoration: 'none', width: '100%' }}>
+            <Link key={id} to={to} onClick={() => {
+              if (id === 'new-analysis') {
+                // use the existing handler for new analysis flows
+                handleNewAnalysis();
+              } else if (id === 'history' && typeof onNavigate === 'function') {
+                onNavigate(id);
+              }
+            }} style={{ textDecoration: 'none', width: '100%' }}>
               <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10 }}>
                 <div className={`rail-item ${isActive ? 'active' : ''}`} title={label}>
                   <Icon className="h-5 w-5" />
@@ -62,12 +69,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         })}
       </div>
 
-      <div style={{ marginBottom: 6, width: '100%' }}>
-        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10, cursor: 'pointer' }} onClick={handleNewAnalysis} title="New Analysis">
-          <div className="rail-item"><FilePlus className="h-5 w-5" /></div>
-          <div className="rail-label">New Analysis</div>
-        </div>
-      </div>
+      {/* New Analysis now lives in the main nav items */}
 
       <div style={{ marginTop: 8, width: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10, cursor: 'pointer' }} onClick={() => setShowLogoutModal(true)} title="Logout">
