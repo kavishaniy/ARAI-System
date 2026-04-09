@@ -7,6 +7,9 @@ import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
 import AnalysisReport from './components/Analysis/AnalysisReport';
+import Projects from './components/Pages/Projects';
+import HistoryPage from './components/Pages/HistoryPage';
+import Settings from './components/Pages/Settings';
 // Navbar removed - using left sidebar instead
 
 // Protected Route
@@ -56,6 +59,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <AnalysisReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <Projects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <HistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             }
           />

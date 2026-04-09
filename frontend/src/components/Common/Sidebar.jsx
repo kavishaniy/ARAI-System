@@ -5,7 +5,7 @@ import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
 const navItems = [
-  { to: '/chat', label: 'New Chat', Icon: MessageSquare, id: 'chat' },
+  { to: '/dashboard', label: 'New Chat', Icon: MessageSquare, id: 'chat' },
   { to: '/projects', label: 'Projects', Icon: Folder, id: 'projects' },
   { to: '/history', label: 'History', Icon: Clock, id: 'history' },
   { to: '/settings', label: 'Settings', Icon: Settings, id: 'settings' },
@@ -50,7 +50,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         {navItems.map(({ to, label, Icon, id }) => {
           const isActive = active === id;
           return (
-            <Link key={id} to={to} onClick={() => onNavigate(id)} style={{ textDecoration: 'none', width: '100%' }}>
+            <Link key={id} to={to} onClick={() => { if (id === 'history' && typeof onNavigate === 'function') onNavigate(id); }} style={{ textDecoration: 'none', width: '100%' }}>
               <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderRadius: 10 }}>
                 <div className={`rail-item ${isActive ? 'active' : ''}`} title={label}>
                   <Icon className="h-5 w-5" />
