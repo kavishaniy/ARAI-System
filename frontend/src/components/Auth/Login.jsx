@@ -84,10 +84,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '40px 16px' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '40px 16px', position: 'relative' }}>
+      <img src="/arai-logo.jpeg" alt="ARAI" className="auth-logo" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
       <div style={{ width: '100%', maxWidth: 480 }}>
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <img src="/arai-logo.jpeg" alt="ARAI" style={{ width: 96, height: 'auto', margin: '0 auto 12px' }} onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>Sign in</h2>
           <div className="muted" style={{ marginTop: 6 }}>Sign in to access your analyses</div>
         </div>

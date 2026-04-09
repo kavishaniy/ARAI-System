@@ -242,3 +242,22 @@ code, pre, kbd, samp {
   .side-rail { display: none; }
   .content-area { padding: 20px; }
 }
+
+/* Auth page logo positioned in the top-left corner and responsive */
+.auth-logo {
+  position: absolute;
+  left: 32px;
+  top: 32px;
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+  z-index: 40;
+}
+
+@media (max-width: 640px) {
+  .auth-logo {
+    left: 16px;
+    top: 16px;
+    width: 96px;
+  }
+}
