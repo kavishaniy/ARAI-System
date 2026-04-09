@@ -87,7 +87,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '40px 16px' }}>
       <div style={{ width: '100%', maxWidth: 480 }}>
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <img src="/arai.png" alt="ARAI" style={{ width: 96, height: 'auto', margin: '0 auto 12px' }} onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
+          <img src="/arai-logo.jpeg" alt="ARAI" style={{ width: 96, height: 'auto', margin: '0 auto 12px' }} onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>Sign in</h2>
           <div className="muted" style={{ marginTop: 6 }}>Sign in to access your analyses</div>
         </div>
@@ -102,7 +102,7 @@ const Login = () => {
             <input id="password" name="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="form-input" placeholder="Password" />
 
             <div style={{ display: 'flex', gap: 8 }}>
-              <button type="submit" disabled={loading} className="btn-primary" style={{ flex: 1 }}>{loading ? 'Signing in...' : 'Sign in'}</button>
+              <button type="submit" disabled={loading} className="btn-primary btn-navy" style={{ flex: 1 }}>{loading ? 'Signing in...' : 'Sign in'}</button>
             </div>
 
             <div style={{ textAlign: 'center' }}>

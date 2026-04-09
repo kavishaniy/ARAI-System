@@ -92,6 +92,13 @@ code, pre, kbd, samp {
   font-weight: 600;
 }
 
+/* Navy variant used for auth actions (sign in / sign up) */
+.btn-navy {
+  background: var(--bg-surface); /* navy */
+  color: white;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
 .btn-secondary {
   background: transparent;
   color: var(--text-secondary);
