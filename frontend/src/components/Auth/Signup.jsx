@@ -94,45 +94,34 @@ const Signup = () => {
   };
 
   return (
-    <div style={{ padding: 48 }}>
-      <div className="auth-split">
-        <div className="auth-visual">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div className="brand-mark">A</div>
-            <div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>ARAI</div>
-              <div className="muted">AI-powered UX design critique</div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: 12 }} className="muted">Create an account to save analyses, access history, and manage your designs.</div>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-base)', padding: '40px 16px' }}>
+      <div style={{ width: '100%', maxWidth: 520 }}>
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <img src="/arai.png" alt="ARAI" style={{ width: 96, height: 'auto', margin: '0 auto 12px' }} onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>Create your account</h2>
+          <div className="muted" style={{ marginTop: 6 }}>You'll need to confirm your email address before logging in</div>
         </div>
 
-        <div>
-          <div className="glass-card">
-            <h2 style={{ marginTop: 0, marginBottom: 6, fontSize: 20, fontWeight: 800 }}>Create your account</h2>
-            <div className="muted" style={{ marginBottom: 16 }}>You&apos;ll need to confirm your email address before logging in</div>
+        <div className="glass-card">
+          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
+            {error && (
+              <div className="card" style={{ background: '#FFF6F6', borderColor: 'var(--danger)', color: 'var(--danger)' }}>{error}</div>
+            )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
-              {error && (
-                <div className="card" style={{ background: '#FFF6F6', borderColor: 'var(--danger)', color: 'var(--danger)' }}>{error}</div>
-              )}
+            <input className="form-input" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
+            <input className="form-input" name="email" placeholder="Email address" value={formData.email} onChange={handleChange} required />
+            <input className="form-input" name="password" type="password" placeholder="Password (min. 8 characters)" value={formData.password} onChange={handleChange} minLength={8} required />
+            <input className="form-input" name="confirmPassword" type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required />
 
-              <input className="form-input" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
-              <input className="form-input" name="email" placeholder="Email address" value={formData.email} onChange={handleChange} required />
-              <input className="form-input" name="password" type="password" placeholder="Password (min. 8 characters)" value={formData.password} onChange={handleChange} minLength={8} required />
-              <input className="form-input" name="confirmPassword" type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button type="submit" disabled={loading} className="btn-primary" style={{ flex: 1 }}>{loading ? 'Signing up...' : 'Sign up'}</button>
+            </div>
 
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button type="submit" disabled={loading} className="btn-primary" style={{ flex: 1 }}>{loading ? 'Signing up...' : 'Sign up'}</button>
-              </div>
-
-              <div style={{ textAlign: 'center' }}>
-                <span className="muted">Already have an account? </span>
-                <Link to="/login" className="muted" style={{ fontWeight: 600, marginLeft: 6 }}>Sign in</Link>
-              </div>
-            </form>
-          </div>
+            <div style={{ textAlign: 'center' }}>
+              <span className="muted">Already have an account? </span>
+              <Link to="/login" className="muted" style={{ fontWeight: 600, marginLeft: 6 }}>Sign in</Link>
+            </div>
+          </form>
         </div>
       </div>
     </div>
