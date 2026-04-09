@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     
     # API Settings
     API_V1_STR: str = "/api/v1"
-    PROJECT_NAME: str = "ARAI - AI-Powered UX Design Critique"
+    PROJECT_NAME: str = "ARAI - ACCESSIBILITY READABILITY ATTENTION INDEX"
     VERSION: str = "1.0.0"
     
     # CORS
