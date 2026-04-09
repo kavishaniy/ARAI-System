@@ -247,7 +247,7 @@ code, pre, kbd, samp {
 .auth-logo {
   position: absolute;
   left: 32px;
-  top: 32px;
+  top: 24px; /* moved slightly upwards */
   width: 140px;
   height: auto;
   object-fit: contain;
@@ -257,7 +257,7 @@ code, pre, kbd, samp {
 @media (max-width: 640px) {
   .auth-logo {
     left: 16px;
-    top: 16px;
+    top: 12px; /* moved slightly upwards on mobile */
     width: 96px;
   }
 }

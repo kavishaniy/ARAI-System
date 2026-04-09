@@ -88,7 +88,7 @@ const Login = () => {
       <img src="/arai-logo.jpeg" alt="ARAI" className="auth-logo" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
       <div style={{ width: '100%', maxWidth: 480 }}>
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>Sign in</h2>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>WELCOME TO ARAI</h2>
           <div className="muted" style={{ marginTop: 6 }}>Sign in to access your analyses</div>
         </div>
 
