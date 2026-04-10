@@ -15,45 +15,33 @@ if LITE_MODE:
     logging.info("🚀 Running in LITE_MODE - PyTorch-based analysis disabled to save memory")
 
 # Lazy imports for memory optimization
-ComprehensiveWCAGAnalyzer = None
-ComprehensiveReadabilityAnalyzer = None
-ComprehensiveAttentionAnalyzer = None
-ComprehensiveReportGenerator = None
+SimplifiedWCAGAnalyzer = None
+SimplifiedReadabilityAnalyzer = None
+SimplifiedAttentionAnalyzer = None
 
 
 def _import_wcag_analyzer():
-    global ComprehensiveWCAGAnalyzer
-    if ComprehensiveWCAGAnalyzer is None:
-        from app.ai_modules.comprehensive_wcag_analyzer import ComprehensiveWCAGAnalyzer as _WCAG
-        ComprehensiveWCAGAnalyzer = _WCAG
-    return ComprehensiveWCAGAnalyzer
+    global SimplifiedWCAGAnalyzer
+    if SimplifiedWCAGAnalyzer is None:
+        from app.ai_modules.simplified_wcag_analyzer import SimplifiedWCAGAnalyzer as _WCAG
+        SimplifiedWCAGAnalyzer = _WCAG
+    return SimplifiedWCAGAnalyzer
 
 
 def _import_readability_analyzer():
-    global ComprehensiveReadabilityAnalyzer
-    if ComprehensiveReadabilityAnalyzer is None:
-        from app.ai_modules.comprehensive_readability_analyzer import ComprehensiveReadabilityAnalyzer as _Read
-        ComprehensiveReadabilityAnalyzer = _Read
-    return ComprehensiveReadabilityAnalyzer
+    global SimplifiedReadabilityAnalyzer
+    if SimplifiedReadabilityAnalyzer is None:
+        from app.ai_modules.simplified_readability_analyzer import SimplifiedReadabilityAnalyzer as _Read
+        SimplifiedReadabilityAnalyzer = _Read
+    return SimplifiedReadabilityAnalyzer
 
 
 def _import_attention_analyzer():
-    global ComprehensiveAttentionAnalyzer
-    if LITE_MODE:
-        # In LITE_MODE, return None to skip PyTorch
-        return None
-    if ComprehensiveAttentionAnalyzer is None:
-        from app.ai_modules.comprehensive_attention_analyzer import ComprehensiveAttentionAnalyzer as _Attn
-        ComprehensiveAttentionAnalyzer = _Attn
-    return ComprehensiveAttentionAnalyzer
-
-
-def _import_report_generator():
-    global ComprehensiveReportGenerator
-    if ComprehensiveReportGenerator is None:
-        from app.ai_modules.report_generator import ComprehensiveReportGenerator as _Report
-        ComprehensiveReportGenerator = _Report
-    return ComprehensiveReportGenerator
+    global SimplifiedAttentionAnalyzer
+    if SimplifiedAttentionAnalyzer is None:
+        from app.ai_modules.simplified_attention_analyzer import SimplifiedAttentionAnalyzer as _Attn
+        SimplifiedAttentionAnalyzer = _Attn
+    return SimplifiedAttentionAnalyzer
 
 
 from app.core.database import (
@@ -73,7 +61,6 @@ logger = logging.getLogger(__name__)
 wcag_analyzer = None
 readability_analyzer = None
 attention_analyzer = None
-report_generator = None
 
 # Path to saliency model (will be created during training)
 MODEL_PATH = Path(__file__).parent.parent.parent / "models" / "saliency_model.pth"
@@ -108,60 +95,12 @@ def get_readability_analyzer():
 def get_attention_analyzer():
     """Lazy load attention analyzer with memory cleanup"""
     global attention_analyzer
-    if LITE_MODE:
-        logger.info("⚡ LITE_MODE: Skipping attention analyzer (PyTorch)")
-        return None
     if attention_analyzer is None:
         logger.info("🔄 Lazy loading attention analyzer...")
         gc.collect()  # Free memory before loading
         AttnClass = _import_attention_analyzer()
-        if AttnClass is None:
-            return None
-        attention_analyzer = AttnClass(str(MODEL_PATH))
+        attention_analyzer = AttnClass()
     return attention_analyzer
-
-
-def get_lite_attention_results():
-    """Return simplified attention results for LITE_MODE"""
-    return {
-        "score": 70,
-        "lite_mode": True,
-        "message": "Attention analysis skipped in LITE_MODE to conserve memory",
-        "saliency_heatmap": None,
-        "attention_distribution": {
-            "high_attention_percentage": 20,
-            "average_attention": 0.5,
-            "max_attention": 0.8,
-            "attention_concentration": 0.3
-        },
-        "critical_elements": [],
-        "visual_hierarchy": {
-            "attention_distribution": {"top": 0.6, "middle": 0.4, "bottom": 0.3},
-            "f_pattern_compliance": 0.5,
-            "hierarchy_clarity": 0.02,
-            "issues": []
-        },
-        "cognitive_load": {
-            "cognitive_load_score": 40,
-            "level": "Moderate - Manageable complexity",
-            "metrics": {},
-            "issues": []
-        },
-        "issues": [],
-        "issue_summary": {"attention_priority": 0, "visual_hierarchy": 0, "cognitive_load": 0},
-        "recommendations": []
-    }
-
-
-def get_report_generator():
-    """Lazy load report generator with memory cleanup"""
-    global report_generator
-    if report_generator is None:
-        logger.info("🔄 Lazy loading report generator...")
-        gc.collect()  # Free memory before loading
-        ReportClass = _import_report_generator()
-        report_generator = ReportClass()
-    return report_generator
 
 
 async def get_current_user(authorization: Optional[str] = Header(None)):
@@ -290,26 +229,26 @@ async def upload_design(
             logger.warning(f"⚠️ Storage upload failed (continuing with local): {storage_error}")
             storage_path = str(local_file_path)
         # Run all analyses with memory management
-        logger.info(f"🔍 Starting comprehensive analysis for {file.filename}...")
+        logger.info(f"🔍 Starting simplified analysis for {file.filename}...")
 
         analysis_errors = []
 
-        # 1. Comprehensive WCAG 2.1 Accessibility Analysis (FR-009 to FR-012)
-        logger.info("♿ Running comprehensive WCAG 2.1 analysis (Contrast, Color Blindness, Alt Text)...")
+        # 1. Simplified WCAG 2.1 Accessibility Analysis (4 key areas)
+        logger.info("♿ Running accessibility analysis (Color Contrast, Text Size, Color Independence, Touch Targets)...")
         try:
             accessibility_results = get_wcag_analyzer().analyze_design(str(local_file_path))
             gc.collect()  # Free memory after analysis
         except MemoryError as e:
-            logger.error(f"❌ Memory error in WCAG analysis: {e}")
+            logger.error(f"❌ Memory error in accessibility analysis: {e}")
             analysis_errors.append("accessibility")
             accessibility_results = {"score": 50, "issues": [], "error": "Memory limit exceeded - partial analysis"}
         except Exception as e:
-            logger.error(f"❌ Error in WCAG analysis: {e}")
+            logger.error(f"❌ Error in accessibility analysis: {e}")
             analysis_errors.append("accessibility")
             accessibility_results = {"score": 50, "issues": [], "error": str(e)}
 
-        # 2. Comprehensive Readability Analysis (FR-013 to FR-016)
-        logger.info("📖 Running readability analysis (Flesch-Kincaid, Vocabulary, Inclusive Language, Typography)...")
+        # 2. Simplified Readability Analysis (4 key areas)
+        logger.info("📖 Running readability analysis (Short Sentences, Simple Words, Text Breaks, Active Voice)...")
         try:
             readability_results = get_readability_analyzer().analyze_design(str(local_file_path))
             gc.collect()  # Free memory after analysis
@@ -322,92 +261,41 @@ async def upload_design(
             analysis_errors.append("readability")
             readability_results = {"score": 50, "issues": [], "error": str(e)}
 
-        # 3. Comprehensive Attention Analysis (FR-017 to FR-020)
-        logger.info("👁️ Running attention analysis (Saliency, Visual Hierarchy, Cognitive Load)...")
-        attention_analyzer = get_attention_analyzer()
-        if attention_analyzer is None:
-            # LITE_MODE or PyTorch not available
-            logger.info("⚡ Using lite attention results (LITE_MODE or PyTorch unavailable)")
-            attention_results = get_lite_attention_results()
-        else:
-            try:
-                attention_results = attention_analyzer.analyze_design(str(local_file_path))
-                gc.collect()  # Free memory after analysis
-            except MemoryError as e:
-                logger.error(f"❌ Memory error in attention analysis: {e}")
-                analysis_errors.append("attention")
-                attention_results = get_lite_attention_results()
-                attention_results["error"] = "Memory limit exceeded - using lite analysis"
-            except Exception as e:
-                logger.error(f"❌ Error in attention analysis: {e}")
-                analysis_errors.append("attention")
-                attention_results = get_lite_attention_results()
-                attention_results["error"] = str(e)
+        # 3. Simplified Attention Analysis (4 key areas)
+        logger.info("👁️ Running attention analysis (Visual Hierarchy, Eye Flow, Cognitive Load, Hot Spots)...")
+        try:
+            attention_results = get_attention_analyzer().analyze_design(str(local_file_path))
+            gc.collect()  # Free memory after analysis
+        except MemoryError as e:
+            logger.error(f"❌ Memory error in attention analysis: {e}")
+            analysis_errors.append("attention")
+            attention_results = {"score": 50, "issues": [], "error": "Memory limit exceeded - partial analysis"}
+        except Exception as e:
+            logger.error(f"❌ Error in attention analysis: {e}")
+            analysis_errors.append("attention")
+            attention_results = {"score": 50, "issues": [], "error": str(e)}
 
         # Log any errors
         if analysis_errors:
             logger.warning(f"⚠️ Analysis completed with errors in: {', '.join(analysis_errors)}")
         
-        # Compile comprehensive results
-        analysis_results = {
-            "accessibility": accessibility_results,
-            "readability": readability_results,
-            "attention": attention_results
-        }
-
-        # 4. Generate Comprehensive Report (FR-021 to FR-027)
-        logger.info("📊 Generating comprehensive report with ARAI score, annotations, and exports...")
-        try:
-            comprehensive_report = get_report_generator().generate_comprehensive_report(
-                analysis_results,
-                str(local_file_path)
-            )
-            gc.collect()  # Free memory after report generation
-            arai_score = comprehensive_report["arai_score"]["overall"]
-        except MemoryError as e:
-            logger.error(f"❌ Memory error in report generation: {e}")
-            # Calculate simple ARAI score without full report
-            acc_score = accessibility_results.get("score", 50)
-            read_score = readability_results.get("score", 50)
-            attn_score = attention_results.get("score", 50)
-            arai_score = (acc_score * 0.4) + (read_score * 0.3) + (attn_score * 0.3)
-            comprehensive_report = {
-                "arai_score": {
-                    "overall": arai_score,
-                    "accessibility": acc_score,
-                    "readability": read_score,
-                    "attention": attn_score
-                },
-                "grade": _get_grade(arai_score),
-                "annotated_image": None,
-                "issues": [],
-                "issue_summary": {"critical": 0, "high": 0, "medium": 0, "low": 0},
-                "education": {},
-                "recommendations": [],
-                "metadata": {"error": "Memory limit exceeded - simplified report generated"}
-            }
-        except Exception as e:
-            logger.error(f"❌ Error in report generation: {e}")
-            # Calculate simple ARAI score without full report
-            acc_score = accessibility_results.get("score", 50)
-            read_score = readability_results.get("score", 50)
-            attn_score = attention_results.get("score", 50)
-            arai_score = (acc_score * 0.4) + (read_score * 0.3) + (attn_score * 0.3)
-            comprehensive_report = {
-                "arai_score": {
-                    "overall": arai_score,
-                    "accessibility": acc_score,
-                    "readability": read_score,
-                    "attention": attn_score
-                },
-                "grade": _get_grade(arai_score),
-                "annotated_image": None,
-                "issues": [],
-                "issue_summary": {"critical": 0, "high": 0, "medium": 0, "low": 0},
-                "education": {},
-                "recommendations": [],
-                "metadata": {"error": str(e)}
-            }
+        # Calculate ARAI score
+        acc_score = accessibility_results.get("score", 50)
+        read_score = readability_results.get("score", 50)
+        attn_score = attention_results.get("score", 50)
+        arai_score = (acc_score * 0.4) + (read_score * 0.3) + (attn_score * 0.3)
+        
+        # Compile all issues from all analyses
+        all_issues = []
+        all_issues.extend(accessibility_results.get("issues", []))
+        all_issues.extend(readability_results.get("issues", []))
+        all_issues.extend(attention_results.get("issues", []))
+        
+        # Count issues by severity
+        critical = sum(1 for i in all_issues if i.get('severity') == 'critical')
+        high = sum(1 for i in all_issues if i.get('severity') == 'high')
+        medium = sum(1 for i in all_issues if i.get('severity') == 'medium')
+        success = sum(1 for i in all_issues if i.get('severity') == 'success')
         
         # Compile final results
         final_results = {
@@ -416,31 +304,31 @@ async def upload_design(
             "filename": file.filename,
             "timestamp": timestamp,
             
-            # FR-021: ARAI Score
+            # ARAI Score
             "arai_score": round(arai_score, 2),
-            "arai_breakdown": comprehensive_report["arai_score"],
-            "overall_grade": comprehensive_report["grade"],
+            "arai_breakdown": {
+                "overall": round(arai_score, 2),
+                "accessibility": round(acc_score, 2),
+                "readability": round(read_score, 2),
+                "attention": round(attn_score, 2)
+            },
+            "overall_grade": _get_grade(arai_score),
             
             # Individual analysis results
             "accessibility": accessibility_results,
             "readability": readability_results,
             "attention": attention_results,
             
-            # FR-022: Annotated image
-            "annotated_image": comprehensive_report["annotated_image"],
-            
-            # FR-023 & FR-024: Comprehensive issue list with explainable AI
-            "issues": comprehensive_report["issues"],
-            "issue_summary": comprehensive_report["issue_summary"],
-            
-            # FR-025: Educational content
-            "education": comprehensive_report["education"],
-            
-            # Recommendations
-            "recommendations": comprehensive_report["recommendations"],
+            # All issues combined
+            "issues": all_issues,
+            "issue_summary": {
+                "critical": critical,
+                "high": high,
+                "medium": medium,
+                "passing": success
+            },
             
             "status": "completed" if not analysis_errors else "partial",
-            "metadata": comprehensive_report["metadata"],
             "warnings": [f"Analysis had errors in: {', '.join(analysis_errors)}"] if analysis_errors else []
         }
         
@@ -604,90 +492,6 @@ async def delete_analysis_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/export/pdf/{analysis_id}")
-async def export_pdf(
-    analysis_id: str,
-    current_user = Depends(get_current_user)
-):
-    """
-    FR-026: Export comprehensive analysis report as PDF
-    Requires authentication
-    """
-    try:
-        # Get analysis results
-        analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
-        
-        if not analysis:
-            raise HTTPException(status_code=404, detail="Analysis not found")
-        
-        results = analysis.get("results", analysis)
-        
-        # Generate PDF
-        analysis_dir = UPLOAD_DIR / analysis_id
-        analysis_dir.mkdir(exist_ok=True)
-        
-        pdf_path = analysis_dir / f"report_{analysis_id}.pdf"
-        
-        # Use report generator to create PDF
-        get_report_generator().export_to_pdf(results, str(pdf_path))
-        
-        # Return file for download
-        from fastapi.responses import FileResponse
-        return FileResponse(
-            path=str(pdf_path),
-            filename=f"ARAI_Report_{results.get('design_name', 'analysis')}.pdf",
-            media_type="application/pdf"
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error generating PDF: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
-
-
-@router.get("/export/csv/{analysis_id}")
-async def export_csv(
-    analysis_id: str,
-    current_user = Depends(get_current_user)
-):
-    """
-    FR-027: Export issue data as CSV
-    Requires authentication
-    """
-    try:
-        # Get analysis results
-        analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
-        
-        if not analysis:
-            raise HTTPException(status_code=404, detail="Analysis not found")
-        
-        results = analysis.get("results", analysis)
-        
-        # Generate CSV
-        analysis_dir = UPLOAD_DIR / analysis_id
-        analysis_dir.mkdir(exist_ok=True)
-        
-        csv_path = analysis_dir / f"issues_{analysis_id}.csv"
-        
-        # Use report generator to create CSV
-        get_report_generator().export_to_csv(results, str(csv_path))
-        
-        # Return file for download
-        from fastapi.responses import FileResponse
-        return FileResponse(
-            path=str(csv_path),
-            filename=f"ARAI_Issues_{results.get('design_name', 'analysis')}.csv",
-            media_type="text/csv"
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error generating CSV: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"CSV generation failed: {str(e)}")
-
-
 @router.get("/status")
 async def get_analysis_status():
     """
@@ -699,7 +503,6 @@ async def get_analysis_status():
         "ready": True,
         "memory": {},
         "modules": {},
-        "tesseract": False,
         "errors": []
     }
 
@@ -713,21 +516,11 @@ async def get_analysis_status():
     except Exception as e:
         status["memory"] = {"note": "Memory stats not available"}
 
-    # Check tesseract
-    try:
-        import pytesseract
-        pytesseract.get_tesseract_version()
-        status["tesseract"] = True
-    except Exception as e:
-        status["tesseract"] = False
-        status["errors"].append(f"Tesseract not available: {str(e)}")
-
     # Check if modules can be imported (without initializing)
     modules_to_check = [
         ("numpy", "numpy"),
         ("cv2", "opencv"),
         ("PIL", "pillow"),
-        ("torch", "pytorch"),
     ]
 
     for module_name, display_name in modules_to_check:
@@ -738,6 +531,6 @@ async def get_analysis_status():
             status["modules"][display_name] = False
             status["errors"].append(f"{display_name}: {str(e)}")
 
-    status["ready"] = len(status["errors"]) == 0 or status["tesseract"]
+    status["ready"] = len(status["errors"]) == 0
 
     return status

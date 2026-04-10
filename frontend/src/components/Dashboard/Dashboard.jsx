@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UploadAnalysis from '../Analysis/UploadAnalysis';
-import AnalysisResults from '../Analysis/AnalysisResults';
+import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
 import HistorySection from './HistorySection';
 import Sidebar from '../Common/Sidebar';
 
@@ -68,7 +68,7 @@ const Dashboard = () => {
               <UploadAnalysis onAnalysisComplete={handleAnalysisComplete} />
             )}
             {activeTab === 'results' && currentAnalysis && (
-              <AnalysisResults key={analysisKey} results={currentAnalysis} />
+              <SimplifiedAnalysisResults key={analysisKey} results={currentAnalysis} />
             )}
             {activeTab === 'history' && (
               <HistorySection key={refreshHistory} onSelectAnalysis={setCurrentAnalysis} />

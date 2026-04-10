@@ -1,0 +1,6 @@
+{
+  "builder": "NIXPACKS",
+  "nixpacks": {
+    "providers": ["python"]
+  }
+}
