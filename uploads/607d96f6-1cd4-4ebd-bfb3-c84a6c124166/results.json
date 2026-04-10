@@ -1,0 +1,213 @@
+{
+  "analysis_id": "607d96f6-1cd4-4ebd-bfb3-c84a6c124166",
+  "design_name": "Calendar.png",
+  "filename": "Calendar.png",
+  "timestamp": "2026-04-10T14:25:49.258972",
+  "arai_score": 91.9,
+  "arai_breakdown": {
+    "overall": 91.9,
+    "accessibility": 100,
+    "readability": 90,
+    "attention": 83
+  },
+  "overall_grade": "A",
+  "accessibility": {
+    "score": 100,
+    "wcag_level": "AA",
+    "conformance": "\u2705 Compliant",
+    "issues": [
+      {
+        "category": "contrast",
+        "title": "\u2705 Good Text Contrast",
+        "description": "Text appears to have adequate contrast for readability",
+        "severity": "success",
+        "how_to_fix": [
+          "Great! Your text contrast meets accessibility standards"
+        ]
+      },
+      {
+        "category": "text_size",
+        "title": "\u2705 Adequate Text Size",
+        "description": "Text appears to be appropriately sized for comfortable reading",
+        "severity": "success",
+        "how_to_fix": [
+          "Great! Your text size appears readable for all users"
+        ]
+      },
+      {
+        "category": "color_independence",
+        "title": "\u2705 Good Color Independence",
+        "description": "Design doesn't appear to rely solely on color for conveying meaning",
+        "severity": "success",
+        "how_to_fix": [
+          "Excellent! Your design includes non-color indicators for important information"
+        ]
+      },
+      {
+        "category": "touch_targets",
+        "title": "\u2705 Adequate Touch Target Size",
+        "description": "Interactive elements appear to have adequate size for easy tapping",
+        "severity": "success",
+        "how_to_fix": [
+          "Great! Your touch targets appear to be appropriately sized"
+        ]
+      }
+    ],
+    "summary": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "passing": 4
+    }
+  },
+  "readability": {
+    "score": 90,
+    "grade": "A",
+    "conformance": "\u2705 Excellent",
+    "issues": [
+      {
+        "category": "text_content",
+        "title": "\u2705 Minimal Text Content",
+        "description": "Design has minimal text. Good for visual clarity!",
+        "severity": "success",
+        "how_to_fix": [
+          "Great! If text is added, follow readability best practices"
+        ]
+      }
+    ],
+    "summary": {
+      "total_checks": 1,
+      "areas_to_improve": 4,
+      "focus": "Apply these readability best practices to your text content"
+    }
+  },
+  "attention": {
+    "score": 83,
+    "grade": "A",
+    "conformance": "\u2705 Excellent",
+    "issues": [
+      {
+        "category": "visual_hierarchy",
+        "title": "\u26a0\ufe0f Visual Hierarchy Unclear",
+        "description": "Different sections appear to have similar visual weight. Users may not know where to focus first",
+        "severity": "high",
+        "how_to_fix": [
+          "\u270f\ufe0f Use size to create hierarchy: Important elements larger, secondary elements smaller",
+          "\u270f\ufe0f Use contrast: Important content should stand out with bolder colors or darker text",
+          "\u270f\ufe0f Use whitespace: Separate important sections with breathing room",
+          "\u270f\ufe0f Use color: Draw attention with color, but not overuse it",
+          "\u270f\ufe0f Primary content should be ~60% of the visual space",
+          "\u270f\ufe0f Secondary content ~30%, supporting ~10%",
+          "\u270f\ufe0f Make the call-to-action (CTA) the most prominent element"
+        ]
+      },
+      {
+        "category": "hot_spots",
+        "title": "\ud83d\udd25 Visual Attention Areas",
+        "description": "High-attention areas detected: Bottom-Left, Middle-Left",
+        "severity": "info",
+        "how_to_fix": [
+          "\u270f\ufe0f Your design naturally draws attention to: Bottom-Left, Middle-Left, Top-Left",
+          "\u270f\ufe0f Make sure these hot spots contain important content",
+          "\u270f\ufe0f If not important, reduce contrast in these areas",
+          "\u270f\ufe0f Use high-attention areas for calls-to-action (CTAs)",
+          "\u270f\ufe0f Important content should be in prominent positions",
+          "\u270f\ufe0f Consider user attention span - focus on 1-2 key messages",
+          "\u270f\ufe0f Secondary information should be in lower-attention areas"
+        ]
+      }
+    ],
+    "summary": {
+      "critical": 0,
+      "high": 1,
+      "medium": 0,
+      "passing": 0,
+      "overall": "Design needs attention refinement"
+    }
+  },
+  "issues": [
+    {
+      "category": "contrast",
+      "title": "\u2705 Good Text Contrast",
+      "description": "Text appears to have adequate contrast for readability",
+      "severity": "success",
+      "how_to_fix": [
+        "Great! Your text contrast meets accessibility standards"
+      ]
+    },
+    {
+      "category": "text_size",
+      "title": "\u2705 Adequate Text Size",
+      "description": "Text appears to be appropriately sized for comfortable reading",
+      "severity": "success",
+      "how_to_fix": [
+        "Great! Your text size appears readable for all users"
+      ]
+    },
+    {
+      "category": "color_independence",
+      "title": "\u2705 Good Color Independence",
+      "description": "Design doesn't appear to rely solely on color for conveying meaning",
+      "severity": "success",
+      "how_to_fix": [
+        "Excellent! Your design includes non-color indicators for important information"
+      ]
+    },
+    {
+      "category": "touch_targets",
+      "title": "\u2705 Adequate Touch Target Size",
+      "description": "Interactive elements appear to have adequate size for easy tapping",
+      "severity": "success",
+      "how_to_fix": [
+        "Great! Your touch targets appear to be appropriately sized"
+      ]
+    },
+    {
+      "category": "text_content",
+      "title": "\u2705 Minimal Text Content",
+      "description": "Design has minimal text. Good for visual clarity!",
+      "severity": "success",
+      "how_to_fix": [
+        "Great! If text is added, follow readability best practices"
+      ]
+    },
+    {
+      "category": "visual_hierarchy",
+      "title": "\u26a0\ufe0f Visual Hierarchy Unclear",
+      "description": "Different sections appear to have similar visual weight. Users may not know where to focus first",
+      "severity": "high",
+      "how_to_fix": [
+        "\u270f\ufe0f Use size to create hierarchy: Important elements larger, secondary elements smaller",
+        "\u270f\ufe0f Use contrast: Important content should stand out with bolder colors or darker text",
+        "\u270f\ufe0f Use whitespace: Separate important sections with breathing room",
+        "\u270f\ufe0f Use color: Draw attention with color, but not overuse it",
+        "\u270f\ufe0f Primary content should be ~60% of the visual space",
+        "\u270f\ufe0f Secondary content ~30%, supporting ~10%",
+        "\u270f\ufe0f Make the call-to-action (CTA) the most prominent element"
+      ]
+    },
+    {
+      "category": "hot_spots",
+      "title": "\ud83d\udd25 Visual Attention Areas",
+      "description": "High-attention areas detected: Bottom-Left, Middle-Left",
+      "severity": "info",
+      "how_to_fix": [
+        "\u270f\ufe0f Your design naturally draws attention to: Bottom-Left, Middle-Left, Top-Left",
+        "\u270f\ufe0f Make sure these hot spots contain important content",
+        "\u270f\ufe0f If not important, reduce contrast in these areas",
+        "\u270f\ufe0f Use high-attention areas for calls-to-action (CTAs)",
+        "\u270f\ufe0f Important content should be in prominent positions",
+        "\u270f\ufe0f Consider user attention span - focus on 1-2 key messages",
+        "\u270f\ufe0f Secondary information should be in lower-attention areas"
+      ]
+    }
+  ],
+  "issue_summary": {
+    "critical": 0,
+    "high": 1,
+    "medium": 0,
+    "passing": 5
+  },
+  "status": "completed",
+  "warnings": []
+}
