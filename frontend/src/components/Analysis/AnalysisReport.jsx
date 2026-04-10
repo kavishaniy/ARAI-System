@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { analysisService } from '../../services/analysis';
-import ScoreCard from './ScoreCard';
-import AccessibilityReport from './AccessibilityReport';
-import ReadabilityReport from './ReadabilityReport';
-import AttentionReport from './AttentionReport';
+import SimplifiedAnalysisResults from './SimplifiedAnalysisResults';
 
 const AnalysisReport = () => {
   const { id } = useParams();
@@ -82,75 +79,8 @@ const AnalysisReport = () => {
         </div>
       )}
 
-      {/* Overall Score */}
-      <div className="mb-8">
-        <div className="bg-gradient-to-r from-gray-800 to-gray-800 rounded-lg shadow-lg p-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-2">Overall ARAI Score</h2>
-          <div className="text-6xl font-bold mb-2">
-            {analysis.overall_score ? Math.round(analysis.overall_score) : 'N/A'}
-          </div>
-          <div className="text-xl">out of 100</div>
-          {analysis.processing_time && (
-            <div className="mt-4 text-sm opacity-90">
-              Processing time: {analysis.processing_time.toFixed(2)}s
-            </div>
-          )}
-          {analysis.status && (
-            <div className="mt-2 text-sm opacity-90">
-              Status: {analysis.status}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Individual Scores */}
-      {(analysis.accessibility_score || analysis.readability_score || analysis.attention_score) && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <ScoreCard
-            title="Accessibility"
-            score={analysis.accessibility_score || 0}
-            weight={40}
-            color="blue"
-          />
-          <ScoreCard
-            title="Readability"
-            score={analysis.readability_score || 0}
-            weight={30}
-            color="green"
-          />
-          <ScoreCard
-            title="Attention"
-            score={analysis.attention_score || 0}
-            weight={30}
-            color="purple"
-          />
-        </div>
-      )}
-
-      {/* Detailed Reports */}
-      {(analysis.accessibility_details || analysis.readability_details || analysis.attention_details) && (
-        <div className="space-y-8">
-          {analysis.accessibility_details && (
-            <AccessibilityReport data={analysis.accessibility_details} />
-          )}
-          {analysis.readability_details && (
-            <ReadabilityReport data={analysis.readability_details} />
-          )}
-          {analysis.attention_details && (
-            <AttentionReport data={analysis.attention_details} />
-          )}
-        </div>
-      )}
-
-      {/* Show raw data if no detailed reports */}
-      {!analysis.accessibility_details && !analysis.readability_details && !analysis.attention_details && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Analysis Data</h2>
-          <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm">
-            {JSON.stringify(analysis, null, 2)}
-          </pre>
-        </div>
-      )}
+      {/* Use Simplified Analysis Results */}
+      <SimplifiedAnalysisResults results={analysis} />
     </div>
   );
 };
