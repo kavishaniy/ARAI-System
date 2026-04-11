@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Download } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Brain, Download } from 'lucide-react';
 import { authService } from '../services/auth';
 
 const N = '#0f2557';
@@ -15,13 +15,13 @@ const css = `
 /* ── NAV ── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; justify-content: space-between; align-items: center; 
-  padding: 0 3rem 0 2.5rem; height: 60px;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; padding: 0 3rem; height: 60px;
   background: #f5f4f0; border-bottom: 1.5px solid #0f2557;
 }
-.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1rem; letter-spacing: 0.1em; cursor: pointer; }
+.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1rem; letter-spacing: 0.1em; }
 .nav-logo-sq { width: 28px; height: 28px; background: #0f2557; display: flex; align-items: center; justify-content: center; }
-.nav-center { display: none; }
+.nav-center { display: flex; gap: 2.5rem; justify-content: center; }
 .nav-link { font-size: 0.8rem; letter-spacing: 0.05em; color: rgba(15,37,87,0.55); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.15s; }
 .nav-link:hover { color: #0f2557; }
 .nav-right { display: flex; justify-content: flex-end; gap: 0.75rem; align-items: center; }
@@ -51,7 +51,7 @@ const css = `
 .hs-stat-d { font-size: 0.7rem; color: rgba(15,37,87,0.48); margin-top: 0.3rem; line-height: 1.4; }
 
 .hero-main { display: flex; flex-direction: column; }
-.hero-main-top { flex: 1; padding: 2rem 4rem 3rem; display: flex; flex-direction: column; justify-content: center; }
+.hero-main-top { flex: 1; padding: 4rem 4rem 3rem; display: flex; flex-direction: column; justify-content: center; }
 .h-eyebrow { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(15,37,87,0.38); font-weight: 600; margin-bottom: 2.5rem; }
 .hero-h1 { font-family: 'DM Serif Display', serif; font-size: clamp(3rem, 5.5vw, 5.2rem); line-height: 1.0; color: #0f2557; font-weight: 400; margin-bottom: 2.5rem; }
 .hero-h1 span { display: block; }
@@ -433,7 +433,14 @@ const Landing = () => {
       {/* NAV */}
       <nav className="nav">
         <div className="nav-logo">
-          <img src="/arai-black.png" alt="ARAI Logo" style={{ height: 36, width: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
+          <div className="nav-logo-sq"><Brain size={14} color="#fff" /></div>
+          ARAI
+        </div>
+        <div className="nav-center">
+          {['About', 'Features', 'How It Works', 'Contact'].map(l => (
+            <button key={l} className="nav-link"
+              onClick={() => navigate(`/${l.toLowerCase().replace(/ /g, '-')}`)}>{l}</button>
+          ))}
         </div>
         <div className="nav-right">
           {isAuthenticated ? (
@@ -466,25 +473,12 @@ const Landing = () => {
             <div className="hst">AI Accessibility Checker<br />for UX Designers</div>
           </div>
           <div>
-            <div className="hsl">How It Works</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>1. Upload Your Design</div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>PNG, JPG, or Figma JSON — up to 25MB</div>
+            {[{ n: '30s', d: 'Average analysis time' }, { n: '50+', d: 'WCAG 2.1 criteria checked' }, { n: '10×', d: 'Cheaper at design stage' }].map(s => (
+              <div className="hs-stat" key={s.n}>
+                <div className="hs-stat-n">{s.n}</div>
+                <div className="hs-stat-d">{s.d}</div>
               </div>
-              <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>2. AI Analysis</div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>Runs in 22 seconds average</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>3. Review Results</div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>Color-coded annotations on design</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>4. Export Report</div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>WCAG-referenced PDF ready</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -651,7 +645,7 @@ const Landing = () => {
         <div className="footer-top">
           <div>
             <div className="fb-logo">
-              <img src="/arai-logo.jpeg" alt="ARAI Logo" style={{ height: 26, width: 'auto' }} />
+              <div className="fb-sq"><Brain size={13} color="rgba(255,255,255,0.5)" /></div>
               <span className="fb-name">ARAI</span>
             </div>
             <p className="fb-desc">AI-powered accessibility analysis for modern design teams. Built with research-backed methods and WCAG standards.</p>
