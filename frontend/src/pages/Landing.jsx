@@ -51,7 +51,7 @@ const css = `
 .hs-stat-d { font-size: 0.7rem; color: rgba(15,37,87,0.48); margin-top: 0.3rem; line-height: 1.4; }
 
 .hero-main { display: flex; flex-direction: column; }
-.hero-main-top { flex: 1; padding: 4rem 4rem 3rem; display: flex; flex-direction: column; justify-content: center; }
+.hero-main-top { flex: 1; padding: 2rem 4rem 3rem; display: flex; flex-direction: column; justify-content: center; }
 .h-eyebrow { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(15,37,87,0.38); font-weight: 600; margin-bottom: 2.5rem; }
 .hero-h1 { font-family: 'DM Serif Display', serif; font-size: clamp(3rem, 5.5vw, 5.2rem); line-height: 1.0; color: #0f2557; font-weight: 400; margin-bottom: 2.5rem; }
 .hero-h1 span { display: block; }
@@ -466,12 +466,25 @@ const Landing = () => {
             <div className="hst">AI Accessibility Checker<br />for UX Designers</div>
           </div>
           <div>
-            {[{ n: '30s', d: 'Average analysis time' }, { n: '50+', d: 'WCAG 2.1 criteria checked' }, { n: '10×', d: 'Cheaper at design stage' }].map(s => (
-              <div className="hs-stat" key={s.n}>
-                <div className="hs-stat-n">{s.n}</div>
-                <div className="hs-stat-d">{s.d}</div>
+            <div className="hsl">How It Works</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>1. Upload Your Design</div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>PNG, JPG, or Figma JSON — up to 25MB</div>
               </div>
-            ))}
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>2. AI Analysis</div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>Runs in 22 seconds average</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>3. Review Results</div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>Color-coded annotations on design</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f2557', marginBottom: '0.3rem' }}>4. Export Report</div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(15,37,87,0.55)', lineHeight: '1.5' }}>WCAG-referenced PDF ready</div>
+              </div>
+            </div>
           </div>
         </div>
 
