@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { authService } from './services/auth';
 
 // Components
+import Landing from './pages/Landing';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -24,70 +25,80 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Layout wrapper to handle background styling
+const AppLayout = () => {
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/';
+
+  return (
+    <div className="min-h-screen" style={{ background: !isLandingPage ? 'var(--bg-base)' : 'white' }}>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route 
+          path="/login" 
+          element={
+            authService.isAuthenticated() ? 
+              <Navigate to="/dashboard" replace /> : 
+              <Login />
+          } 
+        />
+        <Route 
+          path="/signup" 
+          element={
+            authService.isAuthenticated() ? 
+              <Navigate to="/dashboard" replace /> : 
+              <Signup />
+          } 
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analysis/:id"
+          element={
+            <ProtectedRoute>
+              <AnalysisReport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <Projects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <HistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </div>
+  );
+};
+
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="min-h-screen" style={{ background: 'var(--bg-base)' }}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route 
-            path="/login" 
-            element={
-              authService.isAuthenticated() ? 
-                <Navigate to="/dashboard" replace /> : 
-                <Login />
-            } 
-          />
-          <Route 
-            path="/signup" 
-            element={
-              authService.isAuthenticated() ? 
-                <Navigate to="/dashboard" replace /> : 
-                <Signup />
-            } 
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/:id"
-            element={
-              <ProtectedRoute>
-                <AnalysisReport />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              <ProtectedRoute>
-                <Projects />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/history"
-            element={
-              <ProtectedRoute>
-                <HistoryPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </div>
+      <AppLayout />
     </Router>
   );
 }
