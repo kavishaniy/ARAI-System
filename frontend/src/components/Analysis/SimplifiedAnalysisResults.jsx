@@ -24,7 +24,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
 
   if (!results) {
     return (
-      <div className="p-8 bg-gradient-to-b from-gray-50 to-white rounded-lg">
+      <div className="p-8 bg-white rounded-lg border border-gray-200">
         <p className="text-gray-500 text-center">No analysis results available</p>
       </div>
     );
@@ -42,7 +42,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
     };
 
     return (
-      <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="bg-white rounded-lg p-6 border border-gray-200 hover:border-navy-900 hover:shadow-md transition-all">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-lg ${color}`}>
             <Icon className="w-6 h-6 text-white" />
@@ -51,8 +51,8 @@ const SimplifiedAnalysisResults = ({ results }) => {
             Grade {grade}
           </div>
         </div>
-        <h3 className="text-gray-700 font-semibold mb-2">{title}</h3>
-        <div className="text-4xl font-bold text-gray-900 mb-2">{score.toFixed(1)}</div>
+        <h3 className="text-gray-800 font-semibold mb-2">{title}</h3>
+        <div className="text-4xl font-bold text-navy-900 mb-2">{score.toFixed(1)}</div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
             className={`h-2 rounded-full transition-all ${color}`}
@@ -71,10 +71,10 @@ const SimplifiedAnalysisResults = ({ results }) => {
     const isHigh = issue.severity === 'high';
 
     const getSeverityColor = () => {
-      if (isSuccess) return 'bg-emerald-50 border-emerald-200';
-      if (isCritical) return 'bg-red-50 border-red-200';
-      if (isHigh) return 'bg-orange-50 border-orange-200';
-      return 'bg-amber-50 border-amber-200';
+      if (isSuccess) return 'bg-white border-emerald-200 hover:bg-emerald-50';
+      if (isCritical) return 'bg-white border-red-200 hover:bg-red-50';
+      if (isHigh) return 'bg-white border-orange-200 hover:bg-orange-50';
+      return 'bg-white border-amber-200 hover:bg-amber-50';
     };
 
     const getSeverityIcon = () => {
@@ -97,7 +97,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
             <p className="text-gray-700 text-sm mb-2">{issue.description}</p>
 
             {isExpanded && (
-              <div className="mt-4 pl-4 border-l-2 border-gray-300 space-y-3">
+              <div className="mt-4 pl-4 border-l-2 border-navy-900 space-y-3">
                 {/* How to Fix Section */}
                 {issue.how_to_fix && (
                   <div>
@@ -109,13 +109,13 @@ const SimplifiedAnalysisResults = ({ results }) => {
                       {Array.isArray(issue.how_to_fix) ? (
                         issue.how_to_fix.map((fix, i) => (
                           <li key={i} className="text-gray-700 text-sm flex gap-2">
-                            <ArrowRight className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
+                            <ArrowRight className="w-4 h-4 text-navy-900 flex-shrink-0 mt-0.5" />
                             <span>{fix}</span>
                           </li>
                         ))
                       ) : (
                         <li className="text-gray-700 text-sm flex gap-2">
-                          <ArrowRight className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
+                          <ArrowRight className="w-4 h-4 text-navy-900 flex-shrink-0 mt-0.5" />
                           <span>{issue.how_to_fix}</span>
                         </li>
                       )}
@@ -137,14 +137,14 @@ const SimplifiedAnalysisResults = ({ results }) => {
             )}
 
             {!isExpanded && issue.how_to_fix && (
-              <div className="flex items-center gap-2 mt-2 text-teal-600">
+              <div className="flex items-center gap-2 mt-2 text-navy-900">
                 <ChevronDown className="w-4 h-4" />
                 <span className="text-sm font-medium">Click to see solutions</span>
               </div>
             )}
 
             {isExpanded && (
-              <div className="flex items-center gap-2 mt-3 text-teal-600">
+              <div className="flex items-center gap-2 mt-3 text-navy-900">
                 <ChevronUp className="w-4 h-4" />
                 <span className="text-sm font-medium">Click to collapse</span>
               </div>
@@ -161,7 +161,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
 
     return (
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
           <div className={`p-2 rounded-lg ${color}`}>
             <Icon className="w-5 h-5 text-white" />
           </div>
@@ -244,21 +244,21 @@ const SimplifiedAnalysisResults = ({ results }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 pb-8 border-b border-gray-200">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Design Analysis Results</h1>
           <p className="text-gray-600">Your ARAI (Accessibility Readability Attention Index) Score</p>
         </div>
 
         {/* Main Score Display */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8 border border-gray-200">
+        <div className="bg-white rounded-lg p-8 mb-8 border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-gray-600 text-lg mb-2">Overall ARAI Score</p>
               <div className="flex items-baseline gap-4">
-                <div className="text-6xl font-bold text-indigo-600">{arai_score.toFixed(1)}</div>
+                <div className="text-6xl font-bold text-navy-900">{arai_score.toFixed(1)}</div>
                 <div className={`text-5xl font-bold ${
                   overall_grade === 'A' ? 'text-emerald-600' :
                   overall_grade === 'B' ? 'text-teal-600' :
@@ -289,7 +289,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-8 bg-white rounded-lg p-2 shadow-sm border border-gray-200">
+        <div className="flex gap-2 mb-8 bg-white rounded-lg p-2 border border-gray-200">
           {[
             { id: 'overview', label: '📊 Overview' },
             { id: 'accessibility', label: '♿ Accessibility' },
@@ -301,7 +301,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 rounded-lg font-semibold transition-all ${
                 activeTab === tab.id
-                  ? 'bg-indigo-600 text-white shadow-md'
+                  ? 'bg-navy-900 text-white shadow-md'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >

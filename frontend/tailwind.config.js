@@ -20,7 +20,8 @@ module.exports = {
         muted: 'var(--text-muted)',
         success: 'var(--success)',
         warning: 'var(--warning)',
-        danger: 'var(--danger)'
+        danger: 'var(--danger)',
+        'navy-900': '#001f3f'
       },
       fontFamily: {
         sans: ['DM Sans', 'ui-sans-serif', 'system-ui'],

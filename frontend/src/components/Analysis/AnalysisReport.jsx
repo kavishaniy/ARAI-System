@@ -26,8 +26,8 @@ const AnalysisReport = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700"></div>
+      <div className="flex justify-center items-center min-h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy-900"></div>
       </div>
     );
   }
@@ -35,7 +35,7 @@ const AnalysisReport = () => {
   if (error) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-gray-50 border border-gray-200 text-gray-600 px-4 py-3 rounded">
+        <div className="bg-white border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {error}
         </div>
       </div>
@@ -45,7 +45,7 @@ const AnalysisReport = () => {
   if (!analysis) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-gray-50 border border-gray-200 text-gray-600 px-4 py-3 rounded">
+        <div className="bg-white border border-gray-200 text-gray-600 px-4 py-3 rounded-lg">
           No analysis data found
         </div>
       </div>
@@ -53,34 +53,38 @@ const AnalysisReport = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          {analysis.design_name || 'Design Analysis'}
-        </h1>
-        <p className="text-gray-500 mt-2">
-          {analysis.created_at 
-            ? `Analyzed on ${new Date(analysis.created_at).toLocaleDateString()}`
-            : `Analysis ID: ${analysis.analysis_id || id}`
-          }
-        </p>
-      </div>
-
-      {/* Original Design */}
-      {analysis.design_url && (
-        <div className="mb-8 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Original Design</h2>
-          <img
-            src={analysis.design_url}
-            alt={analysis.design_name || 'Design'}
-            className="w-full max-w-2xl mx-auto rounded shadow-lg"
-          />
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8 pb-8 border-b border-gray-200">
+          <h1 className="text-4xl font-bold text-gray-900">
+            {analysis.design_name || 'Design Analysis'}
+          </h1>
+          <p className="text-gray-600 mt-2">
+            {analysis.created_at 
+              ? `Analyzed on ${new Date(analysis.created_at).toLocaleDateString()}`
+              : `Analysis ID: ${analysis.analysis_id || id}`
+            }
+          </p>
         </div>
-      )}
 
-      {/* Use Simplified Analysis Results */}
-      <SimplifiedAnalysisResults results={analysis} />
+        {/* Original Design */}
+        {analysis.design_url && (
+          <div className="mb-8 bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Original Design</h2>
+            <div className="flex justify-center">
+              <img
+                src={analysis.design_url}
+                alt={analysis.design_name || 'Design'}
+                className="w-full max-w-2xl rounded-lg border border-gray-200"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Use Simplified Analysis Results */}
+        <SimplifiedAnalysisResults results={analysis} />
+      </div>
     </div>
   );
 };
