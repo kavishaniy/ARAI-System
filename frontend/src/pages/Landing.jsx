@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Brain, Download } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Download } from 'lucide-react';
 import { authService } from '../services/auth';
 
 // eslint-disable-next-line no-unused-vars
@@ -435,8 +435,7 @@ const Landing = () => {
       {/* NAV */}
       <nav className="nav">
         <div className="nav-logo">
-          <div className="nav-logo-sq"><Brain size={14} color="#fff" /></div>
-          ARAI
+          <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '28px', width: 'auto' }} />
         </div>
         <div className="nav-center">
           {['About', 'Features', 'How It Works', 'Contact'].map(l => (
@@ -471,14 +470,18 @@ const Landing = () => {
       <div className="hero-top">
         <div className="hero-sidebar">
           <div>
-            <div className="hsl">Project</div>
-            <div className="hst">AI Accessibility Checker<br />for UX Designers</div>
+            <div className="hsl">How It Works</div>
           </div>
           <div>
-            {[{ n: '30s', d: 'Average analysis time' }, { n: '50+', d: 'WCAG 2.1 criteria checked' }, { n: '10×', d: 'Cheaper at design stage' }].map(s => (
-              <div className="hs-stat" key={s.n}>
-                <div className="hs-stat-n">{s.n}</div>
-                <div className="hs-stat-d">{s.d}</div>
+            {[
+              { step: '1', title: 'Upload Your Design File', desc: 'Upload your Figma-exported PNG, JPG, or Figma JSON file directly to ARAI. Drag and drop or browse — files up to 25MB are supported. No plugin installation required.' },
+              { step: '2', title: 'AI Analysis Runs in Under 30 Seconds', desc: 'ARAI\'s three AI modules run simultaneously: the WCAG compliance engine checks 50+ criteria, the NLP readability module extracts and scores all text, and the saliency model generates your attention heatmap.' },
+              { step: '3', title: 'Review Your Annotated Results', desc: 'ARAI overlays colour-coded annotations directly on your design: red for critical violations, amber for warnings, and green for passes. Click any annotation to see the relevant WCAG criterion, confidence score, and plain-language explanation.' },
+              { step: '4', title: 'Export Your PDF Compliance Report', desc: 'Download a professional, WCAG-referenced PDF compliance report containing your ARAI composite score, full issue list, annotated design screenshots, and recommendations — ready for client delivery, team review, or legal audit.' },
+            ].map((item) => (
+              <div className="hs-stat" key={item.step} style={{ borderTop: '1px solid rgba(15,37,87,0.11)', paddingTop: '1.2rem' }}>
+                <div className="hs-stat-n" style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.4rem' }}>Step {item.step}: {item.title}</div>
+                <div className="hs-stat-d" style={{ fontSize: '0.7rem', lineHeight: 1.5 }}>{item.desc}</div>
               </div>
             ))}
           </div>
@@ -647,8 +650,7 @@ const Landing = () => {
         <div className="footer-top">
           <div>
             <div className="fb-logo">
-              <div className="fb-sq"><Brain size={13} color="rgba(255,255,255,0.5)" /></div>
-              <span className="fb-name">ARAI</span>
+              <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '26px', width: 'auto' }} />
             </div>
             <p className="fb-desc">AI-powered accessibility analysis for modern design teams. Built with research-backed methods and WCAG standards.</p>
           </div>
