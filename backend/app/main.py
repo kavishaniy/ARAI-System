@@ -15,6 +15,7 @@ app = FastAPI(
 # Explicitly list all allowed origins
 cors_origins = [
     "http://localhost:3000",
+    "http://localhost:3001",
     "http://localhost:5173",
     "https://arai-system.vercel.app",
     "https://arai-system-git-main-kavishaniy.vercel.app",
