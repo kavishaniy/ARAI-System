@@ -474,14 +474,14 @@ const Landing = () => {
           </div>
           <div>
             {[
-              { step: '1', title: 'Upload Design' },
-              { step: '2', title: 'AI Analyzes' },
-              { step: '3', title: 'Review Results' },
-              { step: '4', title: 'Export Report' },
+              { step: '1', title: 'Upload Design', desc: 'Upload PNG, JPG or Figma JSON (up to 25MB)' },
+              { step: '2', title: 'AI Analyzes', desc: '30 seconds to check 50+ WCAG criteria' },
+              { step: '3', title: 'Review Results', desc: 'Color-coded annotations on your design' },
+              { step: '4', title: 'Export Report', desc: 'Professional PDF compliance report' },
             ].map((item) => (
               <div className="hs-stat" key={item.step}>
                 <div className="hs-stat-n">{item.step}</div>
-                <div className="hs-stat-d">{item.title}</div>
+                <div className="hs-stat-d"><strong>{item.title}</strong><br /><span style={{ fontSize: '0.65rem', color: 'rgba(15,37,87,0.5)', marginTop: '0.3rem', display: 'block' }}>{item.desc}</span></div>
               </div>
             ))}
           </div>
