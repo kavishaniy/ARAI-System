@@ -1,7 +1,12 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build 2>&1",
   "outputDirectory": "build",
   "framework": "create-react-app",
+  "nodeVersion": "18.x",
+  "env": {
+    "CI": "false",
+    "REACT_APP_API_URL": "@react_app_api_url"
+  },
   "rewrites": [
     {
       "source": "/(.*)",
