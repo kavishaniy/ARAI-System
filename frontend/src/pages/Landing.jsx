@@ -474,14 +474,14 @@ const Landing = () => {
           </div>
           <div>
             {[
-              { step: '1', title: 'Upload Your Design File', desc: 'Upload your Figma-exported PNG, JPG, or Figma JSON file directly to ARAI. Drag and drop or browse — files up to 25MB are supported. No plugin installation required.' },
-              { step: '2', title: 'AI Analysis Runs in Under 30 Seconds', desc: 'ARAI\'s three AI modules run simultaneously: the WCAG compliance engine checks 50+ criteria, the NLP readability module extracts and scores all text, and the saliency model generates your attention heatmap.' },
-              { step: '3', title: 'Review Your Annotated Results', desc: 'ARAI overlays colour-coded annotations directly on your design: red for critical violations, amber for warnings, and green for passes. Click any annotation to see the relevant WCAG criterion, confidence score, and plain-language explanation.' },
-              { step: '4', title: 'Export Your PDF Compliance Report', desc: 'Download a professional, WCAG-referenced PDF compliance report containing your ARAI composite score, full issue list, annotated design screenshots, and recommendations — ready for client delivery, team review, or legal audit.' },
+              { step: '1', title: 'Upload Design' },
+              { step: '2', title: 'AI Analyzes' },
+              { step: '3', title: 'Review Results' },
+              { step: '4', title: 'Export Report' },
             ].map((item) => (
-              <div className="hs-stat" key={item.step} style={{ borderTop: '1px solid rgba(15,37,87,0.11)', paddingTop: '1.2rem' }}>
-                <div className="hs-stat-n" style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.4rem' }}>Step {item.step}: {item.title}</div>
-                <div className="hs-stat-d" style={{ fontSize: '0.7rem', lineHeight: 1.5 }}>{item.desc}</div>
+              <div className="hs-stat" key={item.step}>
+                <div className="hs-stat-n">{item.step}</div>
+                <div className="hs-stat-d">{item.title}</div>
               </div>
             ))}
           </div>
