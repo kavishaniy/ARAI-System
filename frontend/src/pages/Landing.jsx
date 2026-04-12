@@ -53,12 +53,12 @@ const css = `
 .hs-stat-d { font-size: 0.7rem; color: rgba(15,37,87,0.48); margin-top: 0.3rem; line-height: 1.4; }
 
 .hero-main { display: flex; flex-direction: column; }
-.hero-main-top { flex: 1; padding: 4rem 4rem 3rem; display: flex; flex-direction: column; justify-content: center; }
-.h-eyebrow { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(15,37,87,0.38); font-weight: 600; margin-bottom: 2.5rem; }
-.hero-h1 { font-family: 'DM Serif Display', serif; font-size: clamp(3rem, 5.5vw, 5.2rem); line-height: 1.0; color: #0f2557; font-weight: 400; margin-bottom: 2.5rem; }
+.hero-main-top { flex: 1; padding: 2.5rem 4rem 2rem; display: flex; flex-direction: column; justify-content: center; }
+.h-eyebrow { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(15,37,87,0.38); font-weight: 600; margin-bottom: 1.5rem; }
+.hero-h1 { font-family: 'DM Serif Display', serif; font-size: clamp(3rem, 5.5vw, 5.2rem); line-height: 1.0; color: #0f2557; font-weight: 400; margin-bottom: 1.5rem; }
 .hero-h1 span { display: block; }
 .hero-h1 em { font-style: italic; }
-.hero-desc { font-size: 0.95rem; color: rgba(15,37,87,0.6); max-width: 460px; line-height: 1.85; margin-bottom: 3rem; }
+.hero-desc { font-size: 0.95rem; color: rgba(15,37,87,0.6); max-width: 460px; line-height: 1.85; margin-bottom: 2rem; }
 .hero-cta { display: flex; align-items: center; gap: 1rem; }
 .btn-h { display: inline-flex; align-items: center; gap: 8px; padding: 0.85rem 2rem; font-size: 0.875rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
 .btn-hf { background: #0f2557; color: #fff; border: 1.5px solid #0f2557; }
