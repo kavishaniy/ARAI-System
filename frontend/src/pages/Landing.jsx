@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Brain, Download } from 'lucide-react';
 import { authService } from '../services/auth';
 
+// eslint-disable-next-line no-unused-vars
 const N = '#0f2557';
+// eslint-disable-next-line no-unused-vars
 const ND = '#091840';
 
 const css = `
