@@ -1,9 +1,0 @@
-# Files and directories to ignore during Vercel deployment
-node_modules
-.env
-.env.local
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.DS_Store
-*.log
