@@ -3,27 +3,27 @@
 @tailwind utilities;
 
 /* Design system tokens */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap');
 
 :root {
-  /* App background should be white; surfaces (sidebar/cards) remain navy */
-  --bg-base: #FFFFFF; /* page background */
-  --bg-surface: #0D1526; /* sidebar, cards (navy) */
-  --bg-elevated: #111E38;
-  --bg-hover: #162544;
-  --bg-active: #1A2D52;
-  --border: #1E3260;
-  --border-strong: #2A4580;
-  --accent: #2563EB;
-  --accent-hover: #1D4FCC;
-  --accent-dim: #1E3A8A;
-  --text-primary: #000000; /* pure black for primary text on white background */
-  --text-secondary: #243B66; /* navy-tinged secondary */
-  --text-muted: #4A6090;
+  /* Landing page inspired theme */
+  --bg-base: #f5f4f0; /* warm beige/cream background */
+  --bg-surface: #0f2557; /* dark navy blue */
+  --bg-elevated: #091840; /* darker navy */
+  --bg-hover: #1a3a6d;
+  --bg-active: #1f4580;
+  --border: #0f2557;
+  --border-strong: #091840;
+  --accent: #0f2557; /* navy blue as primary accent */
+  --accent-hover: #091840;
+  --accent-dim: #1a3a6d;
+  --text-primary: #0f2557; /* navy blue for primary text */
+  --text-secondary: #4a6090; /* lighter navy */
+  --text-muted: rgba(15,37,87,0.5);
   --success: #22C55E;
   --warning: #F59E0B;
   --danger: #EF4444;
-  --score-ring: #2563EB;
+  --score-ring: #0f2557;
 
   /* Base typography */
   --base-font-size: 14px;
@@ -73,30 +73,44 @@ code, pre, kbd, samp {
 }
 
 .card {
-  background: var(--bg-base);
-  border: 1px solid var(--border);
+  background: white;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 20px;
 }
 
 .solid-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+  background: linear-gradient(180deg, rgba(15,37,87,0.02), rgba(15,37,87,0));
 }
 
 .btn-primary {
   background: var(--accent);
   color: white;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1.5px solid var(--accent);
   padding: 10px 14px;
   border-radius: 8px;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 /* Navy variant used for auth actions (sign in / sign up) */
 .btn-navy {
   background: var(--bg-surface); /* navy */
   color: white;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1.5px solid var(--bg-surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-navy:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 .btn-secondary {
@@ -115,12 +129,15 @@ code, pre, kbd, samp {
   width: 100%;
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   outline: none;
+  background: white;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
 }
 
 .form-input:focus {
-  box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+  box-shadow: 0 0 0 4px rgba(15,37,87,0.08);
   border-color: var(--accent);
 }
 
@@ -135,8 +152,8 @@ code, pre, kbd, samp {
 
 .side-rail {
   width: 200px; /* expanded width */
-  background: linear-gradient(180deg, var(--bg-surface), var(--bg-elevated));
-  border-right: 1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, #0f2557, #091840);
+  border-right: 1.5px solid rgba(15,37,87,0.2);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -166,9 +183,9 @@ code, pre, kbd, samp {
 }
 
 .rail-item.active {
-  background: rgba(37,99,235,0.16);
-  color: var(--accent);
-  box-shadow: 0 8px 22px rgba(16,24,40,0.12);
+  background: rgba(15,37,87,0.3);
+  color: #ffffff;
+  box-shadow: 0 8px 22px rgba(15,37,87,0.12);
 }
 
 .rail-item:hover {
@@ -217,7 +234,7 @@ code, pre, kbd, samp {
 .auth-visual {
   padding: 36px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(37,99,235,0.04));
+  background: linear-gradient(135deg, rgba(15,37,87,0.12), rgba(15,37,87,0.04));
   display: flex;
   flex-direction: column;
   gap: 16px;
