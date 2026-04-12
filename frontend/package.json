@@ -2,6 +2,7 @@
   "name": "arai-frontend",
   "version": "0.1.0",
   "private": true,
+  "_deploymentTimestamp": "2026-04-12T12:00:00Z",
   "dependencies": {
     "@supabase/supabase-js": "^2.93.2",
     "axios": "^1.13.4",
