@@ -1,39 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, ChevronRight } from 'lucide-react';
+import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, ChevronLeft } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
 const css = `
+/* Main sidebar container */
+.side-rail {
+  width: 80px;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(180deg, #0a1f3d 0%, #061428 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  padding: 0;
+}
+
+.side-rail.expanded {
+  width: 240px;
+}
+
 .sidebar-wrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 16px 12px;
+  padding: 16px 8px;
+  justify-content: space-between;
 }
 
 .sidebar-logo-section {
   display: flex;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  height: 48px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.side-rail.expanded .sidebar-logo-section {
   justify-content: flex-start;
-  margin-bottom: 28px;
-  height: 64px;
-  padding: 8px;
+  padding-left: -3px;
 }
 
 .sidebar-logo {
   height: 100%;
   width: auto;
   object-fit: contain;
-  padding: 0;
-  max-width: 80%;
+  flex-shrink: 0;
 }
 
+/* Navigation section */
 .sidebar-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  min-height: 0;
 }
 
 .nav-item {
@@ -42,96 +64,168 @@ const css = `
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  width: 56px;
+  height: 44px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
+  padding: 0;
+  border: none;
+  background: transparent;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.side-rail.expanded .nav-item {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0 12px;
+  margin: 0;
+  gap: 12px;
 }
 
 .nav-item:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.95);
-  transform: translateX(2px);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-item.active {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.2),
-              0 0 20px rgba(255, 255, 255, 0.1);
+  background: rgba(100, 180, 255, 0.15);
+  color: rgba(100, 200, 255, 1);
+  box-shadow: inset 0 0 0 1px rgba(100, 180, 255, 0.3),
+              0 0 12px rgba(100, 180, 255, 0.15);
+}
+
+.nav-item.active:hover {
+  background: rgba(100, 180, 255, 0.2);
 }
 
 .nav-item svg {
   width: 20px;
   height: 20px;
-  stroke-width: 1.8;
+  stroke-width: 2;
+  flex-shrink: 0;
 }
 
+.nav-label {
+  display: none;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.side-rail.expanded .nav-label {
+  display: inline;
+}
+
+/* Actions section */
 .sidebar-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 16px;
+  gap: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+  flex-shrink: 0;
 }
 
 .sidebar-action-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  width: 56px;
+  height: 44px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   background: transparent;
+  padding: 0;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.side-rail.expanded .sidebar-action-item {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0 12px;
+  margin: 0;
+  gap: 12px;
 }
 
 .sidebar-action-item:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.95);
-  transform: translateX(2px);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sidebar-action-item.logout:hover {
+  background: rgba(255, 75, 75, 0.15);
+  color: rgba(255, 100, 100, 1);
 }
 
 .sidebar-action-item svg {
   width: 20px;
   height: 20px;
-  stroke-width: 1.8;
+  stroke-width: 2;
+  flex-shrink: 0;
 }
 
-/* Expanded sidebar styles */
-.sidebar-expanded .sidebar-logo-section {
-  margin-bottom: 32px;
+.action-label {
+  display: none;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.sidebar-expanded .sidebar-logo {
-  /* Logo image automatically scales with section height */
+.side-rail.expanded .action-label {
+  display: inline;
 }
 
-.sidebar-expanded .nav-item,
-.sidebar-expanded .sidebar-action-item {
+/* Collapse button - always at bottom */
+.collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 44px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.side-rail.expanded .collapse-btn {
   width: 100%;
   justify-content: flex-start;
-  padding: 0 14px;
-  gap: 14px;
+  padding: 0 12px;
+  margin: 0;
+  gap: 12px;
 }
 
-.sidebar-expanded .nav-label,
-.sidebar-expanded .action-label {
-  display: inline;
-  font-size: 0.9rem;
-  font-weight: 600;
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.85);
 }
 
-.nav-label,
-.action-label {
-  display: none;
+.collapse-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.side-rail.expanded .collapse-btn svg {
+  transform: rotate(180deg);
 }
 
 /* Mobile top bar */
@@ -140,8 +234,8 @@ const css = `
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: linear-gradient(180deg, #0f2557, #091840);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, #0a1f3d, #061428);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   gap: 12px;
   position: sticky;
   top: 0;
@@ -159,32 +253,34 @@ const css = `
 .sidebar-mobile-menu-btn {
   background: none;
   border: none;
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  transition: background 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-mobile-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
+  background: rgba(100, 180, 255, 0.15);
+  color: rgba(100, 200, 255, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(100, 180, 255, 0.3);
+  flex-shrink: 0;
 }
 
 /* Mobile drawer */
@@ -199,18 +295,19 @@ const css = `
 .sidebar-drawer-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
 }
 
 .sidebar-drawer-content {
   position: relative;
   width: 240px;
-  background: linear-gradient(180deg, #0f2557, #091840);
+  background: linear-gradient(180deg, #0a1f3d, #061428);
   display: flex;
   flex-direction: column;
-  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInLeft 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes slideInLeft {
@@ -227,18 +324,25 @@ const css = `
   align-items: center;
   justify-content: space-between;
   padding: 16px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .sidebar-drawer-close {
   background: none;
   border: none;
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Responsive */
@@ -316,35 +420,37 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   };
 
   const Rail = (
-    <div className={`sidebar-wrapper ${!collapsed ? 'sidebar-expanded' : ''}`}>
-      <div className="sidebar-logo-section">
-        <img src="/arai.png" alt="ARAI Logo" className="sidebar-logo" />
-      </div>
+    <div className={`sidebar-wrapper`}>
+      <div>
+        <div className="sidebar-logo-section">
+          <img src="/arai.png" alt="ARAI Logo" className="sidebar-logo" />
+        </div>
 
-      <nav className="sidebar-nav">
-        {navItems.map(({ to, label, Icon, id }) => {
-          const isActive = active === id;
-          return (
-            <Link
-              key={id}
-              to={to}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick(id, to);
-              }}
-              className={`nav-item ${isActive ? 'active' : ''}`}
-              title={label}
-            >
-              <Icon />
-              <span className="nav-label">{label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="sidebar-nav">
+          {navItems.map(({ to, label, Icon, id }) => {
+            const isActive = active === id;
+            return (
+              <Link
+                key={id}
+                to={to}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(id, to);
+                }}
+                className={`nav-item ${isActive ? 'active' : ''}`}
+                title={label}
+              >
+                <Icon />
+                <span className="nav-label">{label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
 
       <div className="sidebar-actions">
         <button
-          className="sidebar-action-item"
+          className="sidebar-action-item logout"
           onClick={() => setShowLogoutModal(true)}
           title="Logout"
           type="button"
@@ -354,12 +460,12 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         </button>
 
         <button
-          className="sidebar-action-item"
+          className="collapse-btn"
           onClick={handleToggleCollapse}
           title={collapsed ? 'Expand' : 'Collapse'}
           type="button"
         >
-          {collapsed ? <Menu /> : <ChevronRight />}
+          <ChevronLeft />
           <span className="action-label">{collapsed ? 'Expand' : 'Collapse'}</span>
         </button>
       </div>
@@ -387,7 +493,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
       </div>
 
       {/* Desktop sidebar */}
-      <aside className={`hidden lg:flex side-rail fixed left-0 top-0 h-full ${collapsed ? 'collapsed' : ''}`}>
+      <aside className={`hidden lg:flex side-rail fixed left-0 top-0 h-full ${!collapsed ? 'expanded' : ''}`} style={{ paddingTop: '0px' }}>
         {Rail}
       </aside>
 
@@ -408,7 +514,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', padding: '16px 12px' }}>
+            <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', padding: '16px 8px' }}>
               {navItems.map(({ to, label, Icon, id }) => {
                 const isActive = active === id;
                 return (
@@ -420,7 +526,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
                       handleNavClick(id, to);
                     }}
                     className={`nav-item ${isActive ? 'active' : ''}`}
-                    style={{ width: '100%', justifyContent: 'flex-start', padding: '0 14px' }}
+                    style={{ width: '100%', justifyContent: 'flex-start', padding: '0 12px', margin: 0, gap: '12px' }}
                   >
                     <Icon className="h-5 w-5" />
                     <span className="nav-label" style={{ display: 'inline' }}>{label}</span>
@@ -428,15 +534,15 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
                 );
               })}
             </nav>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', padding: '16px 12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', padding: '12px 8px' }}>
               <button
-                className="sidebar-action-item"
+                className="sidebar-action-item logout"
                 onClick={() => {
                   setShowLogoutModal(true);
                   setDrawerOpen(false);
                 }}
                 type="button"
-                style={{ width: '100%', justifyContent: 'flex-start', padding: '0 14px' }}
+                style={{ width: '100%', justifyContent: 'flex-start', padding: '0 12px', margin: 0, gap: '12px' }}
               >
                 <LogOut className="h-5 w-5" />
                 <span className="action-label" style={{ display: 'inline' }}>Logout</span>
