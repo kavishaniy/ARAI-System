@@ -406,6 +406,20 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
   const analyses = results.analyses;
   const currentAnalysis = analyses[selectedIndex];
 
+  // Ensure we're showing results for the currently selected analysis
+  // This prevents showing cached results from a previous image
+  if (!currentAnalysis) {
+    return (
+      <div className="multi-analysis-container">
+        <style>{css}</style>
+        <div className="multi-analysis-header">
+          <h1 className="multi-analysis-title">Error Loading Results</h1>
+          <p className="multi-analysis-subtitle">Unable to load analysis data</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="multi-analysis-container">
       <style>{css}</style>
@@ -458,8 +472,36 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       )}
 
       {/* Detailed Results for Selected Image */}
-      <div className="results-container">
-        <SimplifiedAnalysisResults results={currentAnalysis} />
+      <div className="results-container" key={selectedIndex}>
+        {currentAnalysis && (
+          <>
+            {/* Show the currently selected design name */}
+            <div style={{
+              padding: '1rem 0',
+              marginBottom: '1.5rem',
+              fontSize: '0.95rem',
+              color: 'rgba(15, 37, 87, 0.6)',
+            }}>
+              Showing results for: <strong>{currentAnalysis.designName}</strong>
+            </div>
+
+            {/* Show warning for blank/invalid images */}
+            {currentAnalysis.designName && currentAnalysis.designName.toLowerCase().includes('blank') && (
+              <div style={{
+                padding: '1.5rem',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '8px',
+                marginBottom: '2rem',
+                color: '#991b1b',
+                fontSize: '0.95rem',
+              }}>
+                ⚠️ <strong>Note:</strong> This appears to be a blank or empty image. The analysis results may not be meaningful.
+              </div>
+            )}
+            <SimplifiedAnalysisResults results={currentAnalysis} />
+          </>
+        )}
       </div>
 
       {/* Lightbox Modal */}

@@ -29,6 +29,28 @@ class SimplifiedWCAGAnalyzer:
         
         # Font size standards
         self.MIN_FONT_SIZE = 14  # pixels
+    
+    def _is_blank_image(self, image_array: np.ndarray) -> bool:
+        """
+        Detect if an image is blank, white, or has no meaningful content
+        """
+        # Check if mostly white (R, G, B all > 240)
+        white_pixels = np.sum(
+            (image_array[:, :, 0] > 240) &
+            (image_array[:, :, 1] > 240) &
+            (image_array[:, :, 2] > 240)
+        )
+        total_pixels = image_array.shape[0] * image_array.shape[1]
+        white_ratio = white_pixels / total_pixels
+        
+        # Check variance (blank images have very low variance)
+        grayscale = np.mean(image_array, axis=2)
+        variance = np.var(grayscale)
+        
+        # If more than 90% white OR variance is extremely low
+        is_blank = (white_ratio > 0.9) or (variance < 100)
+        
+        return is_blank
         
     def analyze_design(self, image_path: str) -> Dict:
         """
@@ -49,6 +71,26 @@ class SimplifiedWCAGAnalyzer:
                     "severity": "critical",
                     "how_to_fix": "Please try uploading a different image"
                 }]
+            }
+        
+        # Check if image is blank/white/empty
+        if self._is_blank_image(image_array):
+            return {
+                "score": 10,
+                "wcag_level": "F",
+                "conformance": "❌ Non-Compliant",
+                "issues": [{
+                    "category": "blank_image",
+                    "title": "❌ Image is Blank or Empty",
+                    "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. There are no elements to assess for accessibility compliance.",
+                    "severity": "critical",
+                    "how_to_fix": [
+                        "📸 Upload a design image with actual content",
+                        "✏️ Ensure the image contains UI elements, text, buttons, or other design components",
+                        "✏️ The image should not be entirely white, blank, or uniform in color"
+                    ]
+                }],
+                "summary": "Cannot assess accessibility on a blank image. Please upload a design."
             }
         
         issues = []

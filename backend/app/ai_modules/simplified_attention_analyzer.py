@@ -22,6 +22,28 @@ class SimplifiedAttentionAnalyzer:
     def __init__(self):
         pass
     
+    def _is_blank_image(self, image_array: np.ndarray) -> bool:
+        """
+        Detect if an image is blank, white, or has no meaningful content
+        """
+        # Check if mostly white (R, G, B all > 240)
+        white_pixels = np.sum(
+            (image_array[:, :, 0] > 240) &
+            (image_array[:, :, 1] > 240) &
+            (image_array[:, :, 2] > 240)
+        )
+        total_pixels = image_array.shape[0] * image_array.shape[1]
+        white_ratio = white_pixels / total_pixels
+        
+        # Check variance (blank images have very low variance)
+        grayscale = np.mean(image_array, axis=2)
+        variance = np.var(grayscale)
+        
+        # If more than 90% white OR variance is extremely low
+        is_blank = (white_ratio > 0.9) or (variance < 100)
+        
+        return is_blank
+    
     def analyze_design(self, image_path: str) -> Dict:
         """
         Analyze design for visual attention and focus
@@ -41,6 +63,26 @@ class SimplifiedAttentionAnalyzer:
                     "severity": "critical",
                     "how_to_fix": "Please try uploading a different image"
                 }]
+            }
+        
+        # Check if image is blank/white
+        if self._is_blank_image(image_array):
+            return {
+                "score": 10,
+                "grade": "F",
+                "conformance": "❌ Non-Compliant",
+                "issues": [{
+                    "category": "blank_image",
+                    "title": "❌ Image is Blank or Empty",
+                    "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. Cannot assess visual attention on empty designs.",
+                    "severity": "critical",
+                    "how_to_fix": [
+                        "📸 Upload a design image with actual content",
+                        "✏️ Include visual elements, hierarchy, and focal points",
+                        "✏️ The image should contain UI components and design elements"
+                    ]
+                }],
+                "summary": "Cannot assess visual attention on a blank image."
             }
         
         issues = []

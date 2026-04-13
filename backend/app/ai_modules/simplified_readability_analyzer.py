@@ -54,6 +54,30 @@ class SimplifiedReadabilityAnalyzer:
             'by the', 'by a', 'by this'
         ]
     
+    def _is_blank_image(self, image_array) -> bool:
+        """
+        Detect if an image is blank, white, or has no meaningful content
+        """
+        import numpy as np
+        
+        # Check if mostly white (R, G, B all > 240)
+        white_pixels = np.sum(
+            (image_array[:, :, 0] > 240) &
+            (image_array[:, :, 1] > 240) &
+            (image_array[:, :, 2] > 240)
+        )
+        total_pixels = image_array.shape[0] * image_array.shape[1]
+        white_ratio = white_pixels / total_pixels
+        
+        # Check variance (blank images have very low variance)
+        grayscale = np.mean(image_array, axis=2)
+        variance = np.var(grayscale)
+        
+        # If more than 90% white OR variance is extremely low
+        is_blank = (white_ratio > 0.9) or (variance < 100)
+        
+        return is_blank
+    
     def analyze_design(self, image_path: str) -> Dict:
         """
         Analyze design's text readability
@@ -66,6 +90,26 @@ class SimplifiedReadabilityAnalyzer:
             # Open image and analyze for text presence
             image = Image.open(image_path).convert('RGB')
             image_array = np.array(image)
+            
+            # Check if image is blank/white
+            if self._is_blank_image(image_array):
+                return {
+                    "score": 10,
+                    "grade": "F",
+                    "conformance": "❌ Non-Compliant",
+                    "issues": [{
+                        "category": "blank_image",
+                        "title": "❌ Image is Blank or Empty",
+                        "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. Cannot assess readability on empty designs.",
+                        "severity": "critical",
+                        "how_to_fix": [
+                            "📸 Upload a design image with actual content",
+                            "✏️ Include text, buttons, forms, or other UI elements",
+                            "✏️ Ensure the image is not entirely white or uniform"
+                        ]
+                    }],
+                    "summary": "Cannot assess readability on a blank image."
+                }
             
             # Estimate if image contains text by looking at dark areas (likely text)
             gray = 0.299 * image_array[:,:,0] + 0.587 * image_array[:,:,1] + 0.114 * image_array[:,:,2]
