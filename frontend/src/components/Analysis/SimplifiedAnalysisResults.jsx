@@ -315,6 +315,9 @@ const css = `
   margin-bottom: 2rem;
   padding-bottom: 0;
   border-bottom: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .category-header .category-info {
@@ -322,6 +325,7 @@ const css = `
   align-items: baseline;
   gap: 1.5rem;
   flex-wrap: wrap;
+  flex: 1;
 }
 
 .category-info h3 {
@@ -338,6 +342,8 @@ const css = `
   color: rgba(15,37,87,0.5);
   font-weight: 300;
   margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .category-icon {
@@ -347,7 +353,7 @@ const css = `
 /* Issues and Points Grid */
 .issues-points-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
@@ -369,7 +375,7 @@ const css = `
 .issue-point-header {
   display: flex;
   align-items: flex-start;
-  gap: 0;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 }
@@ -592,7 +598,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
             {getSeverityIcon()}
           </div>
           <div className="flex-1">
-            <div className="issue-point-title">{issue.title}</div>
+            <div className="issue-point-title">{issue.title.replace(/[\p{Emoji}]/gu, '').trim()}</div>
             <div className="issue-point-desc">{issue.description}</div>
           </div>
         </div>
@@ -772,8 +778,8 @@ const SimplifiedAnalysisResults = ({ results }) => {
             <div className="category-header">
               <div className="category-info">
                 <h3>Accessibility Analysis</h3>
-                <div className="category-score">Score: {accessibility.score?.toFixed(1) || 'N/A'}</div>
               </div>
+              <div className="category-score">Score: {accessibility.score?.toFixed(1) || 'N/A'}</div>
             </div>
             <div className="issues-points-grid">
               {accessibility.issues.map((issue, idx) => (
@@ -794,8 +800,8 @@ const SimplifiedAnalysisResults = ({ results }) => {
             <div className="category-header">
               <div className="category-info">
                 <h3>Readability Analysis</h3>
-                <div className="category-score">Score: {readability.score?.toFixed(1) || 'N/A'}</div>
               </div>
+              <div className="category-score">Score: {readability.score?.toFixed(1) || 'N/A'}</div>
             </div>
             <div className="issues-points-grid">
               {readability.issues.map((issue, idx) => (
@@ -816,8 +822,8 @@ const SimplifiedAnalysisResults = ({ results }) => {
             <div className="category-header">
               <div className="category-info">
                 <h3>Visual Attention Analysis</h3>
-                <div className="category-score">Score: {attention.score?.toFixed(1) || 'N/A'}</div>
               </div>
+              <div className="category-score">Score: {attention.score?.toFixed(1) || 'N/A'}</div>
             </div>
             <div className="issues-points-grid">
               {attention.issues.map((issue, idx) => (
