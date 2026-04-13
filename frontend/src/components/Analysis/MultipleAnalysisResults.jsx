@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
 import SimplifiedAnalysisResults from './SimplifiedAnalysisResults';
 
 const css = `
 .multi-analysis-container {
   font-family: 'DM Sans', sans-serif;
-  background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
+  background: #ffffff;
   color: #0f2557;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 3rem 2rem;
 }
 
 .multi-analysis-header {
-  max-width: 1400px;
-  margin: 0 auto 2rem;
+  max-width: 1200px;
+  margin: 0 auto 3.5rem;
 }
 
 .multi-analysis-back {
@@ -22,208 +21,272 @@ const css = `
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   background: white;
-  border: 1.5px solid rgba(15,37,87,0.12);
-  border-radius: 10px;
+  border: 1px solid rgba(15,37,87,0.08);
+  border-radius: 8px;
   color: #0f2557;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   width: fit-content;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .multi-analysis-back:hover {
-  background: rgba(15,37,87,0.05);
-  border-color: rgba(15,37,87,0.2);
+  background: rgba(15,37,87,0.02);
+  border-color: rgba(15,37,87,0.12);
+  transform: translateX(-2px);
 }
 
 .multi-analysis-title {
   font-family: 'DM Serif Display', serif;
   font-size: 2.2rem;
   font-weight: 400;
+  letter-spacing: -0.5px;
   color: #0f2557;
   margin-bottom: 0.5rem;
 }
 
 .multi-analysis-subtitle {
-  font-size: 1rem;
-  color: rgba(15,37,87,0.6);
-  font-weight: 300;
+  font-size: 0.95rem;
+  color: rgba(15,37,87,0.45);
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
-/* Image Tabs */
-.image-tabs-container {
+/* Design Cards - Modern minimal layout */
+.design-cards-container {
   max-width: 1400px;
-  margin: 0 auto 2rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  margin: 0 auto 3rem;
 }
 
-.image-tabs-container::-webkit-scrollbar {
-  height: 6px;
+.design-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
 }
 
-.image-tabs-container::-webkit-scrollbar-track {
-  background: rgba(15,37,87,0.05);
-  border-radius: 10px;
-}
-
-.image-tabs-container::-webkit-scrollbar-thumb {
-  background: rgba(15,37,87,0.2);
-  border-radius: 10px;
-}
-
-.image-tabs-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(15,37,87,0.4);
-}
-
-.image-tabs {
-  display: flex;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  min-width: min-content;
-}
-
-.image-tab {
+.design-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: white;
-  border: 2px solid rgba(15,37,87,0.12);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-width: 100px;
-  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.image-tab:hover {
-  border-color: rgba(15,37,87,0.2);
-  box-shadow: 0 4px 12px rgba(15,37,87,0.08);
+.design-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0px;
+  background: #0f2557;
+  transition: height 0.5s ease;
+  z-index: 1;
 }
 
-.image-tab.active {
-  border-color: #14b8a6;
-  background: rgba(20,184,166,0.05);
-  box-shadow: 0 6px 16px rgba(20,184,166,0.15);
+.design-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(15, 37, 87, 0.02) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
-.image-tab-image {
+.design-card:hover {
+  border-color: #0f2557;
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(15, 37, 87, 0.12);
+}
+
+.design-card:hover::before {
+  height: 4px;
+}
+
+.design-card:hover::after {
+  opacity: 1;
+}
+
+.design-card.active {
+  border-color: #0f2557;
+  box-shadow: 0 16px 32px rgba(15, 37, 87, 0.16);
+}
+
+.design-card.active::before {
+  height: 4px;
+}
+
+.design-card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.design-card-image {
   width: 100%;
-  height: 80px;
+  height: 130px;
   object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid rgba(15,37,87,0.1);
+  border-radius: 16px 16px 0 0;
+  transition: transform 0.5s ease;
 }
 
-.image-tab-name {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #0f2557;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
+.design-card:hover .design-card-image {
+  transform: scale(1.02);
 }
 
-.image-tab-status {
-  font-size: 0.7rem;
-  color: rgba(15,37,87,0.5);
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.design-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.2rem;
+  flex: 1;
+  justify-content: space-between;
 }
 
-/* Summary View */
-.summary-view {
-  max-width: 1400px;
-  margin: 0 auto 2rem;
-  background: white;
-  border: 1.5px solid rgba(15,37,87,0.12);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 10px 40px rgba(15,37,87,0.06);
-}
-
-.summary-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #0f2557;
-  margin-bottom: 1.5rem;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.summary-card {
-  background: linear-gradient(135deg, rgba(15,37,87,0.02) 0%, rgba(15,37,87,0.01) 100%);
-  border: 1.5px solid rgba(15,37,87,0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.summary-card-name {
-  font-size: 1rem;
+.design-card-name {
+  font-size: 0.95rem;
   font-weight: 600;
   color: #0f2557;
-  margin-bottom: 1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: -0.3px;
+  margin: 0;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
-.summary-score {
+.design-card-meta {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.design-card-score-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.design-card-score {
   font-family: 'DM Serif Display', serif;
-  font-size: 2.5rem;
+  font-size: 1.9rem;
   font-weight: 400;
   color: #0f2557;
-  margin-bottom: 0.5rem;
+  line-height: 1;
+  letter-spacing: -0.5px;
 }
 
-.summary-grade {
-  font-size: 0.85rem;
-  color: rgba(15,37,87,0.6);
+.design-card-score-label {
+  font-size: 0.65rem;
+  color: rgba(15, 37, 87, 0.5);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.7px;
 }
 
 /* Results Container */
 .results-container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 @media (max-width: 768px) {
   .multi-analysis-container {
-    padding: 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .multi-analysis-header {
+    margin-bottom: 2.5rem;
   }
 
   .multi-analysis-title {
+    font-size: 1.8rem;
+  }
+
+  .design-cards-container {
+    margin-bottom: 2.5rem;
+  }
+
+  .design-cards {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .design-card-image {
+    height: 120px;
+  }
+
+  .design-card-name {
+    font-size: 0.9rem;
+  }
+
+  .design-card-score {
+    font-size: 1.8rem;
+  }
+
+  .design-card-info {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .multi-analysis-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .multi-analysis-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .multi-analysis-title {
+    font-size: 1.4rem;
+  }
+
+  .design-cards-container {
+    margin-bottom: 2rem;
+  }
+
+  .design-cards {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .design-card-image {
+    height: 110px;
+  }
+
+  .design-card-name {
+    font-size: 0.85rem;
+  }
+
+  .design-card-score {
     font-size: 1.6rem;
   }
 
-  .summary-grid {
-    grid-template-columns: 1fr;
+  .design-card-info {
+    padding: 0.9rem;
+    gap: 0.7rem;
   }
 
-  .image-tabs {
-    gap: 0.75rem;
+  .design-card-meta {
+    gap: 1rem;
+    padding-top: 0.5rem;
   }
 
-  .image-tab {
-    min-width: 80px;
-  }
-
-  .image-tab-image {
-    height: 60px;
+  .design-card-score-label {
+    font-size: 0.6rem;
   }
 }
 `;
@@ -236,10 +299,6 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       <div className="multi-analysis-container">
         <style>{css}</style>
         <div className="multi-analysis-header">
-          <button onClick={onNewAnalysis} className="multi-analysis-back">
-            <ChevronLeft className="w-4 h-4" />
-            New Analysis
-          </button>
           <h1 className="multi-analysis-title">No Results Available</h1>
           <p className="multi-analysis-subtitle">Analysis data could not be loaded</p>
         </div>
@@ -255,67 +314,42 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       <style>{css}</style>
 
       {/* Header */}
-      <div className="multi-analysis-header">
-        <button onClick={onNewAnalysis} className="multi-analysis-back">
-          <ChevronLeft className="w-4 h-4" />
-          New Analysis
-        </button>
-        <h1 className="multi-analysis-title">Analysis Results</h1>
-        <p className="multi-analysis-subtitle">
-          {analyses.length} design{analyses.length !== 1 ? 's' : ''} analyzed
-        </p>
-      </div>
+      
 
-      {/* Image Tabs */}
+      {/* Expanded Design Cards */}
       {analyses.length > 1 && (
-        <div className="image-tabs-container">
-          <div className="image-tabs">
+        <div className="design-cards-container">
+          <div className="design-cards">
             {analyses.map((analysis, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedIndex(index)}
-                className={`image-tab ${index === selectedIndex ? 'active' : ''}`}
+                className={`design-card ${index === selectedIndex ? 'active' : ''}`}
+                style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer' }}
               >
-                {analysis.preview && (
-                  <img
-                    src={analysis.preview}
-                    alt={analysis.designName}
-                    className="image-tab-image"
-                  />
-                )}
-                <div className="image-tab-name" title={analysis.designName}>
-                  {analysis.designName}
-                </div>
-                <div className="image-tab-status">
-                  {analysis.arai_score ? `${analysis.arai_score.toFixed(1)}/100` : 'N/A'}
+                <div className="design-card-content">
+                  {analysis.preview && (
+                    <img
+                      src={analysis.preview}
+                      alt={analysis.designName}
+                      className="design-card-image"
+                    />
+                  )}
+                  <div className="design-card-info">
+                    <h3 className="design-card-name" title={analysis.designName}>
+                      {analysis.designName}
+                    </h3>
+                    <div className="design-card-meta">
+                      <div className="design-card-score-container">
+                        <div className="design-card-score">
+                          {analysis.arai_score ? analysis.arai_score.toFixed(1) : 'N/A'}
+                        </div>
+                        <div className="design-card-score-label">ARAI Score</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Summary Cards (showing all scores) */}
-      {analyses.length > 1 && (
-        <div className="summary-view">
-          <h2 className="summary-title">All Scores Overview</h2>
-          <div className="summary-grid">
-            {analyses.map((analysis, index) => (
-              <div
-                key={index}
-                className="summary-card"
-                onClick={() => setSelectedIndex(index)}
-              >
-                <div className="summary-card-name" title={analysis.designName}>
-                  {analysis.designName}
-                </div>
-                <div className="summary-score">
-                  {analysis.arai_score ? analysis.arai_score.toFixed(1) : 'N/A'}
-                </div>
-                <div className="summary-grade">
-                  {analysis.overall_grade || 'Grade N/A'}
-                </div>
-              </div>
             ))}
           </div>
         </div>
