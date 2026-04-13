@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   AlertTriangle,
@@ -10,315 +10,847 @@ import {
   Zap,
   Target,
   TrendingUp,
-  BarChart3,
   ArrowRight
 } from 'lucide-react';
 
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.analysis-container {
+  font-family: 'DM Sans', sans-serif;
+  background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
+  color: #0f2557;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+}
+
+.analysis-header {
+  max-width: 1400px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.analysis-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #0f2557;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.analysis-header p {
+  font-size: 1rem;
+  color: rgba(15,37,87,0.6);
+  font-weight: 300;
+}
+
+/* Main Scores Section */
+.main-scores-section {
+  max-width: 1400px;
+  margin: 0 auto 3rem;
+  background: white;
+  border: 1.5px solid rgba(15,37,87,0.15);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 10px 40px rgba(15,37,87,0.08);
+}
+
+.main-score-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.main-score-left h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem;
+  color: #0f2557;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.main-score-left h2 em {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.main-score-left p {
+  font-size: 0.95rem;
+  color: rgba(15,37,87,0.6);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.overall-score-ring {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.overall-score-ring svg {
+  transform: rotate(-90deg);
+  width: 200px;
+  height: 200px;
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(15,37,87,0.1);
+  stroke-width: 8;
+}
+
+.ring-fill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 565;
+  stroke-dashoffset: 565;
+  transition: stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1);
+  stroke: url(#scoreGradient);
+}
+
+.ring-fill.animated {
+  stroke-dashoffset: var(--offset);
+}
+
+.ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+}
+
+.ring-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: #0f2557;
+  line-height: 1;
+}
+
+.ring-grade {
+  font-size: 0.85rem;
+  color: rgba(15,37,87,0.5);
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+/* Sub Scores Grid */
+.sub-scores-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sub-score-card {
+  background: linear-gradient(135deg, rgba(15,37,87,0.02) 0%, rgba(15,37,87,0.01) 100%);
+  border: 1.5px solid rgba(15,37,87,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.sub-score-card:hover {
+  border-color: rgba(15,37,87,0.2);
+  box-shadow: 0 4px 12px rgba(15,37,87,0.08);
+}
+
+.sub-score-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sub-score-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sub-score-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(15,37,87,0.5);
+}
+
+.sub-score-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f2557;
+}
+
+.sub-score-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+}
+
+.sub-score-ring svg {
+  transform: rotate(-90deg);
+  width: 80px;
+  height: 80px;
+}
+
+.sub-ring-bg {
+  fill: none;
+  stroke: rgba(15,37,87,0.08);
+  stroke-width: 5;
+}
+
+.sub-ring-fill {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 251;
+  stroke-dashoffset: 251;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.sub-ring-fill.accessibility {
+  stroke: #14b8a6;
+}
+
+.sub-ring-fill.readability {
+  stroke: #3b82f6;
+}
+
+.sub-ring-fill.attention {
+  stroke: #f59e0b;
+}
+
+.sub-ring-fill.animated {
+  stroke-dashoffset: var(--offset);
+}
+
+.sub-ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.sub-ring-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #0f2557;
+  line-height: 1;
+}
+
+.sub-ring-pct {
+  font-size: 0.65rem;
+  color: rgba(15,37,87,0.4);
+}
+
+/* Category Sections */
+.categories-section {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.category-container {
+  background: white;
+  border: 1.5px solid rgba(15,37,87,0.15);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 40px rgba(15,37,87,0.08);
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1.5px solid rgba(15,37,87,0.1);
+}
+
+.category-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.category-icon.accessibility {
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.category-icon.readability {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.category-icon.attention {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.category-icon svg {
+  color: white;
+  width: 28px;
+  height: 28px;
+}
+
+.category-info h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: #0f2557;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.category-score {
+  font-size: 0.9rem;
+  color: rgba(15,37,87,0.6);
+}
+
+/* Issues and Points Grid */
+.issues-points-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1.5rem;
+}
+
+.issue-point-card {
+  background: linear-gradient(135deg, rgba(15,37,87,0.02) 0%, rgba(15,37,87,0.01) 100%);
+  border: 1.5px solid rgba(15,37,87,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.issue-point-card:hover {
+  border-color: rgba(15,37,87,0.2);
+  box-shadow: 0 6px 16px rgba(15,37,87,0.1);
+  transform: translateY(-2px);
+}
+
+.issue-point-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.issue-severity-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.issue-point-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0f2557;
+  margin-bottom: 0.5rem;
+}
+
+.issue-point-desc {
+  font-size: 0.9rem;
+  color: rgba(15,37,87,0.65);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.points-box {
+  background: white;
+  border: 1px solid rgba(15,37,87,0.1);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.points-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(15,37,87,0.5);
+  margin-bottom: 0.5rem;
+}
+
+.points-content {
+  font-size: 0.95rem;
+  color: #0f2557;
+  line-height: 1.6;
+}
+
+.solution-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(15,37,87,0.08);
+}
+
+.solution-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f2557;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.solution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.solution-item {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: rgba(15,37,87,0.65);
+  line-height: 1.5;
+}
+
+.solution-arrow {
+  color: #0f2557;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.expand-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #0f2557;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 1200px) {
+  .sub-scores-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-score-content {
+    grid-template-columns: 1fr;
+  }
+
+  .issues-points-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-header h1 {
+    font-size: 2rem;
+  }
+
+  .main-scores-section {
+    padding: 2rem;
+  }
+
+  .category-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .analysis-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .analysis-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .main-scores-section {
+    padding: 1.5rem;
+  }
+
+  .category-container {
+    padding: 1.5rem;
+  }
+
+  .issue-point-card {
+    padding: 1.25rem;
+  }
+
+  .sub-score-card {
+    padding: 1.25rem;
+  }
+
+  .main-score-left h2 {
+    font-size: 1.8rem;
+  }
+
+  .category-header {
+    gap: 1rem;
+  }
+
+  .category-info h3 {
+    font-size: 1.3rem;
+  }
+}
+`;
+
 /**
- * Simplified Analysis Results Component
- * Shows only 4 key metrics per category with clear "How to Fix" guidance
+ * Simplified Analysis Results Component with Theme Design
+ * Shows scoring system with animated rings and point-based improvements
  */
 const SimplifiedAnalysisResults = ({ results }) => {
-  const [expandedIssue, setExpandedIssue] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [animated, setAnimated] = useState(false);
+  const scoreRef = useRef(null);
+
+  // Animation setup
+  useEffect(() => {
+    if (!scoreRef.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setAnimated(true); obs.disconnect(); } },
+      { threshold: 0.25 }
+    );
+    obs.observe(scoreRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   if (!results) {
     return (
-      <div className="p-8 bg-white rounded-lg border border-gray-200">
-        <p className="text-gray-500 text-center">No analysis results available</p>
+      <div className="analysis-container">
+        <style>{css}</style>
+        <div className="analysis-header">
+          <h1>No Results Available</h1>
+          <p>Analysis data could not be loaded</p>
+        </div>
       </div>
     );
   }
 
   const { arai_score, arai_breakdown, overall_grade, accessibility, readability, attention } = results;
 
-  // Score cards component
-  const ScoreCard = ({ title, score, grade, icon: Icon, color }) => {
-    const getGradeColor = (g) => {
-      if (g === 'A') return 'text-emerald-600 bg-emerald-50';
-      if (g === 'B') return 'text-teal-600 bg-teal-50';
-      if (g === 'C') return 'text-amber-600 bg-amber-50';
-      return 'text-orange-600 bg-orange-50';
-    };
-
-    return (
-      <div className="bg-white rounded-lg p-6 border border-gray-200 hover:border-navy-900 hover:shadow-md transition-all">
-        <div className="flex items-start justify-between mb-4">
-          <div className={`p-3 rounded-lg ${color}`}>
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-          <div className={`px-3 py-1 rounded-full text-sm font-bold ${getGradeColor(grade)}`}>
-            Grade {grade}
-          </div>
-        </div>
-        <h3 className="text-gray-800 font-semibold mb-2">{title}</h3>
-        <div className="text-4xl font-bold text-navy-900 mb-2">{score.toFixed(1)}</div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className={`h-2 rounded-full transition-all ${color}`}
-            style={{ width: `${score}%` }}
-          ></div>
-        </div>
-      </div>
-    );
+  // Calculate stroke offset for rings
+  const calculateStrokeOffset = (score, maxValue = 100) => {
+    const percentage = Math.min(score, maxValue) / maxValue;
+    return 565 * (1 - percentage); // Main ring circumference
   };
 
-  // Issue component
-  const IssueItem = ({ issue, index }) => {
-    const isExpanded = expandedIssue === index;
+  const calculateSubRingOffset = (score, maxValue = 100) => {
+    const percentage = Math.min(score, maxValue) / maxValue;
+    return 251 * (1 - percentage); // Sub ring circumference
+  };
+
+  // Issue Point Card Component
+  const IssuePointCard = ({ issue, categoryName, index }) => {
+    const [expanded, setExpanded] = useState(false);
     const isSuccess = issue.severity === 'success';
     const isCritical = issue.severity === 'critical';
-    const isHigh = issue.severity === 'high';
-
-    const getSeverityColor = () => {
-      if (isSuccess) return 'bg-white border-emerald-200 hover:bg-emerald-50';
-      if (isCritical) return 'bg-white border-red-200 hover:bg-red-50';
-      if (isHigh) return 'bg-white border-orange-200 hover:bg-orange-50';
-      return 'bg-white border-amber-200 hover:bg-amber-50';
-    };
 
     const getSeverityIcon = () => {
-      if (isSuccess) return <CheckCircle className="w-5 h-5 text-emerald-600" />;
-      if (isCritical) return <AlertTriangle className="w-5 h-5 text-red-600" />;
-      if (isHigh) return <AlertTriangle className="w-5 h-5 text-orange-600" />;
-      return <Info className="w-5 h-5 text-amber-600" />;
+      if (isSuccess) return <CheckCircle className="w-6 h-6 text-teal-600" />;
+      if (isCritical) return <AlertTriangle className="w-6 h-6 text-red-600" />;
+      return <Info className="w-6 h-6 text-amber-600" />;
     };
 
     return (
-      <div key={index} className={`border rounded-lg p-4 mb-3 ${getSeverityColor()} cursor-pointer transition-all`}
-        onClick={() => setExpandedIssue(isExpanded ? null : index)}
+      <div
+        className="issue-point-card"
+        onClick={() => setExpanded(!expanded)}
       >
-        <div className="flex items-start gap-3">
-          <div className="mt-1 flex-shrink-0">
+        <div className="issue-point-header">
+          <div className="issue-severity-icon">
             {getSeverityIcon()}
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 mb-1">{issue.title}</h4>
-            <p className="text-gray-700 text-sm mb-2">{issue.description}</p>
-
-            {isExpanded && (
-              <div className="mt-4 pl-4 border-l-2 border-navy-900 space-y-3">
-                {/* How to Fix Section */}
-                {issue.how_to_fix && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Lightbulb className="w-4 h-4 text-amber-600" />
-                      <h5 className="font-semibold text-gray-900 text-sm">How to Fix</h5>
-                    </div>
-                    <ul className="space-y-1">
-                      {Array.isArray(issue.how_to_fix) ? (
-                        issue.how_to_fix.map((fix, i) => (
-                          <li key={i} className="text-gray-700 text-sm flex gap-2">
-                            <ArrowRight className="w-4 h-4 text-navy-900 flex-shrink-0 mt-0.5" />
-                            <span>{fix}</span>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="text-gray-700 text-sm flex gap-2">
-                          <ArrowRight className="w-4 h-4 text-navy-900 flex-shrink-0 mt-0.5" />
-                          <span>{issue.how_to_fix}</span>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Best Practice */}
-                {issue.best_practice && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Zap className="w-4 h-4 text-amber-600" />
-                      <h5 className="font-semibold text-gray-900 text-sm">Best Practice</h5>
-                    </div>
-                    <p className="text-gray-700 text-sm">{issue.best_practice}</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {!isExpanded && issue.how_to_fix && (
-              <div className="flex items-center gap-2 mt-2 text-navy-900">
-                <ChevronDown className="w-4 h-4" />
-                <span className="text-sm font-medium">Click to see solutions</span>
-              </div>
-            )}
-
-            {isExpanded && (
-              <div className="flex items-center gap-2 mt-3 text-navy-900">
-                <ChevronUp className="w-4 h-4" />
-                <span className="text-sm font-medium">Click to collapse</span>
-              </div>
-            )}
+            <div className="issue-point-title">{issue.title}</div>
+            <div className="issue-point-desc">{issue.description}</div>
           </div>
+        </div>
+
+        {/* Points Box */}
+        <div className="points-box">
+          <div className="points-label">Points to Change</div>
+          <div className="points-content">
+            {issue.improvement_points || 'Click to see what needs improvement'}
+          </div>
+        </div>
+
+        {/* Expandable Solutions */}
+        {expanded && issue.how_to_fix && (
+          <div className="solution-section">
+            <div className="solution-title">
+              <Lightbulb className="w-4 h-4" />
+              How to Fix
+            </div>
+            <div className="solution-list">
+              {Array.isArray(issue.how_to_fix) ? (
+                issue.how_to_fix.map((fix, i) => (
+                  <div key={i} className="solution-item">
+                    <ArrowRight className="solution-arrow" />
+                    <span>{fix}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="solution-item">
+                  <ArrowRight className="solution-arrow" />
+                  <span>{issue.how_to_fix}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Best Practice */}
+        {expanded && issue.best_practice && (
+          <div className="solution-section">
+            <div className="solution-title">
+              <Zap className="w-4 h-4" />
+              Best Practice
+            </div>
+            <div className="points-content">{issue.best_practice}</div>
+          </div>
+        )}
+
+        {/* Toggle Indicator */}
+        <div className="expand-toggle">
+          {expanded ? (
+            <>
+              <ChevronUp className="w-4 h-4" />
+              <span>Close Details</span>
+            </>
+          ) : (
+            <>
+              <ChevronDown className="w-4 h-4" />
+              <span>View Solutions</span>
+            </>
+          )}
         </div>
       </div>
     );
   };
 
-  // Category section
-  const CategorySection = ({ title, data, icon: Icon, color }) => {
+  // Category Section Component
+  const CategorySection = ({ title, data, icon: Icon, categoryName }) => {
     if (!data || !data.issues) return null;
 
     return (
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
-          <div className={`p-2 rounded-lg ${color}`}>
-            <Icon className="w-5 h-5 text-white" />
+      <div className="category-container">
+        <div className="category-header">
+          <div className={`category-icon ${categoryName}`}>
+            <Icon />
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-            <p className="text-sm text-gray-600">Score: {data.score?.toFixed(1) || 'N/A'}</p>
+          <div className="category-info">
+            <h3>{title}</h3>
+            <div className="category-score">Score: {data.score?.toFixed(1) || 'N/A'}</div>
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="issues-points-grid">
           {data.issues.map((issue, idx) => (
-            <IssueItem key={idx} issue={issue} index={`${title}-${idx}`} />
+            <IssuePointCard
+              key={idx}
+              issue={issue}
+              categoryName={categoryName}
+              index={idx}
+            />
           ))}
         </div>
       </div>
     );
   };
 
-  // Content for each tab
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <ScoreCard
-                title="ARAI Score"
-                score={arai_score}
-                grade={overall_grade}
-                icon={BarChart3}
-                color="bg-indigo-600"
-              />
-              <ScoreCard
-                title="Accessibility"
-                score={arai_breakdown.accessibility}
-                grade={arai_breakdown.accessibility >= 80 ? 'A' : arai_breakdown.accessibility >= 70 ? 'B' : 'C'}
-                icon={Target}
-                color="bg-teal-600"
-              />
-              <ScoreCard
-                title="Readability"
-                score={arai_breakdown.readability}
-                grade={arai_breakdown.readability >= 80 ? 'A' : arai_breakdown.readability >= 70 ? 'B' : 'C'}
-                icon={TrendingUp}
-                color="bg-blue-600"
-              />
-              <ScoreCard
-                title="Attention"
-                score={arai_breakdown.attention}
-                grade={arai_breakdown.attention >= 80 ? 'A' : arai_breakdown.attention >= 70 ? 'B' : 'C'}
-                icon={Zap}
-                color="bg-amber-600"
-              />
-            </div>
-
-            {/* All Issues Combined */}
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Key Findings</h3>
-              <div className="space-y-2">
-                {results.issues?.map((issue, idx) => (
-                  <IssueItem key={idx} issue={issue} index={idx} />
-                )) || <p className="text-gray-500">No issues found - great work!</p>}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'accessibility':
-        return <CategorySection title="Accessibility Analysis" data={accessibility} icon={Target} color="bg-teal-600" />;
-
-      case 'readability':
-        return <CategorySection title="Readability Analysis" data={readability} icon={TrendingUp} color="bg-blue-600" />;
-
-      case 'attention':
-        return <CategorySection title="Attention Analysis" data={attention} icon={Zap} color="bg-amber-600" />;
-
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 pb-8 border-b border-gray-200">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Design Analysis Results</h1>
-          <p className="text-gray-600">Your ARAI (Accessibility Readability Attention Index) Score</p>
-        </div>
+    <div className="analysis-container">
+      <style>{css}</style>
 
-        {/* Main Score Display */}
-        <div className="bg-white rounded-lg p-8 mb-8 border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
+      {/* Header */}
+      <div className="analysis-header">
+        <h1>Design Analysis Results</h1>
+        <p>Your ARAI Score (Accessibility, Readability, Attention Index)</p>
+      </div>
+
+      {/* Main Score Section */}
+      <div className="main-scores-section" ref={scoreRef}>
+        <div className="main-score-content">
+          {/* Left - Main Info */}
+          <div className="main-score-left">
             <div>
-              <p className="text-gray-600 text-lg mb-2">Overall ARAI Score</p>
-              <div className="flex items-baseline gap-4">
-                <div className="text-6xl font-bold text-navy-900">{arai_score.toFixed(1)}</div>
-                <div className={`text-5xl font-bold ${
-                  overall_grade === 'A' ? 'text-emerald-600' :
-                  overall_grade === 'B' ? 'text-teal-600' :
-                  overall_grade === 'C' ? 'text-amber-600' : 'text-orange-600'
-                }`}>
-                  {overall_grade}
+              <h2>One score.<br />Three <em>dimensions</em><br />of inclusivity.</h2>
+              <p>
+                Accessibility, readability, and visual attention — combined into a single, actionable index you can track and improve.
+              </p>
+            </div>
+
+            {/* Sub Scores Cards */}
+            <div className="sub-scores-grid">
+              {/* Accessibility */}
+              <div className="sub-score-card">
+                <div className="sub-score-header">
+                  <div className="sub-score-icon" style={{ background: '#14b8a6' }}>
+                    <Target className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="sub-score-label">Score</div>
+                    <div className="sub-score-name">Accessibility</div>
+                  </div>
+                </div>
+                <div className="sub-score-ring">
+                  <svg viewBox="0 0 100 100">
+                    <circle className="sub-ring-bg" cx="50" cy="50" r="40" />
+                    <circle
+                      className="sub-ring-fill accessibility"
+                      cx="50" cy="50" r="40"
+                      style={{
+                        '--offset': `${animated ? calculateSubRingOffset(arai_breakdown.accessibility) : 251}px`,
+                        transitionDelay: '0ms',
+                      }}
+                    />
+                  </svg>
+                  <div className="sub-ring-center">
+                    <div className="sub-ring-score">{animated ? arai_breakdown.accessibility.toFixed(1) : 0}</div>
+                    <div className="sub-ring-pct">%</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="text-right">
-              <p className="text-gray-600 mb-2">Performance Summary</p>
-              <div className="space-y-2">
-                <div className="flex gap-2 items-center justify-end">
-                  <span className="text-gray-700 font-semibold">Accessibility:</span>
-                  <span className="text-lg font-bold text-teal-600">{arai_breakdown.accessibility.toFixed(1)}</span>
+
+              {/* Readability */}
+              <div className="sub-score-card">
+                <div className="sub-score-header">
+                  <div className="sub-score-icon" style={{ background: '#3b82f6' }}>
+                    <TrendingUp className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="sub-score-label">Score</div>
+                    <div className="sub-score-name">Readability</div>
+                  </div>
                 </div>
-                <div className="flex gap-2 items-center justify-end">
-                  <span className="text-gray-700 font-semibold">Readability:</span>
-                  <span className="text-lg font-bold text-blue-600">{arai_breakdown.readability.toFixed(1)}</span>
+                <div className="sub-score-ring">
+                  <svg viewBox="0 0 100 100">
+                    <circle className="sub-ring-bg" cx="50" cy="50" r="40" />
+                    <circle
+                      className="sub-ring-fill readability"
+                      cx="50" cy="50" r="40"
+                      style={{
+                        '--offset': `${animated ? calculateSubRingOffset(arai_breakdown.readability) : 251}px`,
+                        transitionDelay: '200ms',
+                      }}
+                    />
+                  </svg>
+                  <div className="sub-ring-center">
+                    <div className="sub-ring-score">{animated ? arai_breakdown.readability.toFixed(1) : 0}</div>
+                    <div className="sub-ring-pct">%</div>
+                  </div>
                 </div>
-                <div className="flex gap-2 items-center justify-end">
-                  <span className="text-gray-700 font-semibold">Attention:</span>
-                  <span className="text-lg font-bold text-amber-600">{arai_breakdown.attention.toFixed(1)}</span>
+              </div>
+
+              {/* Attention */}
+              <div className="sub-score-card">
+                <div className="sub-score-header">
+                  <div className="sub-score-icon" style={{ background: '#f59e0b' }}>
+                    <Zap className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="sub-score-label">Score</div>
+                    <div className="sub-score-name">Attention</div>
+                  </div>
+                </div>
+                <div className="sub-score-ring">
+                  <svg viewBox="0 0 100 100">
+                    <circle className="sub-ring-bg" cx="50" cy="50" r="40" />
+                    <circle
+                      className="sub-ring-fill attention"
+                      cx="50" cy="50" r="40"
+                      style={{
+                        '--offset': `${animated ? calculateSubRingOffset(arai_breakdown.attention) : 251}px`,
+                        transitionDelay: '400ms',
+                      }}
+                    />
+                  </svg>
+                  <div className="sub-ring-center">
+                    <div className="sub-ring-score">{animated ? arai_breakdown.attention.toFixed(1) : 0}</div>
+                    <div className="sub-ring-pct">%</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-2 mb-8 bg-white rounded-lg p-2 border border-gray-200">
-          {[
-            { id: 'overview', label: '📊 Overview' },
-            { id: 'accessibility', label: '♿ Accessibility' },
-            { id: 'readability', label: '📖 Readability' },
-            { id: 'attention', label: '👁️ Attention' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                activeTab === tab.id
-                  ? 'bg-navy-900 text-white shadow-md'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {/* Right - Main Ring */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="overall-score-ring">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#0f2557" />
+                    <stop offset="100%" stopColor="#14b8a6" />
+                  </linearGradient>
+                </defs>
+                <circle className="ring-bg" cx="100" cy="100" r="90" />
+                <circle
+                  className={`ring-fill ${animated ? 'animated' : ''}`}
+                  cx="100" cy="100" r="90"
+                  style={{
+                    '--offset': `${animated ? calculateStrokeOffset(arai_score) : 565}px`,
+                  }}
+                />
+              </svg>
+              <div className="ring-center">
+                <div className="ring-score">{animated ? arai_score.toFixed(1) : 0}</div>
+                <div className="ring-grade">Grade {overall_grade}</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Tab Content */}
-        <div className="bg-white rounded-lg p-8 border border-gray-200">
-          {renderTabContent()}
-        </div>
+      {/* Category Sections */}
+      <div className="categories-section">
+        {/* Accessibility Section */}
+        {accessibility && (
+          <CategorySection
+            title="Accessibility Analysis"
+            data={accessibility}
+            icon={Target}
+            categoryName="accessibility"
+          />
+        )}
 
-        {/* Footer Info */}
-        <div className="mt-8 text-center text-gray-600 text-sm">
-          <p>💡 Click on any issue to see detailed solutions on how to improve your design</p>
-        </div>
+        {/* Readability Section */}
+        {readability && (
+          <CategorySection
+            title="Readability Analysis"
+            data={readability}
+            icon={TrendingUp}
+            categoryName="readability"
+          />
+        )}
+
+        {/* Attention Section */}
+        {attention && (
+          <CategorySection
+            title="Visual Attention Analysis"
+            data={attention}
+            icon={Zap}
+            categoryName="attention"
+          />
+        )}
       </div>
     </div>
   );
