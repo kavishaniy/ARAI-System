@@ -159,7 +159,7 @@ const Dashboard = () => {
   const handleNewAnalysis = () => {
     setCurrentAnalysis(null);
     setAnalysisKey(prev => prev + 1); // Reset the key when starting new analysis
-    setActiveTab('upload');
+    setActiveTab('results'); // Keep on results tab for new dashboard
   };
 
   const [collapsed, setCollapsed] = useState(false);
@@ -211,8 +211,14 @@ const Dashboard = () => {
               {activeTab === 'upload' && (
                 <UploadAnalysis onAnalysisComplete={handleAnalysisComplete} />
               )}
-              {activeTab === 'results' && currentAnalysis && (
-                <SimplifiedAnalysisResults key={analysisKey} results={currentAnalysis} />
+              {activeTab === 'results' && (
+                <>
+                  {currentAnalysis ? (
+                    <SimplifiedAnalysisResults key={analysisKey} results={currentAnalysis} />
+                  ) : (
+                    <UploadAnalysis onAnalysisComplete={handleAnalysisComplete} />
+                  )}
+                </>
               )}
               {activeTab === 'history' && (
                 <HistorySection key={refreshHistory} onSelectAnalysis={setCurrentAnalysis} />

@@ -149,117 +149,109 @@ const css = `
 .sub-scores-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 1.2rem;
   margin-top: 2rem;
+  width: 100%;
 }
 
 .sub-score-card {
-  background: linear-gradient(135deg, rgba(15,37,87,0.02) 0%, rgba(15,37,87,0.01) 100%);
-  border: 1.5px solid rgba(15,37,87,0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: white;
+  border: 2px solid rgba(15,37,87,0.12);
+  border-radius: 14px;
+  padding: 1.2rem;
+  text-align: center;
   transition: all 0.3s;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .sub-score-card:hover {
-  border-color: rgba(15,37,87,0.2);
-  box-shadow: 0 4px 12px rgba(15,37,87,0.08);
+  border-color: rgba(15,37,87,0.3);
+  box-shadow: 0 8px 20px rgba(15,37,87,0.1);
+  transform: translateY(-4px);
+}
+
+.sub-score-card.accessibility {
+  border-color: #14b8a6;
+}
+
+.sub-score-card.accessibility:hover {
+  border-color: #14b8a6;
+  box-shadow: 0 8px 20px rgba(20,184,166,0.15);
+}
+
+.sub-score-card.readability {
+  border-color: #3b82f6;
+}
+
+.sub-score-card.readability:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 8px 20px rgba(59,130,246,0.15);
+}
+
+.sub-score-card.attention {
+  border-color: #f59e0b;
+}
+
+.sub-score-card.attention:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 8px 20px rgba(245,158,11,0.15);
 }
 
 .sub-score-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.sub-score-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  gap: 0;
+  margin-bottom: 0.5rem;
 }
 
 .sub-score-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  font-weight: 600;
-  color: rgba(15,37,87,0.5);
+  font-weight: 700;
+  color: rgba(15,37,87,0.4);
+  margin-bottom: 0.3rem;
 }
 
 .sub-score-name {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: #0f2557;
+  letter-spacing: 0.02em;
 }
 
-.sub-score-ring {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1rem;
+.sub-score-value-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.2rem;
 }
 
-.sub-score-ring svg {
-  transform: rotate(-90deg);
-  width: 80px;
-  height: 80px;
-}
-
-.sub-ring-bg {
-  fill: none;
-  stroke: rgba(15,37,87,0.08);
-  stroke-width: 5;
-}
-
-.sub-ring-fill {
-  fill: none;
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-dasharray: 251;
-  stroke-dashoffset: 251;
-  transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
-}
-
-.sub-ring-fill.accessibility {
-  stroke: #14b8a6;
-}
-
-.sub-ring-fill.readability {
-  stroke: #3b82f6;
-}
-
-.sub-ring-fill.attention {
-  stroke: #f59e0b;
-}
-
-.sub-ring-fill.animated {
-  stroke-dashoffset: var(--offset);
-}
-
-.sub-ring-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.sub-ring-score {
+.sub-score-value {
   font-family: 'DM Serif Display', serif;
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: 400;
   color: #0f2557;
-  line-height: 1;
+  line-height: 1.1;
 }
 
-.sub-ring-pct {
-  font-size: 0.65rem;
-  color: rgba(15,37,87,0.4);
+.sub-score-unit {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(15,37,87,0.5);
+  margin-bottom: 0.3rem;
+}
+
+.sub-score-description {
+  font-size: 0.7rem;
+  color: rgba(15,37,87,0.55);
+  line-height: 1.3;
+  margin-top: 0.4rem;
+  letter-spacing: 0.02em;
 }
 
 /* Category Sections */
@@ -552,11 +544,6 @@ const SimplifiedAnalysisResults = ({ results }) => {
     return 565 * (1 - percentage); // Main ring circumference
   };
 
-  const calculateSubRingOffset = (score, maxValue = 100) => {
-    const percentage = Math.min(score, maxValue) / maxValue;
-    return 251 * (1 - percentage); // Sub ring circumference
-  };
-
   // Issue Point Card Component
   const IssuePointCard = ({ issue, categoryName, index }) => {
     const [expanded, setExpanded] = useState(false);
@@ -680,12 +667,6 @@ const SimplifiedAnalysisResults = ({ results }) => {
     <div className="analysis-container">
       <style>{css}</style>
 
-      {/* Header */}
-      <div className="analysis-header">
-        <h1>Design Analysis Results</h1>
-        <p>Your ARAI Score (Accessibility, Readability, Attention Index)</p>
-      </div>
-
       {/* Main Score Section */}
       <div className="main-scores-section" ref={scoreRef}>
         <div className="main-score-content">
@@ -701,93 +682,39 @@ const SimplifiedAnalysisResults = ({ results }) => {
             {/* Sub Scores Cards */}
             <div className="sub-scores-grid">
               {/* Accessibility */}
-              <div className="sub-score-card">
+              <div className="sub-score-card accessibility">
                 <div className="sub-score-header">
-                  <div className="sub-score-icon" style={{ background: '#14b8a6' }}>
-                    <Target className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="sub-score-label">Score</div>
-                    <div className="sub-score-name">Accessibility</div>
+                  <div className="sub-score-label">Accessibility</div>
+                  <div className="sub-score-value-container">
+                    <div className="sub-score-value">{animated ? arai_breakdown.accessibility.toFixed(1) : 0}</div>
+                    <div className="sub-score-unit">%</div>
                   </div>
                 </div>
-                <div className="sub-score-ring">
-                  <svg viewBox="0 0 100 100">
-                    <circle className="sub-ring-bg" cx="50" cy="50" r="40" />
-                    <circle
-                      className="sub-ring-fill accessibility"
-                      cx="50" cy="50" r="40"
-                      style={{
-                        '--offset': `${animated ? calculateSubRingOffset(arai_breakdown.accessibility) : 251}px`,
-                        transitionDelay: '0ms',
-                      }}
-                    />
-                  </svg>
-                  <div className="sub-ring-center">
-                    <div className="sub-ring-score">{animated ? arai_breakdown.accessibility.toFixed(1) : 0}</div>
-                    <div className="sub-ring-pct">%</div>
-                  </div>
-                </div>
+                <div className="sub-score-description">WCAG Compliance</div>
               </div>
 
               {/* Readability */}
-              <div className="sub-score-card">
+              <div className="sub-score-card readability">
                 <div className="sub-score-header">
-                  <div className="sub-score-icon" style={{ background: '#3b82f6' }}>
-                    <TrendingUp className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="sub-score-label">Score</div>
-                    <div className="sub-score-name">Readability</div>
+                  <div className="sub-score-label">Readability</div>
+                  <div className="sub-score-value-container">
+                    <div className="sub-score-value">{animated ? arai_breakdown.readability.toFixed(1) : 0}</div>
+                    <div className="sub-score-unit">%</div>
                   </div>
                 </div>
-                <div className="sub-score-ring">
-                  <svg viewBox="0 0 100 100">
-                    <circle className="sub-ring-bg" cx="50" cy="50" r="40" />
-                    <circle
-                      className="sub-ring-fill readability"
-                      cx="50" cy="50" r="40"
-                      style={{
-                        '--offset': `${animated ? calculateSubRingOffset(arai_breakdown.readability) : 251}px`,
-                        transitionDelay: '200ms',
-                      }}
-                    />
-                  </svg>
-                  <div className="sub-ring-center">
-                    <div className="sub-ring-score">{animated ? arai_breakdown.readability.toFixed(1) : 0}</div>
-                    <div className="sub-ring-pct">%</div>
-                  </div>
-                </div>
+                <div className="sub-score-description">Text Clarity</div>
               </div>
 
               {/* Attention */}
-              <div className="sub-score-card">
+              <div className="sub-score-card attention">
                 <div className="sub-score-header">
-                  <div className="sub-score-icon" style={{ background: '#f59e0b' }}>
-                    <Zap className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="sub-score-label">Score</div>
-                    <div className="sub-score-name">Attention</div>
+                  <div className="sub-score-label">Attention</div>
+                  <div className="sub-score-value-container">
+                    <div className="sub-score-value">{animated ? arai_breakdown.attention.toFixed(1) : 0}</div>
+                    <div className="sub-score-unit">%</div>
                   </div>
                 </div>
-                <div className="sub-score-ring">
-                  <svg viewBox="0 0 100 100">
-                    <circle className="sub-ring-bg" cx="50" cy="50" r="40" />
-                    <circle
-                      className="sub-ring-fill attention"
-                      cx="50" cy="50" r="40"
-                      style={{
-                        '--offset': `${animated ? calculateSubRingOffset(arai_breakdown.attention) : 251}px`,
-                        transitionDelay: '400ms',
-                      }}
-                    />
-                  </svg>
-                  <div className="sub-ring-center">
-                    <div className="sub-ring-score">{animated ? arai_breakdown.attention.toFixed(1) : 0}</div>
-                    <div className="sub-ring-pct">%</div>
-                  </div>
-                </div>
+                <div className="sub-score-description">Visual Hierarchy</div>
               </div>
             </div>
           </div>

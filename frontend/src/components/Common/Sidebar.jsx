@@ -400,7 +400,6 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
 
   const handleNewAnalysis = () => {
     onNavigate('upload');
-    navigate('/');
   };
 
   const handleToggleCollapse = () => {
