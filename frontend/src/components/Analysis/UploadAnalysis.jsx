@@ -3,7 +3,7 @@ import { Upload, FileImage, AlertCircle, CheckCircle, Loader2 } from 'lucide-rea
 import axios from 'axios';
 import { authService } from '../../services/auth';
 
-// Upload and Analysis Component - Production Ready
+// Upload and Analysis Component - Production Ready - Legacy Single File Version
 const UploadAnalysis = ({ onAnalysisComplete }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import UploadAnalysis from '../Analysis/UploadAnalysis';
+import UploadAnalysisMultiple from '../Analysis/UploadAnalysisMultiple';
 import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
+import MultipleAnalysisResults from '../Analysis/MultipleAnalysisResults';
 import HistorySection from './HistorySection';
 import Sidebar from '../Common/Sidebar';
 
@@ -159,7 +160,7 @@ const Dashboard = () => {
   const handleNewAnalysis = () => {
     setCurrentAnalysis(null);
     setAnalysisKey(prev => prev + 1); // Reset the key when starting new analysis
-    setActiveTab('results'); // Keep on results tab for new dashboard
+    setActiveTab('upload');
   };
 
   const [collapsed, setCollapsed] = useState(false);
@@ -191,21 +192,12 @@ const Dashboard = () => {
             <div className="dashboard-header-content">
               <div className="dashboard-title-section">
                 <div className="dashboard-title">
-                  {activeTab === 'results' && currentAnalysis ? (
-                    <>
-                      <h1>Design Analysis Results</h1>
-                      <p className="dashboard-subtitle">Your ARAI Score (Accessibility, Readability, Attention Index)</p>
-                    </>
-                  ) : (
-                    <>
-                      <h1>Dashboard</h1>
-                      <p className="dashboard-subtitle">Upload designs and view analysis</p>
-                    </>
-                  )}
+                  <h1>Dashboard</h1>
+                  <p className="dashboard-subtitle">Upload designs and view analysis</p>
                 </div>
 
                 <div className="dashboard-actions">
-                  {activeTab === 'results' && currentAnalysis && (
+                  {activeTab === 'results' && (
                     <button onClick={handleNewAnalysis} className="btn-new-analysis">
                       + New Analysis
                     </button>
@@ -218,16 +210,21 @@ const Dashboard = () => {
           <main className="dashboard-main">
             <div className="dashboard-card">
               {activeTab === 'upload' && (
-                <UploadAnalysis onAnalysisComplete={handleAnalysisComplete} />
+                <UploadAnalysisMultiple onAnalysisComplete={handleAnalysisComplete} />
               )}
-              {activeTab === 'results' && (
-                <>
-                  {currentAnalysis ? (
-                    <SimplifiedAnalysisResults key={analysisKey} results={currentAnalysis} />
-                  ) : (
-                    <UploadAnalysis onAnalysisComplete={handleAnalysisComplete} />
-                  )}
-                </>
+              {activeTab === 'results' && currentAnalysis && (
+                currentAnalysis.analyses ? (
+                  <MultipleAnalysisResults 
+                    key={analysisKey} 
+                    results={currentAnalysis} 
+                    onNewAnalysis={handleNewAnalysis}
+                  />
+                ) : (
+                  <SimplifiedAnalysisResults 
+                    key={analysisKey} 
+                    results={currentAnalysis} 
+                  />
+                )
               )}
               {activeTab === 'history' && (
                 <HistorySection key={refreshHistory} onSelectAnalysis={setCurrentAnalysis} />
