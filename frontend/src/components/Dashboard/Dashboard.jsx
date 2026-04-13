@@ -191,12 +191,21 @@ const Dashboard = () => {
             <div className="dashboard-header-content">
               <div className="dashboard-title-section">
                 <div className="dashboard-title">
-                  <h1>Dashboard</h1>
-                  <p className="dashboard-subtitle">Upload designs and view analysis</p>
+                  {activeTab === 'results' && currentAnalysis ? (
+                    <>
+                      <h1>Design Analysis Results</h1>
+                      <p className="dashboard-subtitle">Your ARAI Score (Accessibility, Readability, Attention Index)</p>
+                    </>
+                  ) : (
+                    <>
+                      <h1>Dashboard</h1>
+                      <p className="dashboard-subtitle">Upload designs and view analysis</p>
+                    </>
+                  )}
                 </div>
 
                 <div className="dashboard-actions">
-                  {activeTab === 'results' && (
+                  {activeTab === 'results' && currentAnalysis && (
                     <button onClick={handleNewAnalysis} className="btn-new-analysis">
                       + New Analysis
                     </button>
