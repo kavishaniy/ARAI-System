@@ -8,8 +8,6 @@ import {
   ChevronUp,
   Lightbulb,
   Zap,
-  Target,
-  TrendingUp,
   ArrowRight
 } from 'lucide-react';
 
@@ -54,20 +52,20 @@ const css = `
   background: white;
   border: 1.5px solid rgba(15,37,87,0.15);
   border-radius: 20px;
-  padding: 3rem;
+  padding: 2.5rem;
   box-shadow: 0 10px 40px rgba(15,37,87,0.08);
 }
 
 .main-score-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 2.5rem;
   align-items: center;
 }
 
 .main-score-left h2 {
   font-family: 'DM Serif Display', serif;
-  font-size: 2.2rem;
+  font-size: 2rem;
   color: #0f2557;
   font-weight: 400;
   line-height: 1.3;
@@ -254,75 +252,102 @@ const css = `
   letter-spacing: 0.02em;
 }
 
-/* Category Sections */
+/* Category Sections - Tabbed Layout */
 .categories-section {
   max-width: 1400px;
   margin: 0 auto;
 }
 
+.category-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 2px solid rgba(15,37,87,0.15);
+  background: white;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+}
+
+.category-tab {
+  flex: 1;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(15,37,87,0.02);
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  color: rgba(15,37,87,0.6);
+  transition: all 0.3s;
+}
+
+.category-tab:hover {
+  background: rgba(15,37,87,0.05);
+  color: #0f2557;
+}
+
+.category-tab.active {
+  background: white;
+  color: #0f2557;
+  border-bottom-color: #14b8a6;
+  font-weight: 500;
+}
+
+.category-tab.active.readability {
+  border-bottom-color: #3b82f6;
+}
+
+.category-tab.active.attention {
+  border-bottom-color: #f59e0b;
+}
+
 .category-container {
   background: white;
   border: 1.5px solid rgba(15,37,87,0.15);
-  border-radius: 20px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  padding: 2rem;
   box-shadow: 0 10px 40px rgba(15,37,87,0.08);
 }
 
 .category-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1.5px solid rgba(15,37,87,0.1);
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
-.category-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+.category-header .category-info {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.category-icon.accessibility {
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-}
-
-.category-icon.readability {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-}
-
-.category-icon.attention {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-
-.category-icon svg {
-  color: white;
-  width: 28px;
-  height: 28px;
+  align-items: baseline;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .category-info h3 {
   font-family: 'DM Serif Display', serif;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: #0f2557;
   font-weight: 400;
-  margin-bottom: 0.5rem;
+  margin: 0;
+  letter-spacing: 0.5px;
 }
 
 .category-score {
-  font-size: 0.9rem;
-  color: rgba(15,37,87,0.6);
+  font-size: 1rem;
+  color: rgba(15,37,87,0.5);
+  font-weight: 300;
+  margin: 0;
+}
+
+.category-icon {
+  display: none;
 }
 
 /* Issues and Points Grid */
 .issues-points-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
@@ -344,13 +369,13 @@ const css = `
 .issue-point-header {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0;
   margin-bottom: 1rem;
+}
 }
 
 .issue-severity-icon {
-  flex-shrink: 0;
-  margin-top: 2px;
+  display: none;
 }
 
 .issue-point-title {
@@ -511,6 +536,7 @@ const css = `
  */
 const SimplifiedAnalysisResults = ({ results }) => {
   const [animated, setAnimated] = useState(false);
+  const [activeTab, setActiveTab] = useState('accessibility');
   const scoreRef = useRef(null);
 
   // Animation setup
@@ -633,36 +659,6 @@ const SimplifiedAnalysisResults = ({ results }) => {
     );
   };
 
-  // Category Section Component
-  const CategorySection = ({ title, data, icon: Icon, categoryName }) => {
-    if (!data || !data.issues) return null;
-
-    return (
-      <div className="category-container">
-        <div className="category-header">
-          <div className={`category-icon ${categoryName}`}>
-            <Icon />
-          </div>
-          <div className="category-info">
-            <h3>{title}</h3>
-            <div className="category-score">Score: {data.score?.toFixed(1) || 'N/A'}</div>
-          </div>
-        </div>
-
-        <div className="issues-points-grid">
-          {data.issues.map((issue, idx) => (
-            <IssuePointCard
-              key={idx}
-              issue={issue}
-              categoryName={categoryName}
-              index={idx}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="analysis-container">
       <style>{css}</style>
@@ -747,36 +743,93 @@ const SimplifiedAnalysisResults = ({ results }) => {
         </div>
       </div>
 
-      {/* Category Sections */}
+      {/* Category Sections - Tabbed */}
       <div className="categories-section">
-        {/* Accessibility Section */}
-        {accessibility && (
-          <CategorySection
-            title="Accessibility Analysis"
-            data={accessibility}
-            icon={Target}
-            categoryName="accessibility"
-          />
+        <div className="category-tabs">
+          <button 
+            className={`category-tab accessibility ${activeTab === 'accessibility' ? 'active' : ''}`}
+            onClick={() => setActiveTab('accessibility')}
+          >
+            Accessibility Analysis
+          </button>
+          <button 
+            className={`category-tab readability ${activeTab === 'readability' ? 'active' : ''}`}
+            onClick={() => setActiveTab('readability')}
+          >
+            Readability Analysis
+          </button>
+          <button 
+            className={`category-tab attention ${activeTab === 'attention' ? 'active' : ''}`}
+            onClick={() => setActiveTab('attention')}
+          >
+            Visual Attention Analysis
+          </button>
+        </div>
+
+        {/* Accessibility Tab Content */}
+        {activeTab === 'accessibility' && accessibility && (
+          <div className="category-container">
+            <div className="category-header">
+              <div className="category-info">
+                <h3>Accessibility Analysis</h3>
+                <div className="category-score">Score: {accessibility.score?.toFixed(1) || 'N/A'}</div>
+              </div>
+            </div>
+            <div className="issues-points-grid">
+              {accessibility.issues.map((issue, idx) => (
+                <IssuePointCard
+                  key={idx}
+                  issue={issue}
+                  categoryName="accessibility"
+                  index={idx}
+                />
+              ))}
+            </div>
+          </div>
         )}
 
-        {/* Readability Section */}
-        {readability && (
-          <CategorySection
-            title="Readability Analysis"
-            data={readability}
-            icon={TrendingUp}
-            categoryName="readability"
-          />
+        {/* Readability Tab Content */}
+        {activeTab === 'readability' && readability && (
+          <div className="category-container">
+            <div className="category-header">
+              <div className="category-info">
+                <h3>Readability Analysis</h3>
+                <div className="category-score">Score: {readability.score?.toFixed(1) || 'N/A'}</div>
+              </div>
+            </div>
+            <div className="issues-points-grid">
+              {readability.issues.map((issue, idx) => (
+                <IssuePointCard
+                  key={idx}
+                  issue={issue}
+                  categoryName="readability"
+                  index={idx}
+                />
+              ))}
+            </div>
+          </div>
         )}
 
-        {/* Attention Section */}
-        {attention && (
-          <CategorySection
-            title="Visual Attention Analysis"
-            data={attention}
-            icon={Zap}
-            categoryName="attention"
-          />
+        {/* Attention Tab Content */}
+        {activeTab === 'attention' && attention && (
+          <div className="category-container">
+            <div className="category-header">
+              <div className="category-info">
+                <h3>Visual Attention Analysis</h3>
+                <div className="category-score">Score: {attention.score?.toFixed(1) || 'N/A'}</div>
+              </div>
+            </div>
+            <div className="issues-points-grid">
+              {attention.issues.map((issue, idx) => (
+                <IssuePointCard
+                  key={idx}
+                  issue={issue}
+                  categoryName="attention"
+                  index={idx}
+                />
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>
