@@ -195,6 +195,102 @@ const css = `
   letter-spacing: 0.7px;
 }
 
+/* Image Lightbox Modal */
+.lightbox-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+  overflow: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox-modal.hidden {
+  display: none;
+}
+
+.lightbox-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .lightbox-close {
+    top: 1rem;
+    right: 1rem;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+  }
+}
+
 /* Results Container */
 .results-container {
   max-width: 1200px;
@@ -293,6 +389,7 @@ const css = `
 
 const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [lightboxImage, setLightboxImage] = useState(null);
 
   if (!results || !results.analyses || results.analyses.length === 0) {
     return (
@@ -333,6 +430,11 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
                       src={analysis.preview}
                       alt={analysis.designName}
                       className="design-card-image"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLightboxImage(analysis.preview);
+                      }}
+                      style={{ cursor: 'zoom-in' }}
                     />
                   )}
                   <div className="design-card-info">
@@ -359,6 +461,36 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       <div className="results-container">
         <SimplifiedAnalysisResults results={currentAnalysis} />
       </div>
+
+      {/* Lightbox Modal */}
+      {lightboxImage && (
+        <div
+          className="lightbox-modal"
+          onClick={() => setLightboxImage(null)}
+        >
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={lightboxImage}
+              alt="Full view"
+              className="lightbox-image"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+            <button
+              className="lightbox-close"
+              onClick={() => setLightboxImage(null)}
+              aria-label="Close lightbox"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
