@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FilePlus } from 'lucide-react';
 import UploadAnalysisMultiple from '../Analysis/UploadAnalysisMultiple';
 import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
 import MultipleAnalysisResults from '../Analysis/MultipleAnalysisResults';
@@ -78,6 +79,15 @@ const css = `
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-new-analysis-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .btn-new-analysis:hover {
@@ -192,14 +202,24 @@ const Dashboard = () => {
             <div className="dashboard-header-content">
               <div className="dashboard-title-section">
                 <div className="dashboard-title">
-                  <h1>Dashboard</h1>
-                  <p className="dashboard-subtitle">Upload designs and view analysis</p>
+                  {activeTab === 'results' ? (
+                    <>
+                      <h1>Analysis Results</h1>
+                      <p className="dashboard-subtitle">View detailed insights and recommendations for your design</p>
+                    </>
+                  ) : (
+                    <>
+                      <h1>Dashboard</h1>
+                      <p className="dashboard-subtitle">Upload designs and view analysis</p>
+                    </>
+                  )}
                 </div>
 
                 <div className="dashboard-actions">
                   {activeTab === 'results' && (
                     <button onClick={handleNewAnalysis} className="btn-new-analysis">
-                      + New Analysis
+                      <FilePlus className="btn-new-analysis-icon" />
+                      New Analysis
                     </button>
                   )}
                 </div>
