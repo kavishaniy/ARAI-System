@@ -1,0 +1,114 @@
+{
+  "analysis_id": "9dda577f-6ed0-4977-b268-55e274feeba2",
+  "design_name": "Sass Landing page-1.png",
+  "filename": "Sass Landing page-1.png",
+  "timestamp": "2026-04-14T12:30:30.660895",
+  "arai_score": 10.0,
+  "arai_breakdown": {
+    "overall": 10.0,
+    "accessibility": 10,
+    "readability": 10,
+    "attention": 10
+  },
+  "overall_grade": "F",
+  "accessibility": {
+    "score": 10,
+    "wcag_level": "F",
+    "conformance": "\u274c Non-Compliant",
+    "issues": [
+      {
+        "category": "blank_image",
+        "title": "\u274c Image is Blank or Empty",
+        "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. There are no elements to assess for accessibility compliance.",
+        "severity": "critical",
+        "how_to_fix": [
+          "\ud83d\udcf8 Upload a design image with actual content",
+          "\u270f\ufe0f Ensure the image contains UI elements, text, buttons, or other design components",
+          "\u270f\ufe0f The image should not be entirely white, blank, or uniform in color"
+        ]
+      }
+    ],
+    "summary": "Cannot assess accessibility on a blank image. Please upload a design."
+  },
+  "readability": {
+    "score": 10,
+    "grade": "F",
+    "conformance": "\u274c Non-Compliant",
+    "issues": [
+      {
+        "category": "blank_image",
+        "title": "\u274c Image is Blank or Empty",
+        "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. Cannot assess readability on empty designs.",
+        "severity": "critical",
+        "how_to_fix": [
+          "\ud83d\udcf8 Upload a design image with actual content",
+          "\u270f\ufe0f Include text, buttons, forms, or other UI elements",
+          "\u270f\ufe0f Ensure the image is not entirely white or uniform"
+        ]
+      }
+    ],
+    "summary": "Cannot assess readability on a blank image."
+  },
+  "attention": {
+    "score": 10,
+    "grade": "F",
+    "conformance": "\u274c Non-Compliant",
+    "issues": [
+      {
+        "category": "blank_image",
+        "title": "\u274c Image is Blank or Empty",
+        "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. Cannot assess visual attention on empty designs.",
+        "severity": "critical",
+        "how_to_fix": [
+          "\ud83d\udcf8 Upload a design image with actual content",
+          "\u270f\ufe0f Include visual elements, hierarchy, and focal points",
+          "\u270f\ufe0f The image should contain UI components and design elements"
+        ]
+      }
+    ],
+    "summary": "Cannot assess visual attention on a blank image."
+  },
+  "issues": [
+    {
+      "category": "blank_image",
+      "title": "\u274c Image is Blank or Empty",
+      "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. There are no elements to assess for accessibility compliance.",
+      "severity": "critical",
+      "how_to_fix": [
+        "\ud83d\udcf8 Upload a design image with actual content",
+        "\u270f\ufe0f Ensure the image contains UI elements, text, buttons, or other design components",
+        "\u270f\ufe0f The image should not be entirely white, blank, or uniform in color"
+      ]
+    },
+    {
+      "category": "blank_image",
+      "title": "\u274c Image is Blank or Empty",
+      "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. Cannot assess readability on empty designs.",
+      "severity": "critical",
+      "how_to_fix": [
+        "\ud83d\udcf8 Upload a design image with actual content",
+        "\u270f\ufe0f Include text, buttons, forms, or other UI elements",
+        "\u270f\ufe0f Ensure the image is not entirely white or uniform"
+      ]
+    },
+    {
+      "category": "blank_image",
+      "title": "\u274c Image is Blank or Empty",
+      "description": "The uploaded image appears to be blank, white, or contains no meaningful design content. Cannot assess visual attention on empty designs.",
+      "severity": "critical",
+      "how_to_fix": [
+        "\ud83d\udcf8 Upload a design image with actual content",
+        "\u270f\ufe0f Include visual elements, hierarchy, and focal points",
+        "\u270f\ufe0f The image should contain UI components and design elements"
+      ]
+    }
+  ],
+  "issue_summary": {
+    "critical": 3,
+    "high": 0,
+    "medium": 0,
+    "passing": 0
+  },
+  "status": "completed",
+  "warnings": []
+}

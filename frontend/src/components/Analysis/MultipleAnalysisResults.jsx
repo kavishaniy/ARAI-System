@@ -36,6 +36,7 @@ const css = `
   transition: all 0.3s ease;
   white-space: nowrap;
   margin-left: 1rem;
+  display: none;
 }
 
 .multi-analysis-export-btn:hover {
@@ -114,6 +115,128 @@ const css = `
   font-size: 0.9rem;
   color: rgba(15, 37, 87, 0.5);
   margin: 0;
+}
+
+/* Detailed Analysis Section Header */
+.detailed-analysis-header {
+  padding: 0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 37, 87, 0.1);
+  border: 1.5px solid rgba(15, 37, 87, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detailed-analysis-header:hover {
+  box-shadow: 0 12px 32px rgba(15, 37, 87, 0.12);
+  border-color: rgba(15, 37, 87, 0.12);
+}
+
+.detailed-analysis-header-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.2rem 1.8rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  position: relative;
+}
+
+.detailed-analysis-header-content::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #0f2557 0%, #1a3a7a 100%);
+}
+
+.detailed-analysis-header-icon {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, rgba(15, 37, 87, 0.08) 0%, rgba(15, 37, 87, 0.04) 100%);
+  border-radius: 10px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.detailed-analysis-header:hover .detailed-analysis-header-icon {
+  background: linear-gradient(135deg, rgba(15, 37, 87, 0.12) 0%, rgba(15, 37, 87, 0.08) 100%);
+  transform: scale(1.06);
+}
+
+.detailed-analysis-header-text {
+  font-size: 0.95rem;
+  color: #0f2557;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  line-height: 1.3;
+}
+
+.detailed-analysis-header-text strong {
+  color: #0f2557;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0f2557 0%, #1a3a7a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline;
+}
+
+.detailed-analysis-export-btn {
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(135deg, #0f2557 0%, #1a3a7a 100%);
+  color: white;
+  border: none;
+  border-radius: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.detailed-analysis-export-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.detailed-analysis-export-btn:hover {
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.15);
+  transform: scale(1.04);
+}
+
+.detailed-analysis-export-btn:hover::before {
+  left: 100%;
+}
+
+.detailed-analysis-export-btn:active {
+  transform: scale(1.01);
 }
 
 .design-cards {
@@ -979,12 +1102,6 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       <div className="multi-analysis-header">
         <div className="multi-analysis-header-content">
         </div>
-        <button 
-          className="multi-analysis-export-btn"
-          onClick={() => setShowExportModal(true)}
-        >
-          📥 Export as PDF
-        </button>
       </div>
 
       {/* Expanded Design Cards */}
@@ -1035,23 +1152,20 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       <div className="results-container" key={selectedIndex}>
         {currentAnalysis && (
           <>
-            {/* Show the currently selected design name */}
-            <div style={{
-              padding: '2rem 2.5rem',
-              marginBottom: '2rem',
-              background: 'linear-gradient(135deg, #f0f4f9 0%, #f8faff 100%)',
-              border: '2px solid rgba(15, 37, 87, 0.08)',
-              borderRadius: '16px',
-              fontSize: '1.1rem',
-              color: '#0f2557',
-              fontWeight: '500',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.8rem',
-              boxShadow: '0 4px 12px rgba(15, 37, 87, 0.06)',
-            }}>
-              <span style={{ fontSize: '1.4rem' }}>📋</span>
-              Detailed Analysis for: <strong style={{ color: '#0f2557', fontWeight: '600' }}>{currentAnalysis.designName}</strong>
+            {/* Show the currently selected design name with Export button */}
+            <div className="detailed-analysis-header">
+              <div className="detailed-analysis-header-content">
+                <span className="detailed-analysis-header-icon">📋</span>
+                <div className="detailed-analysis-header-text">
+                  Detailed Analysis for: <strong>{currentAnalysis.designName}</strong>
+                </div>
+              </div>
+              <button 
+                className="detailed-analysis-export-btn"
+                onClick={() => setShowExportModal(true)}
+              >
+                📥 Export as PDF
+              </button>
             </div>
 
             {/* Show warning for blank/invalid images */}
