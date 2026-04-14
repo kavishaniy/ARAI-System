@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, User } from 'lucide-react';
+import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, User, Figma } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
@@ -8,11 +8,18 @@ const css = `
 /* Main sidebar container */
 .side-rail {
   width: 80px;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(180deg, #0a1f3d 0%, #061428 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   padding: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
 }
 
 .side-rail.expanded {
@@ -327,6 +334,7 @@ const css = `
 
 const navItems = [
   { to: '/', label: 'New Analysis', Icon: FilePlus, id: 'upload' },
+  { to: '/figma', label: 'Figma Analysis', Icon: Figma, id: 'figma' },
   { to: '/projects', label: 'Projects', Icon: Folder, id: 'projects' },
   { to: '/history', label: 'History', Icon: Clock, id: 'history' },
   { to: '/settings', label: 'Settings', Icon: Settings, id: 'settings' },

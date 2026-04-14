@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
-from app.api import auth, analysis
+from app.api import auth, analysis, figma
 import re
 
 app = FastAPI(
@@ -132,6 +132,11 @@ app.include_router(
     analysis.router,
     prefix=f"{settings.API_V1_STR}/analysis",
     tags=["analysis"]
+)
+
+app.include_router(
+    figma.router,
+    tags=["figma"]
 )
 
 

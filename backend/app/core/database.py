@@ -183,3 +183,119 @@ async def update_analysis_status(analysis_id: str, status: str, error_message: O
     except Exception as e:
         logger.error(f"❌ Error updating analysis status: {str(e)}")
         raise
+
+
+# ==================== Figma Integration Functions ====================
+
+
+async def save_figma_analysis_to_db(
+    analysis_id: str,
+    user_id: str,
+    figma_url: str,
+    analysis_data: Dict
+) -> Dict:
+    """
+    Save Figma analysis results to the database.
+    
+    Args:
+        analysis_id: Unique analysis identifier
+        user_id: User who initiated the analysis
+        figma_url: Original Figma URL
+        analysis_data: Complete analysis results dict
+    """
+    try:
+        file_key = analysis_data.get("file_key", "unknown")
+        file_name = analysis_data.get("file_name", "Untitled")
+        
+        # Extract summary metrics
+        avg_accessibility = analysis_data.get("average_accessibility_score")
+        avg_readability = analysis_data.get("average_readability_score")
+        avg_attention = analysis_data.get("average_attention_score")
+        
+        # Calculate overall score
+        scores = [s for s in [avg_accessibility, avg_readability, avg_attention] if s is not None]
+        overall_score = sum(scores) / len(scores) if scores else None
+        
+        db_record = {
+            "id": analysis_id,
+            "user_id": user_id,
+            "file_key": file_key,
+            "file_name": file_name,
+            "figma_url": figma_url,
+            "status": "completed",
+            "accessibility_score": avg_accessibility,
+            "readability_score": avg_readability,
+            "attention_score": avg_attention,
+            "overall_score": overall_score,
+            "analysis_data": analysis_data,
+            "created_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat()
+        }
+        
+        # Insert or update in figma_analyses table
+        response = supabase_admin.table("figma_analyses").insert(db_record).execute()
+        
+        logger.info(f"✅ Figma analysis saved: {analysis_id}")
+        return response.data[0] if response.data else db_record
+    
+    except Exception as e:
+        logger.error(f"❌ Error saving Figma analysis: {str(e)}")
+        raise
+
+
+async def get_figma_analysis_from_db(analysis_id: str) -> Optional[Dict]:
+    """
+    Retrieve a Figma analysis from the database.
+    """
+    try:
+        response = supabase_admin.table("figma_analyses") \
+            .select("*") \
+            .eq("id", analysis_id) \
+            .single() \
+            .execute()
+        
+        logger.info(f"✅ Retrieved Figma analysis: {analysis_id}")
+        return response.data
+    
+    except Exception as e:
+        logger.warning(f"⚠️ Could not retrieve Figma analysis: {str(e)}")
+        return None
+
+
+async def get_user_figma_analyses(user_id: str, limit: int = 50) -> List[Dict]:
+    """
+    Get all Figma analyses for a user.
+    """
+    try:
+        response = supabase_admin.table("figma_analyses") \
+            .select("*") \
+            .eq("user_id", user_id) \
+            .order("created_at", desc=True) \
+            .limit(limit) \
+            .execute()
+        
+        logger.info(f"✅ Retrieved {len(response.data)} Figma analyses for user {user_id}")
+        return response.data
+    
+    except Exception as e:
+        logger.error(f"❌ Error fetching user Figma analyses: {str(e)}")
+        raise
+
+
+async def delete_figma_analysis(analysis_id: str, user_id: str) -> bool:
+    """
+    Delete a Figma analysis from the database.
+    """
+    try:
+        response = supabase_admin.table("figma_analyses") \
+            .delete() \
+            .eq("id", analysis_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        logger.info(f"✅ Deleted Figma analysis: {analysis_id}")
+        return True
+    
+    except Exception as e:
+        logger.error(f"❌ Error deleting Figma analysis: {str(e)}")
+        return False
