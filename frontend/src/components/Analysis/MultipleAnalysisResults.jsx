@@ -89,27 +89,51 @@ const css = `
 /* Design Cards - Modern minimal layout */
 .design-cards-container {
   max-width: 1400px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 4rem;
+  background: linear-gradient(180deg, rgba(15, 37, 87, 0.02) 0%, rgba(15, 37, 87, 0.01) 100%);
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(15, 37, 87, 0.05);
+}
+
+.design-cards-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(15, 37, 87, 0.08);
+}
+
+.design-cards-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0f2557;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.3px;
+}
+
+.design-cards-subtitle {
+  font-size: 0.9rem;
+  color: rgba(15, 37, 87, 0.5);
+  margin: 0;
 }
 
 .design-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
 .design-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  border: 2px solid #e5e7eb;
+  border-radius: 20px;
   padding: 0;
   cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(15, 37, 87, 0.08);
 }
 
 .design-card::before {
@@ -119,8 +143,8 @@ const css = `
   left: 0;
   right: 0;
   height: 0px;
-  background: #0f2557;
-  transition: height 0.5s ease;
+  background: linear-gradient(90deg, #0f2557 0%, #1a3a7a 100%);
+  transition: height 0.4s ease;
   z-index: 1;
 }
 
@@ -128,20 +152,21 @@ const css = `
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top right, rgba(15, 37, 87, 0.02) 0%, transparent 70%);
+  background: radial-gradient(circle at top right, rgba(15, 37, 87, 0.04) 0%, transparent 70%);
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
 .design-card:hover {
   border-color: #0f2557;
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(15, 37, 87, 0.12);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(15, 37, 87, 0.18);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f4f9 100%);
 }
 
 .design-card:hover::before {
-  height: 4px;
+  height: 5px;
 }
 
 .design-card:hover::after {
@@ -150,11 +175,12 @@ const css = `
 
 .design-card.active {
   border-color: #0f2557;
-  box-shadow: 0 16px 32px rgba(15, 37, 87, 0.16);
+  box-shadow: 0 20px 50px rgba(15, 37, 87, 0.2);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f4f9 100%);
 }
 
 .design-card.active::before {
-  height: 4px;
+  height: 5px;
 }
 
 .design-card-content {
@@ -167,23 +193,25 @@ const css = `
 
 .design-card-image {
   width: 100%;
-  height: 130px;
+  height: 140px;
   object-fit: cover;
-  border-radius: 16px 16px 0 0;
-  transition: transform 0.5s ease;
+  border-radius: 20px 20px 0 0;
+  transition: transform 0.4s ease;
+  background: linear-gradient(135deg, #f0f4f9 0%, #e8eef7 100%);
 }
 
 .design-card:hover .design-card-image {
-  transform: scale(1.02);
+  transform: scale(1.04);
 }
 
 .design-card-info {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  padding: 1.2rem;
+  gap: 1rem;
+  padding: 1.4rem;
   flex: 1;
   justify-content: space-between;
+  background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(248,250,255,0.8) 100%);
 }
 
 .design-card-name {
@@ -192,7 +220,7 @@ const css = `
   color: #0f2557;
   letter-spacing: -0.3px;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.4;
   word-break: break-word;
 }
 
@@ -200,19 +228,19 @@ const css = `
   display: flex;
   align-items: flex-end;
   gap: 1.5rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid #f0f0f0;
+  padding-top: 0.8rem;
+  border-top: 2px solid rgba(15, 37, 87, 0.06);
 }
 
 .design-card-score-container {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
 
 .design-card-score {
   font-family: 'DM Serif Display', serif;
-  font-size: 1.9rem;
+  font-size: 2rem;
   font-weight: 400;
   color: #0f2557;
   line-height: 1;
@@ -222,9 +250,9 @@ const css = `
 .design-card-score-label {
   font-size: 0.65rem;
   color: rgba(15, 37, 87, 0.5);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.8px;
 }
 
 /* Image Lightbox Modal */
@@ -950,10 +978,6 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       {/* Header */}
       <div className="multi-analysis-header">
         <div className="multi-analysis-header-content">
-          <h1 className="multi-analysis-title">Analysis Results</h1>
-          <p className="multi-analysis-subtitle">
-            {analyses.length} design{analyses.length !== 1 ? 's' : ''} analyzed
-          </p>
         </div>
         <button 
           className="multi-analysis-export-btn"
@@ -1013,12 +1037,21 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
           <>
             {/* Show the currently selected design name */}
             <div style={{
-              padding: '1rem 0',
-              marginBottom: '1.5rem',
-              fontSize: '0.95rem',
-              color: 'rgba(15, 37, 87, 0.6)',
+              padding: '2rem 2.5rem',
+              marginBottom: '2rem',
+              background: 'linear-gradient(135deg, #f0f4f9 0%, #f8faff 100%)',
+              border: '2px solid rgba(15, 37, 87, 0.08)',
+              borderRadius: '16px',
+              fontSize: '1.1rem',
+              color: '#0f2557',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.8rem',
+              boxShadow: '0 4px 12px rgba(15, 37, 87, 0.06)',
             }}>
-              Showing results for: <strong>{currentAnalysis.designName}</strong>
+              <span style={{ fontSize: '1.4rem' }}>📋</span>
+              Detailed Analysis for: <strong style={{ color: '#0f2557', fontWeight: '600' }}>{currentAnalysis.designName}</strong>
             </div>
 
             {/* Show warning for blank/invalid images */}
