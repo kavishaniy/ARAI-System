@@ -740,8 +740,6 @@ const css = `
 const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [lightboxImage, setLightboxImage] = useState(null);
-  const [showExportModal, setShowExportModal] = useState(false);
-  const [exporting, setExporting] = useState(false);
 
   if (!results || !results.analyses || results.analyses.length === 0) {
     return (
@@ -758,209 +756,8 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
   const analyses = results.analyses;
   const currentAnalysis = analyses[selectedIndex];
 
-  // PDF Export Functions
-  const generateSinglePDF = async (analysis, index) => {
-    try {
-      const element = document.createElement('div');
-      element.style.backgroundColor = 'white';
-      element.style.padding = '25px';
-      element.style.fontFamily = '"DM Sans", sans-serif';
-      element.style.fontSize = '13px';
-      element.style.lineHeight = '1.6';
-      
-      const getScoreColor = (score) => {
-        if (score >= 80) return '#059669';
-        if (score >= 70) return '#2563eb';
-        if (score >= 60) return '#f59e0b';
-        return '#dc2626';
-      };
-
-      const getGrade = (score) => {
-        if (score >= 80) return 'A';
-        if (score >= 70) return 'B';
-        if (score >= 60) return 'C';
-        if (score >= 50) return 'D';
-        return 'F';
-      };
-
-      const formatIssues = (issues = []) => {
-        if (!issues || issues.length === 0) {
-          return '<div style="padding: 10px; background: #f0fdf4; border-left: 4px solid #059669; border-radius: 4px; color: #166534;"><strong>✅ No Critical Issues Found</strong></div>';
-        }
-        
-        return issues.map(issue => `
-          <div style="margin-bottom: 12px; padding: 10px; background: #f9fafb; border-left: 4px solid ${
-            issue.severity === 'critical' ? '#dc2626' : 
-            issue.severity === 'high' ? '#f59e0b' : 
-            issue.severity === 'medium' ? '#3b82f6' : 
-            issue.severity === 'success' ? '#059669' : '#6b7280'
-          }; border-radius: 4px;">
-            <div style="font-weight: 600; color: #0f2557; margin-bottom: 6px; font-size: 13px;">
-              ${issue.severity === 'critical' ? '🔴' : issue.severity === 'high' ? '🟠' : issue.severity === 'medium' ? '🔵' : issue.severity === 'success' ? '🟢' : '⚪'} 
-              ${issue.title || 'Issue'}
-            </div>
-            <div style="color: rgba(15,37,87,0.7); margin-bottom: 8px; font-size: 12px;">${issue.description || ''}</div>
-            ${issue.how_to_fix ? `
-              <div style="background: white; padding: 8px; border-radius: 3px; margin-top: 8px; border-left: 2px solid #2563eb;">
-                <div style="font-weight: 600; color: #0f2557; margin-bottom: 6px; font-size: 12px;">💡 How to Fix:</div>
-                <div style="color: rgba(15,37,87,0.7); font-size: 11px; line-height: 1.5;">
-                  ${Array.isArray(issue.how_to_fix) 
-                    ? issue.how_to_fix.map(fix => `<div style="margin-bottom: 4px;">✓ ${fix}</div>`).join('')
-                    : `<div>✓ ${issue.how_to_fix}</div>`
-                  }
-                </div>
-              </div>
-            ` : ''}
-          </div>
-        `).join('');
-      };
-
-      element.innerHTML = `
-        <!-- Cover Page -->
-        <div style="text-align: center; padding: 40px 0; border-bottom: 3px solid #0f2557; margin-bottom: 30px;">
-          <h1 style="font-family: 'DM Serif Display', serif; font-size: 32px; color: #0f2557; margin: 0 0 10px 0; font-weight: 400;">ARAI Analysis Report</h1>
-          <p style="color: rgba(15,37,87,0.6); margin: 0 0 20px 0; font-size: 14px;">Accessibility • Readability • Attention Index</p>
-          <p style="color: #0f2557; margin: 0; font-size: 16px; font-weight: 600;">📄 ${analysis.designName}</p>
-        </div>
-
-        <!-- Overall Score Cards -->
-        <div style="margin-bottom: 30px;">
-          <h2 style="font-size: 16px; color: #0f2557; margin: 0 0 15px 0; font-weight: 600;">📊 Overall Assessment</h2>
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-            <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, #f0f4f9 0%, #f5f8fc 100%); border-radius: 8px; border: 1px solid rgba(15,37,87,0.1);">
-              <div style="font-size: 28px; font-weight: bold; color: ${getScoreColor(analysis.arai_score || 0)};">${analysis.arai_score ? analysis.arai_score.toFixed(1) : 'N/A'}</div>
-              <div style="font-size: 11px; color: rgba(15,37,87,0.6); margin-top: 5px;">ARAI Score</div>
-              <div style="font-size: 10px; color: rgba(15,37,87,0.5); margin-top: 3px; background: white; padding: 3px 6px; border-radius: 3px; display: inline-block;">Grade ${getGrade(analysis.arai_score || 0)}</div>
-            </div>
-            <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, #f0f4f9 0%, #f5f8fc 100%); border-radius: 8px; border: 1px solid rgba(15,37,87,0.1);">
-              <div style="font-size: 28px; font-weight: bold; color: ${getScoreColor(analysis.arai_breakdown?.accessibility || 0)};">${analysis.arai_breakdown?.accessibility ? analysis.arai_breakdown.accessibility.toFixed(1) : 'N/A'}</div>
-              <div style="font-size: 11px; color: rgba(15,37,87,0.6); margin-top: 5px;">Accessibility</div>
-              <div style="font-size: 10px; color: rgba(15,37,87,0.5); margin-top: 3px; background: white; padding: 3px 6px; border-radius: 3px; display: inline-block;">Grade ${getGrade(analysis.arai_breakdown?.accessibility || 0)}</div>
-            </div>
-            <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, #f0f4f9 0%, #f5f8fc 100%); border-radius: 8px; border: 1px solid rgba(15,37,87,0.1);">
-              <div style="font-size: 28px; font-weight: bold; color: ${getScoreColor(analysis.arai_breakdown?.readability || 0)};">${analysis.arai_breakdown?.readability ? analysis.arai_breakdown.readability.toFixed(1) : 'N/A'}</div>
-              <div style="font-size: 11px; color: rgba(15,37,87,0.6); margin-top: 5px;">Readability</div>
-              <div style="font-size: 10px; color: rgba(15,37,87,0.5); margin-top: 3px; background: white; padding: 3px 6px; border-radius: 3px; display: inline-block;">Grade ${getGrade(analysis.arai_breakdown?.readability || 0)}</div>
-            </div>
-            <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, #f0f4f9 0%, #f5f8fc 100%); border-radius: 8px; border: 1px solid rgba(15,37,87,0.1);">
-              <div style="font-size: 28px; font-weight: bold; color: ${getScoreColor(analysis.arai_breakdown?.attention || 0)};">${analysis.arai_breakdown?.attention ? analysis.arai_breakdown.attention.toFixed(1) : 'N/A'}</div>
-              <div style="font-size: 11px; color: rgba(15,37,87,0.6); margin-top: 5px;">Attention</div>
-              <div style="font-size: 10px; color: rgba(15,37,87,0.5); margin-top: 3px; background: white; padding: 3px 6px; border-radius: 3px; display: inline-block;">Grade ${getGrade(analysis.arai_breakdown?.attention || 0)}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Issue Summary -->
-        <div style="margin-bottom: 30px; padding: 15px; background: #f3f4f6; border-radius: 8px; border-left: 4px solid #0f2557;">
-          <h3 style="font-size: 14px; color: #0f2557; margin: 0 0 10px 0; font-weight: 600;">📋 Issue Summary</h3>
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 12px;">
-            <div><span style="font-weight: 600; color: #dc2626; font-size: 14px;">🔴 ${analysis.issue_summary?.critical || 0}</span><div style="color: rgba(15,37,87,0.6);">Critical Issues</div></div>
-            <div><span style="font-weight: 600; color: #f59e0b; font-size: 14px;">🟠 ${analysis.issue_summary?.high || 0}</span><div style="color: rgba(15,37,87,0.6);">High Issues</div></div>
-            <div><span style="font-weight: 600; color: #3b82f6; font-size: 14px;">🔵 ${analysis.issue_summary?.medium || 0}</span><div style="color: rgba(15,37,87,0.6);">Medium Issues</div></div>
-            <div><span style="font-weight: 600; color: #059669; font-size: 14px;">🟢 ${analysis.issue_summary?.passing || 0}</span><div style="color: rgba(15,37,87,0.6);">Passing Checks</div></div>
-          </div>
-        </div>
-
-        ${analysis.preview ? `
-          <!-- Design Preview -->
-          <div style="margin-bottom: 30px; page-break-inside: avoid;">
-            <h3 style="font-size: 14px; color: #0f2557; margin: 0 0 12px 0; font-weight: 600;">🖼️ Design Preview</h3>
-            <img src="${analysis.preview}" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
-          </div>
-        ` : ''}
-
-        <!-- Accessibility Analysis -->
-        <div style="margin-bottom: 30px; page-break-inside: avoid; padding: 20px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #059669;">
-          <h2 style="font-size: 15px; color: #0f2557; margin: 0 0 12px 0; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">♿</span> Accessibility Analysis (WCAG 2.1)
-          </h2>
-          <div style="font-size: 12px; color: rgba(15,37,87,0.6); margin-bottom: 12px;">
-            Score: <span style="font-weight: 600; color: ${getScoreColor(analysis.accessibility?.score || 0)};">${analysis.accessibility?.score ? analysis.accessibility.score.toFixed(1) : 'N/A'}/100</span>
-            Grade: <span style="font-weight: 600; background: white; padding: 2px 6px; border-radius: 3px;">${getGrade(analysis.accessibility?.score || 0)}</span>
-          </div>
-          ${formatIssues(analysis.accessibility?.issues || [])}
-        </div>
-
-        <!-- Readability Analysis -->
-        <div style="margin-bottom: 30px; page-break-inside: avoid; padding: 20px; background: #fefce8; border-radius: 8px; border-left: 4px solid #f59e0b;">
-          <h2 style="font-size: 15px; color: #0f2557; margin: 0 0 12px 0; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">📖</span> Readability Analysis
-          </h2>
-          <div style="font-size: 12px; color: rgba(15,37,87,0.6); margin-bottom: 12px;">
-            Score: <span style="font-weight: 600; color: ${getScoreColor(analysis.readability?.score || 0)};">${analysis.readability?.score ? analysis.readability.score.toFixed(1) : 'N/A'}/100</span>
-            Grade: <span style="font-weight: 600; background: white; padding: 2px 6px; border-radius: 3px;">${getGrade(analysis.readability?.score || 0)}</span>
-          </div>
-          ${formatIssues(analysis.readability?.issues || [])}
-        </div>
-
-        <!-- Attention Analysis -->
-        <div style="margin-bottom: 30px; page-break-inside: avoid; padding: 20px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
-          <h2 style="font-size: 15px; color: #0f2557; margin: 0 0 12px 0; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">👁️</span> Visual Attention Analysis
-          </h2>
-          <div style="font-size: 12px; color: rgba(15,37,87,0.6); margin-bottom: 12px;">
-            Score: <span style="font-weight: 600; color: ${getScoreColor(analysis.attention?.score || 0)};">${analysis.attention?.score ? analysis.attention.score.toFixed(1) : 'N/A'}/100</span>
-            Grade: <span style="font-weight: 600; background: white; padding: 2px 6px; border-radius: 3px;">${getGrade(analysis.attention?.score || 0)}</span>
-          </div>
-          ${formatIssues(analysis.attention?.issues || [])}
-        </div>
-
-        <!-- Footer -->
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: rgba(15,37,87,0.5); font-size: 11px;">
-          <p style="margin: 0;">Generated by ARAI System | ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-          <p style="margin: 5px 0 0 0;">Accessibility • Readability • Attention Index</p>
-        </div>
-      `;
-      
-      document.body.appendChild(element);
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        windowHeight: element.scrollHeight
-      });
-      document.body.removeChild(element);
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      const imgWidth = 190;
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 10;
-      
-      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      heightLeft -= (pageHeight - 20);
-      
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      pdf.save(`${analysis.designName}_analysis.pdf`);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
-    }
-  };
-
   const exportAllAsPDF = async () => {
-    setExporting(true);
     try {
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
       const getScoreColor = (score) => {
         if (score >= 80) return '#059669';
         if (score >= 70) return '#2563eb';
@@ -999,12 +796,12 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
         `).join('');
       };
 
-      let isFirstPage = true;
-      
       for (const analysis of analyses) {
-        if (!isFirstPage) {
-          pdf.addPage();
-        }
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
         
         const element = document.createElement('div');
         element.style.backgroundColor = 'white';
@@ -1051,19 +848,19 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
           <!-- Accessibility Analysis -->
           <div style="margin-bottom: 15px;">
             <h3 style="font-size: 13px; color: #0f2557; margin: 0 0 8px 0; font-weight: 600;">♿ Accessibility</h3>
-            ${formatIssues(analysis.accessibility?.issues || []).substring(0, 500)}...
+            ${formatIssues(analysis.accessibility?.issues || [])}
           </div>
 
           <!-- Readability Analysis -->
           <div style="margin-bottom: 15px;">
             <h3 style="font-size: 13px; color: #0f2557; margin: 0 0 8px 0; font-weight: 600;">📖 Readability</h3>
-            ${formatIssues(analysis.readability?.issues || []).substring(0, 500)}...
+            ${formatIssues(analysis.readability?.issues || [])}
           </div>
 
           <!-- Attention Analysis -->
           <div>
             <h3 style="font-size: 13px; color: #0f2557; margin: 0 0 8px 0; font-weight: 600;">👁️ Attention</h3>
-            ${formatIssues(analysis.attention?.issues || []).substring(0, 500)}...
+            ${formatIssues(analysis.attention?.issues || [])}
           </div>
         `;
         
@@ -1079,34 +876,27 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
         
         const imgData = canvas.toDataURL('image/png');
         const imgWidth = 190;
+        const pageHeight = pdf.internal.pageSize.getHeight();
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 10;
         
-        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-        isFirstPage = false;
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - 20);
+        
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        
+        // Save PDF with design name
+        pdf.save(`${analysis.designName}_report.pdf`);
       }
-      
-      pdf.save('analysis_results.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please try again.');
-    } finally {
-      setExporting(false);
-      setShowExportModal(false);
-    }
-  };
-
-  const exportSeparatePDFs = async () => {
-    setExporting(true);
-    try {
-      for (const analysis of analyses) {
-        await generateSinglePDF(analysis, 0);
-      }
-    } catch (error) {
-      console.error('Error generating PDFs:', error);
-      alert('Error generating PDFs. Please try again.');
-    } finally {
-      setExporting(false);
-      setShowExportModal(false);
     }
   };
 
@@ -1192,9 +982,9 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
               </div>
               <button 
                 className="detailed-analysis-export-btn"
-                onClick={() => setShowExportModal(true)}
+                onClick={exportAllAsPDF}
               >
-                📥 Export as PDF
+                Export as PDF
               </button>
             </div>
 
@@ -1247,45 +1037,7 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
         </div>
       )}
 
-      {/* PDF Export Modal */}
-      {showExportModal && (
-        <div className="export-modal-overlay" onClick={() => !exporting && setShowExportModal(false)}>
-          <div className="export-modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2 className="export-modal-title">Export Results</h2>
-            <p className="export-modal-description">
-              How would you like to export your analysis results?
-            </p>
-            
-            {exporting ? (
-              <div className="export-loading">Generating PDF</div>
-            ) : (
-              <div className="export-modal-buttons">
-                <button
-                  className="export-modal-btn export-modal-btn-all"
-                  onClick={exportAllAsPDF}
-                  disabled={exporting}
-                >
-                  📄 All in One PDF
-                </button>
-                <button
-                  className="export-modal-btn export-modal-btn-separate"
-                  onClick={exportSeparatePDFs}
-                  disabled={exporting}
-                >
-                  📑 Separate PDFs
-                </button>
-                <button
-                  className="export-modal-btn export-modal-btn-cancel"
-                  onClick={() => setShowExportModal(false)}
-                  disabled={exporting}
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* PDF Export Modal - Removed, exporting directly to all PDFs */}
     </div>
   );
 };
