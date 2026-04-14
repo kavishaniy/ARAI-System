@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, ChevronLeft } from 'lucide-react';
+import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, User } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
@@ -185,49 +185,6 @@ const css = `
   display: inline;
 }
 
-/* Collapse button - always at bottom */
-.collapse-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 44px;
-  border-radius: 10px;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0 auto;
-  flex-shrink: 0;
-}
-
-.side-rail.expanded .collapse-btn {
-  width: 100%;
-  justify-content: flex-start;
-  padding: 0 12px;
-  margin: 0;
-  gap: 12px;
-}
-
-.collapse-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.collapse-btn svg {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2;
-  flex-shrink: 0;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.side-rail.expanded .collapse-btn svg {
-  transform: rotate(180deg);
-}
-
 /* Mobile top bar */
 .sidebar-mobile-header {
   display: none;
@@ -380,7 +337,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [user, setUser] = useState(null);
-  const [collapsed, setCollapsed] = useState(() => {
+  const [collapsed] = useState(() => {
     try {
       const v = localStorage.getItem('sidebar_collapsed');
       return v === 'true';
@@ -400,12 +357,6 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
 
   const handleNewAnalysis = () => {
     onNavigate('upload');
-  };
-
-  const handleToggleCollapse = () => {
-    const next = !collapsed;
-    setCollapsed(next);
-    try { localStorage.setItem('sidebar_collapsed', next ? 'true' : 'false'); } catch (e) {}
   };
 
   const handleNavClick = (id, to) => {
@@ -459,13 +410,13 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
         </button>
 
         <button
-          className="collapse-btn"
-          onClick={handleToggleCollapse}
-          title={collapsed ? 'Expand' : 'Collapse'}
+          className="sidebar-action-item"
+          onClick={() => navigate('/profile')}
+          title="Profile"
           type="button"
         >
-          <ChevronLeft />
-          <span className="action-label">{collapsed ? 'Expand' : 'Collapse'}</span>
+          <User />
+          <span className="action-label">Profile</span>
         </button>
       </div>
     </div>
