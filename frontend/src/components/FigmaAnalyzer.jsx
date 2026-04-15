@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 
-const FigmaAnalyzer = () => {
+const FigmaAnalyzer = ({ onAnalysisComplete }) => {
   const [figmaUrl, setFigmaUrl] = useState('');
-  const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [analysisScopes, setAnalysisScopes] = useState({
@@ -278,11 +277,11 @@ const FigmaAnalyzer = () => {
       );
 
       console.log('✅ Analysis completed, results received:', analysisRes.data);
-      
-      // Results are already in dashboard format
-      setResults(analysisRes.data);
       setLoading(false);
       setError(null);
+      if (onAnalysisComplete) {
+        onAnalysisComplete(analysisRes.data);
+      }
     } catch (err) {
       console.error('❌ Error:', err);
       const errorMsg = err.response?.data?.detail || 
@@ -305,7 +304,7 @@ const FigmaAnalyzer = () => {
           <label className="input-label">Figma File URL</label>
           <input
             type="text"
-            placeholder="https://www.figma.com/file/abc123/MyDesign"
+            placeholder="https://www.figma.com/design/abc123/MyDesign"
             value={figmaUrl}
             onChange={(e) => setFigmaUrl(e.target.value)}
             className="input-field"
@@ -371,161 +370,8 @@ const FigmaAnalyzer = () => {
         </div>
       )}
 
-      {/* Results Display */}
-      {results && (
-        <div className="results-section">
-          <h2 className="results-title">Analysis Results</h2>
-          
-          <div className="summary-grid">
-            <div className="summary-card">
-              <div className="summary-label">File Name</div>
-              <div className="summary-value">{results.fileName}</div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">Total Pages</div>
-              <div className="summary-value">{results.totalPages}</div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">Total Screens</div>
-              <div className="summary-value">{results.totalScreens}</div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">Average ARAI Score</div>
-              <div className="summary-value">
-                {results.averageAraiScore ? Math.round(results.averageAraiScore) : 'N/A'}
-              </div>
-            </div>
-          </div>
-
-          {/* Screen Results Cards */}
-          {results.analyses && results.analyses.length > 0 && (
-            <div style={{ marginTop: '32px', paddingTop: '32px', borderTop: '1.5px solid rgba(15,37,87,0.1)' }}>
-              <h3 style={{ margin: '0 0 20px 0', fontSize: '1.2rem', fontWeight: '600', color: '#0f2557' }}>
-                Individual Screen Analysis ({results.analyses.length} screens)
-              </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-                {results.analyses.map((analysis, idx) => (
-                  <ScreenAnalysisCard key={idx} analysis={analysis} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };
-
-const ScreenAnalysisCard = ({ analysis }) => (
-  <div style={{
-    padding: '20px',
-    background: 'white',
-    border: '1.5px solid rgba(15,37,87,0.1)',
-    borderRadius: '12px',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer',
-    boxShadow: '0 2px 8px rgba(15,37,87,0.05)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px'
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.borderColor = 'rgba(15,37,87,0.2)';
-    e.currentTarget.style.boxShadow = '0 8px 24px rgba(15,37,87,0.1)';
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.borderColor = 'rgba(15,37,87,0.1)';
-    e.currentTarget.style.boxShadow = '0 2px 8px rgba(15,37,87,0.05)';
-  }}
-  >
-    <div>
-      <p style={{ margin: '0 0 8px 0', fontSize: '0.85rem', color: 'rgba(15,37,87,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>
-        Screen
-      </p>
-      <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '600', color: '#0f2557', wordBreak: 'break-word', lineHeight: '1.4' }}>
-        {analysis.designName}
-      </h4>
-    </div>
-
-    <div style={{
-      padding: '12px',
-      background: 'linear-gradient(135deg, rgba(15,37,87,0.03) 0%, rgba(100,180,255,0.05) 100%)',
-      borderRadius: '8px',
-      display: 'flex',
-      justifyContent: 'space-around',
-      textAlign: 'center',
-      gap: '8px'
-    }}>
-      <div>
-        <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', color: 'rgba(15,37,87,0.5)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-          ARAI
-        </p>
-        <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#0f2557' }}>
-          {Math.round(analysis.araiScore)}
-        </p>
-      </div>
-      <div style={{ width: '1px', background: 'rgba(15,37,87,0.1)' }}></div>
-      <div>
-        <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', color: 'rgba(15,37,87,0.5)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-          A11y
-        </p>
-        <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#0f2557' }}>
-          {Math.round(analysis.accessibilityScore)}
-        </p>
-      </div>
-      <div style={{ width: '1px', background: 'rgba(15,37,87,0.1)' }}></div>
-      <div>
-        <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', color: 'rgba(15,37,87,0.5)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-          Read
-        </p>
-        <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#0f2557' }}>
-          {Math.round(analysis.readabilityScore)}
-        </p>
-      </div>
-      <div style={{ width: '1px', background: 'rgba(15,37,87,0.1)' }}></div>
-      <div>
-        <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', color: 'rgba(15,37,87,0.5)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-          Vision
-        </p>
-        <p style={{ margin: 0, fontSize: '1.4rem', fontWeight: '700', color: '#0f2557' }}>
-          {Math.round(analysis.attentionScore)}
-        </p>
-      </div>
-    </div>
-
-    {analysis.issueCounts && (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '8px',
-        fontSize: '0.85rem',
-        padding: '12px',
-        background: 'rgba(15,37,87,0.02)',
-        borderRadius: '8px'
-      }}>
-        {analysis.issueCounts.critical > 0 && (
-          <div style={{ color: '#dc2626', fontWeight: '600' }}>
-            ⚠️ {analysis.issueCounts.critical} Critical
-          </div>
-        )}
-        {analysis.issueCounts.high > 0 && (
-          <div style={{ color: '#f97316', fontWeight: '600' }}>
-            🔴 {analysis.issueCounts.high} High
-          </div>
-        )}
-        {analysis.issueCounts.medium > 0 && (
-          <div style={{ color: '#eab308', fontWeight: '600' }}>
-            🟡 {analysis.issueCounts.medium} Medium
-          </div>
-        )}
-        {analysis.issueCounts.success > 0 && (
-          <div style={{ color: '#16a34a', fontWeight: '600' }}>
-            ✅ {analysis.issueCounts.success} Good
-          </div>
-        )}
-      </div>
-    )}
-  </div>
-);
 
 export default FigmaAnalyzer;

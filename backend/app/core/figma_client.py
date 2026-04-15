@@ -232,10 +232,10 @@ class FigmaAPIClient:
         url = f"{self.BASE_URL}/files/{file_key}"
         
         logger.info(f"📥 Fetching Figma file: {file_key}")
-        response = self.session.get(url)
+        response = self.session.get(url, timeout=60)
         self._handle_rate_limit(response)
         response.raise_for_status()
-        
+
         return response.json()
     
     def get_file_nodes(self, file_key: str, node_ids: List[str]) -> Dict[str, Any]:
@@ -258,7 +258,7 @@ class FigmaAPIClient:
         params = {"ids": ids_param}
         
         logger.info(f"📥 Fetching {len(node_ids)} nodes from Figma file")
-        response = self.session.get(url, params=params)
+        response = self.session.get(url, params=params, timeout=60)
         self._handle_rate_limit(response)
         response.raise_for_status()
         
@@ -381,27 +381,57 @@ class FigmaAPIClient:
     
     def extract_frames(self, page: FigmaPage) -> List[FigmaNode]:
         """
-        Extract FRAME nodes (screens) from a page.
-        
+        Extract top-level FRAME nodes (screens) from a page.
+        Only returns direct children of the canvas that are FRAMEs or SECTIONs —
+        these represent individual screens/artboards, not nested components.
+
         Args:
             page: FigmaPage object
-            
+
         Returns:
-            List of frame nodes
+            List of top-level frame nodes
         """
-        frames = []
-        
-        def collect_frames(nodes: List[FigmaNode]):
-            for node in nodes:
-                if node.type == "FRAME":
-                    frames.append(node)
-                if node.children:
-                    collect_frames(node.children)
-        
-        collect_frames(page.nodes)
+        frames = [node for node in page.nodes if node.type in ("FRAME", "SECTION")]
         logger.info(f"✅ Extracted {len(frames)} frames from page '{page.name}'")
-        
         return frames
+
+    def get_frame_images(
+        self,
+        file_key: str,
+        node_ids: List[str],
+        scale: float = 0.5,
+        format: str = "png"
+    ) -> Dict[str, str]:
+        """
+        Fetch rendered image URLs for specific frames via Figma's /images endpoint.
+
+        Args:
+            file_key: Figma file key
+            node_ids: List of node IDs to render (max 200 per request)
+            scale: Export scale (0.01 – 4). Default 0.5 for thumbnails.
+            format: Image format — "png", "jpg", "svg", or "pdf"
+
+        Returns:
+            Dict mapping node_id → image URL (may be None if render failed)
+        """
+        if not node_ids:
+            return {}
+
+        ids_param = ",".join(node_ids)
+        url = f"{self.BASE_URL}/images/{file_key}"
+        params = {"ids": ids_param, "scale": scale, "format": format}
+
+        logger.info(f"📸 Fetching preview images for {len(node_ids)} frames...")
+        response = self.session.get(url, params=params, timeout=60)
+        self._handle_rate_limit(response)
+        response.raise_for_status()
+
+        data = response.json()
+        images = data.get("images", {})
+        # Filter out None values
+        valid_images = {k: v for k, v in images.items() if v}
+        logger.info(f"✅ Got {len(valid_images)}/{len(node_ids)} frame preview URLs")
+        return valid_images
     
     def extract_all_elements(self, node: FigmaNode) -> List[FigmaNode]:
         """
@@ -474,29 +504,55 @@ class FigmaExtractor:
             "pages": []
         }
         
+        # First pass: extract all pages and frames
         for page in pages:
             page_data = {
                 "page_id": page.id,
                 "page_name": page.name,
                 "frames": []
             }
-            
+
             frames = self.client.extract_frames(page)
-            
+
             for frame in frames:
                 all_elements = self.client.extract_all_elements(frame)
-                
+
                 frame_data = {
                     "frame_id": frame.id,
                     "frame_name": frame.name,
                     "bounds": self.client.get_node_bounds(frame),
-                    "elements": self._serialize_elements(all_elements)
+                    "elements": self._serialize_elements(all_elements),
+                    "preview_url": None  # populated below
                 }
-                
+
                 page_data["frames"].append(frame_data)
-            
+
             result["pages"].append(page_data)
-        
+
+        # Second pass: fetch preview images for all frames in batches of 200
+        all_frame_ids = [
+            frame_data["frame_id"]
+            for page_data in result["pages"]
+            for frame_data in page_data["frames"]
+        ]
+
+        frame_images: Dict[str, str] = {}
+        if all_frame_ids:
+            batch_size = 200
+            for i in range(0, len(all_frame_ids), batch_size):
+                batch = all_frame_ids[i : i + batch_size]
+                try:
+                    batch_images = self.client.get_frame_images(file_key, batch, scale=0.5)
+                    frame_images.update(batch_images)
+                except Exception as img_error:
+                    logger.warning(f"⚠️ Could not fetch frame images for batch {i//batch_size + 1}: {img_error}")
+
+            # Attach preview URLs to frame data
+            for page_data in result["pages"]:
+                for frame_data in page_data["frames"]:
+                    frame_data["preview_url"] = frame_images.get(frame_data["frame_id"])
+
+        logger.info(f"✅ Attached preview URLs to {len(frame_images)}/{len(all_frame_ids)} frames")
         return result
     
     def _serialize_elements(self, elements: List[FigmaNode]) -> List[Dict[str, Any]]:

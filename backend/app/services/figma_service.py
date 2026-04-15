@@ -3,6 +3,7 @@ Figma Analysis Service
 Integrates Figma extraction with accessibility, readability, and attention analyzers.
 """
 
+import asyncio
 import logging
 import uuid
 import time
@@ -445,10 +446,14 @@ class FigmaAnalysisService:
         
         try:
             logger.info(f"[{analysis_id}] Starting Figma analysis from URL")
-            
-            # Extract from Figma
-            extracted_data = self.extractor.extract_from_url(figma_url)
-            
+
+            # Run the blocking Figma API call in a thread pool so we don't
+            # freeze FastAPI's event loop (requests is synchronous).
+            loop = asyncio.get_event_loop()
+            extracted_data = await loop.run_in_executor(
+                None, self.extractor.extract_from_url, figma_url
+            )
+
             # Analyze pages
             page_results = []
             for idx, page_data in enumerate(extracted_data["pages"]):
@@ -458,11 +463,10 @@ class FigmaAnalysisService:
                     analysis_id
                 )
                 page_results.append(page_result)
-                
-                # Small delay between page analysis to avoid rate limiting
-                # Only wait if there are more pages to process
+
+                # Small delay between pages to avoid Figma rate limiting
                 if idx < len(extracted_data["pages"]) - 1:
-                    time.sleep(0.5)  # 500ms delay between pages
+                    await asyncio.sleep(0.3)  # non-blocking sleep
             
             # Calculate overall metrics
             all_accessibility_scores = [

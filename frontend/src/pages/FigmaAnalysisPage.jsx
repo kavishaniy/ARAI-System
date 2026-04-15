@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { FilePlus } from 'lucide-react';
 import Sidebar from '../components/Common/Sidebar';
 import FigmaAnalyzer from '../components/FigmaAnalyzer';
+import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 
 const FigmaAnalysisPage = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [analysisResults, setAnalysisResults] = useState(null);
 
   useEffect(() => {
     const read = () => {
@@ -138,17 +141,60 @@ const FigmaAnalysisPage = () => {
             <div className="figma-header-content">
               <div className="figma-header-section">
                 <div className="figma-header-title">
-                  <h1 className="figma-title">Figma Analysis</h1>
-                  <p className="figma-subtitle">
-                    Analyze your Figma designs for accessibility, readability, and visual hierarchy
-                  </p>
+                  {analysisResults ? (
+                    <>
+                      <h1 className="figma-title">Analysis Results</h1>
+                      <p className="figma-subtitle">
+                        {analysisResults.fileName} — {analysisResults.totalScreens} screen{analysisResults.totalScreens !== 1 ? 's' : ''} analysed
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <h1 className="figma-title">Figma Analysis</h1>
+                      <p className="figma-subtitle">
+                        Analyze your Figma designs for accessibility, readability, and visual hierarchy
+                      </p>
+                    </>
+                  )}
                 </div>
+                {analysisResults && (
+                  <div>
+                    <button
+                      onClick={() => setAnalysisResults(null)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '12px 24px',
+                        background: 'linear-gradient(135deg, #0f2557, #091840)',
+                        color: 'white',
+                        border: '1.5px solid #0f2557',
+                        borderRadius: '10px',
+                        fontFamily: "'DM Sans', sans-serif",
+                        fontSize: '0.95rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <FilePlus size={18} />
+                      New Analysis
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
           <main className="figma-main">
             <div className="figma-card">
-              <FigmaAnalyzer />
+              {analysisResults ? (
+                <MultipleAnalysisResults
+                  results={analysisResults}
+                  onNewAnalysis={() => setAnalysisResults(null)}
+                />
+              ) : (
+                <FigmaAnalyzer onAnalysisComplete={setAnalysisResults} />
+              )}
             </div>
           </main>
         </div>

@@ -936,7 +936,7 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
                 style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer' }}
               >
                 <div className="design-card-content">
-                  {analysis.preview && (
+                  {analysis.preview ? (
                     <img
                       src={analysis.preview}
                       alt={analysis.designName}
@@ -947,6 +947,23 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
                       }}
                       style={{ cursor: 'zoom-in' }}
                     />
+                  ) : (
+                    <div
+                      className="design-card-image"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #f0f4f9 0%, #e8eef7 100%)',
+                        color: 'rgba(15,37,87,0.3)',
+                        fontSize: '0.75rem',
+                        gap: '6px',
+                      }}
+                    >
+                      <span style={{ fontSize: '1.6rem' }}>🖼</span>
+                      <span>No preview</span>
+                    </div>
                   )}
                   <div className="design-card-info">
                     <h3 className="design-card-name" title={analysis.designName}>
