@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const FigmaAnalyzer = () => {
   const [figmaUrl, setFigmaUrl] = useState('');
@@ -13,8 +13,6 @@ const FigmaAnalyzer = () => {
     readability: true,
     attention: true
   });
-
-  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   const css = `
     .figma-analyzer-wrapper {
@@ -258,8 +256,8 @@ const FigmaAnalyzer = () => {
 
     try {
       // Validate URL
-      const validationRes = await axios.post(
-        `${API_BASE}/api/v1/figma/validate-url`,
+      const validationRes = await api.post(
+        '/figma/validate-url',
         { url: figmaUrl }
       );
 
@@ -271,8 +269,8 @@ const FigmaAnalyzer = () => {
       const scopes = Object.keys(analysisScopes)
         .filter(key => analysisScopes[key]);
 
-      const analysisRes = await axios.post(
-        `${API_BASE}/api/v1/figma/analyze`,
+      const analysisRes = await api.post(
+        '/figma/analyze',
         {
           figma_url: figmaUrl,
           analysis_scope: scopes
@@ -293,8 +291,8 @@ const FigmaAnalyzer = () => {
   const pollAnalysisProgress = (id) => {
     const pollInterval = setInterval(async () => {
       try {
-        const statusRes = await axios.get(
-          `${API_BASE}/api/v1/figma/analyze/${id}`
+        const statusRes = await api.get(
+          `/figma/analyze/${id}`
         );
 
         const status = statusRes.data.status;

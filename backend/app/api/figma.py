@@ -12,6 +12,7 @@ from datetime import datetime
 from app.models.figma_models import (
     FigmaRequestModel, FigmaAnalysisResponse, FigmaAnalysisStatus
 )
+from pydantic import BaseModel
 from app.services.figma_service import FigmaAnalysisService
 from app.core.database import save_figma_analysis_to_db, get_figma_analysis_from_db
 
@@ -20,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 # Store for in-progress analyses (in production, use Redis or database)
 analysis_progress: dict = {}
+
+
+class ValidateUrlRequest(BaseModel):
+    """Request to validate Figma URL"""
+    url: str
 
 
 @router.post("/analyze")
@@ -203,14 +209,25 @@ async def _run_analysis_task(
 
 
 @router.post("/validate-url")
-async def validate_figma_url(url: str) -> dict:
+async def validate_figma_url(request: ValidateUrlRequest) -> dict:
     """
     Validate if a URL is a valid Figma file link.
     
-    Query params:
-    - url: Figma URL to validate
+    Request body:
+    ```json
+    {
+      "url": "https://www.figma.com/file/..."
+    }
+    ```
     """
     try:
+        url = request.url
+        if not url:
+            return {
+                "valid": False,
+                "message": "URL is required"
+            }
+        
         from app.core.figma_client import FigmaAPIClient
         file_key = FigmaAPIClient.extract_file_key(url)
         return {
