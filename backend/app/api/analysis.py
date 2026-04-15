@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Header
-from typing import Optional
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Header, Body
+from typing import Optional, Dict, Any
 import os
 import uuid
 from datetime import datetime
@@ -534,3 +534,256 @@ async def get_analysis_status():
     status["ready"] = len(status["errors"]) == 0
 
     return status
+
+
+@router.post("/validate-url")
+async def validate_figma_url(body: Dict[str, Any] = Body(...)):
+    """
+    Validate if a URL is a valid Figma file link.
+    
+    Request body:
+    ```json
+    {
+      "url": "https://www.figma.com/file/..."
+    }
+    ```
+    """
+    try:
+        url = body.get("url") if body else None
+        if not url:
+            return {
+                "valid": False,
+                "message": "URL is required"
+            }
+        
+        if "figma.com/file/" not in url:
+            return {
+                "valid": False,
+                "message": "Invalid Figma URL. Must be a full file URL like https://www.figma.com/file/abc123/ProjectName"
+            }
+        
+        # Try to extract file key
+        try:
+            from app.core.figma_client import FigmaAPIClient
+            file_key = FigmaAPIClient.extract_file_key(url)
+            return {
+                "valid": True,
+                "file_key": file_key,
+                "message": "Valid Figma URL"
+            }
+        except ValueError as e:
+            return {
+                "valid": False,
+                "message": f"Invalid Figma URL: {str(e)}"
+            }
+    except Exception as e:
+        return {
+            "valid": False,
+            "message": f"Error validating URL: {str(e)}"
+        }
+
+
+@router.post("/figma-screens")
+async def analyze_figma_screens(
+    figma_url: str,
+    figma_token: Optional[str] = None,
+    current_user = Depends(get_current_user)
+):
+    """
+    Analyze all screens in a Figma project file.
+    Returns individual analysis results for each screen in the same format as image uploads.
+    
+    Args:
+        figma_url: Full Figma file URL (e.g., https://www.figma.com/file/abc123/ProjectName)
+        figma_token: Optional Figma API token (uses env var if not provided)
+        current_user: Authenticated user from JWT token
+        
+    Returns:
+        Combined analysis results for all screens in dashboard format
+    """
+    try:
+        logger.info(f"📋 Figma screens analysis request from user: {current_user.id}")
+        
+        # Validate URL
+        if not figma_url:
+            raise HTTPException(status_code=400, detail="figma_url is required")
+        
+        if "figma.com/file/" not in figma_url:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid Figma URL. Must be a full file URL like https://www.figma.com/file/abc123/ProjectName"
+            )
+        
+        # Use provided token, environment token, or raise error
+        token_to_use = figma_token or os.getenv("FIGMA_API_TOKEN")
+        if not token_to_use:
+            raise HTTPException(
+                status_code=401,
+                detail="No Figma token provided. Set FIGMA_API_TOKEN or provide figma_token parameter."
+            )
+        
+        # Generate analysis ID
+        analysis_id = str(uuid.uuid4())
+        timestamp = datetime.now().isoformat()
+        
+        logger.info(f"[{analysis_id}] 🔍 Starting Figma screens analysis for: {figma_url[:60]}...")
+        
+        # Import Figma service
+        from app.services.figma_service import FigmaAnalysisService
+        from app.core.figma_client import FigmaAPIClient
+        
+        try:
+            # Extract file key from URL
+            file_key = FigmaAPIClient.extract_file_key(figma_url)
+            logger.info(f"[{analysis_id}] 📁 Extracted file key: {file_key}")
+            
+            # Initialize service with token
+            service = FigmaAnalysisService(figma_token=token_to_use)
+            
+            # Run analysis
+            logger.info(f"[{analysis_id}] 📊 Analyzing all screens...")
+            analysis_result = await service.analyze_from_url(
+                figma_url,
+                analysis_scope=["accessibility", "readability", "attention"]
+            )
+            
+            if not analysis_result or analysis_result.total_frames == 0:
+                logger.warning(f"[{analysis_id}] ⚠️ No frames found in Figma file")
+                raise HTTPException(
+                    status_code=400,
+                    detail="No frames or screens found in the Figma file. Please ensure the file contains at least one frame or board."
+                )
+            
+            logger.info(f"[{analysis_id}] ✅ Figma analysis completed: {analysis_result.total_frames} frames across {analysis_result.total_pages} pages")
+            
+            # Convert to dashboard-compatible format
+            # Structure: { analyses: [ { screenName, araiScore, ... } ] }
+            converted_analyses = []
+            
+            for page_result in analysis_result.page_results:
+                for frame_result in page_result.frame_results:
+                    # Compile all issues
+                    all_issues = []
+                    
+                    if frame_result.accessibility:
+                        all_issues.extend([
+                            {
+                                "severity": "high",
+                                "category": "Accessibility",
+                                "issue": issue,
+                                "recommendation": "Increase color contrast"
+                            }
+                            for issue in frame_result.accessibility.contrast_issues
+                        ] if frame_result.accessibility.contrast_issues else [])
+                        
+                        all_issues.extend([
+                            {
+                                "severity": "medium",
+                                "category": "Accessibility",
+                                "issue": issue,
+                                "recommendation": "Increase font size"
+                            }
+                            for issue in frame_result.accessibility.font_size_issues
+                        ] if frame_result.accessibility.font_size_issues else [])
+                    
+                    if frame_result.readability:
+                        if frame_result.readability.text_density > 70:
+                            all_issues.append({
+                                "severity": "medium",
+                                "category": "Readability",
+                                "issue": f"High text density ({frame_result.readability.text_density:.1f}%)",
+                                "recommendation": "Reduce text density"
+                            })
+                    
+                    if frame_result.attention and frame_result.attention.visual_hierarchy == "weak":
+                        all_issues.append({
+                            "severity": "medium",
+                            "category": "Attention",
+                            "issue": "Weak visual hierarchy",
+                            "recommendation": "Strengthen visual hierarchy"
+                        })
+                    
+                    # Count by severity
+                    critical = sum(1 for i in all_issues if i.get('severity') == 'critical')
+                    high = sum(1 for i in all_issues if i.get('severity') == 'high')
+                    medium = sum(1 for i in all_issues if i.get('severity') == 'medium')
+                    success = sum(1 for i in all_issues if i.get('severity') == 'success')
+                    
+                    # Create analysis entry for this screen
+                    screen_analysis = {
+                        "designName": f"{page_result.page_name} - {frame_result.frame_name}",
+                        "fileName": f"{analysis_result.file_name} - {page_result.page_name}",
+                        "araiScore": frame_result.overall_score or 50,
+                        "accessibilityScore": frame_result.accessibility.score if frame_result.accessibility else 50,
+                        "readabilityScore": frame_result.readability.score if frame_result.readability else 50,
+                        "attentionScore": frame_result.attention.score if frame_result.attention else 50,
+                        "timestamp": timestamp,
+                        "analysisId": analysis_id,
+                        "issues": all_issues,
+                        "issueCounts": {
+                            "critical": critical,
+                            "high": high,
+                            "medium": medium,
+                            "success": success,
+                            "total": len(all_issues)
+                        },
+                        "overallRecommendations": {
+                            "accessibility": frame_result.accessibility.recommendations if frame_result.accessibility else [],
+                            "readability": frame_result.readability.recommendations if frame_result.readability else [],
+                            "attention": frame_result.attention.recommendations if frame_result.attention else []
+                        },
+                        "pageId": page_result.page_id,
+                        "frameId": frame_result.frame_id,
+                        "figmaUrl": figma_url,
+                        "source": "figma"
+                    }
+                    
+                    converted_analyses.append(screen_analysis)
+            
+            # Prepare combined response
+            combined_response = {
+                "analyses": converted_analyses,
+                "timestamp": timestamp,
+                "analysisId": analysis_id,
+                "totalScreens": len(converted_analyses),
+                "totalPages": analysis_result.total_pages,
+                "fileName": analysis_result.file_name,
+                "figmaUrl": figma_url,
+                "averageAraiScore": analysis_result.average_accessibility_score * 0.4 + 
+                                   analysis_result.average_readability_score * 0.3 + 
+                                   analysis_result.average_attention_score * 0.3 if all([
+                                       analysis_result.average_accessibility_score,
+                                       analysis_result.average_readability_score,
+                                       analysis_result.average_attention_score
+                                   ]) else 50,
+                "processingTime": analysis_result.processing_time_seconds
+            }
+            
+            # Save to database
+            try:
+                await save_analysis_to_db(
+                    analysis_id=analysis_id,
+                    user_id=str(current_user.id),
+                    design_name=analysis_result.file_name,
+                    analysis_data=combined_response
+                )
+                logger.info(f"[{analysis_id}] 💾 Analysis saved to database")
+            except Exception as db_error:
+                logger.warning(f"[{analysis_id}] ⚠️ Failed to save to database: {db_error}")
+                # Continue even if database save fails
+            
+            return combined_response
+        
+        except Exception as figma_error:
+            logger.error(f"[{analysis_id}] ❌ Figma analysis error: {figma_error}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Figma analysis failed: {str(figma_error)}"
+            )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error in figma-screens endpoint: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
