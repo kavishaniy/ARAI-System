@@ -128,7 +128,7 @@ RESULT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 STEP 1: Set Token
-  export FIGMA_API_TOKEN="figd_tKakj7H4DSZyMcBSQZg1wJX8bSyE-dBgYH7gBJe2"
+  export FIGMA_API_TOKEN="your_figma_token_here"
 
 STEP 2: Start Backend
   cd backend

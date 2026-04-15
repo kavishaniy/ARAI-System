@@ -61,6 +61,15 @@ class Settings(BaseSettings):
     SALICON_MODEL_PATH: str = "./ai_models/salicon_model"
     RICO_MODEL_PATH: str = "./ai_models/rico_model"
     
+    # Figma Configuration
+    FIGMA_API_TOKEN: Optional[str] = None
+    FIGMA_CLIENT_ID: Optional[str] = None
+    FIGMA_CLIENT_SECRET: Optional[str] = None
+    FIGMA_REDIRECT_URI: Optional[str] = None
+    
+    # Session/Cookies
+    SESSION_SECRET_KEY: str = "your-session-secret-key-change-in-production"
+    
     class Config:
         env_file = str(ENV_FILE)
         case_sensitive = True

@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api import auth, analysis, figma
@@ -94,6 +95,16 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
     max_age=3600,
+)
+
+# Add Session Middleware for OAuth flows
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.SESSION_SECRET_KEY,
+    max_age=3600 * 24 * 7,  # 1 week session expiry
+    session_cookie="arai_session",
+    https_only=False if settings.ENVIRONMENT == "development" else True,
+    same_site="lax"
 )
 
 

@@ -289,7 +289,12 @@ const FigmaAnalyzer = () => {
   };
 
   const pollAnalysisProgress = (id) => {
+    let pollCount = 0;
+    const maxPolls = 300; // 300 polls * 2 seconds = 10 minutes max
+    
     const pollInterval = setInterval(async () => {
+      pollCount++;
+      
       try {
         const statusRes = await api.get(
           `/figma/analyze/${id}`
@@ -309,6 +314,19 @@ const FigmaAnalyzer = () => {
         }
       } catch (err) {
         console.error('Polling error:', err);
+        // Check if it's a 500 error or other server error
+        if (err.response?.status >= 500 || err.response?.status === 404) {
+          setError(`Analysis failed: ${err.response?.data?.detail || err.message}`);
+          setLoading(false);
+          clearInterval(pollInterval);
+        }
+      }
+      
+      // Timeout after 10 minutes
+      if (pollCount >= maxPolls) {
+        setError('Analysis timed out. Please try again.');
+        setLoading(false);
+        clearInterval(pollInterval);
       }
     }, 2000);
   };
@@ -365,8 +383,18 @@ const FigmaAnalyzer = () => {
       {/* Error Display */}
       {error && (
         <div className="error-message">
-          <div className="error-message-title">Error</div>
+          <div className="error-message-title">❌ Error</div>
           <p>{error}</p>
+          {error.toLowerCase().includes('token') && (
+            <div style={{ marginTop: '12px', fontSize: '0.9rem', color: '#7f1d1d', padding: '10px', background: 'rgba(239,68,68,0.05)', borderRadius: '6px' }}>
+              <strong>💡 Tip:</strong> This error indicates that the Figma API token is not configured on the server. 
+              <br/>Please contact the system administrator to set up the Figma API token by:
+              <ol style={{ margin: '8px 0 0 20px', paddingLeft: 0 }}>
+                <li>Getting a token from <a href="https://www.figma.com/developers/api#auth" target="_blank" rel="noopener noreferrer" style={{ color: '#991b1b', textDecoration: 'underline' }}>Figma Developers</a></li>
+                <li>Setting the <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 6px', borderRadius: '3px' }}>FIGMA_API_TOKEN</code> environment variable in the backend</li>
+              </ol>
+            </div>
+          )}
         </div>
       )}
 

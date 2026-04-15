@@ -6,11 +6,14 @@ Handles authentication, file fetching, and data parsing.
 import os
 import re
 import logging
+import time
 from typing import Optional, Dict, List, Any, Tuple
 from dataclasses import dataclass, asdict
 import requests
 from urllib.parse import urlparse, parse_qs
 from datetime import datetime
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
 
@@ -136,8 +139,20 @@ class FigmaAPIClient:
             "X-Figma-Token": self.token,
             "Content-Type": "application/json"
         }
+        
+        # Configure retry strategy with exponential backoff for rate limiting
+        retry_strategy = Retry(
+            total=5,  # Maximum 5 retries
+            backoff_factor=1,  # Exponential backoff: 1s, 2s, 4s, 8s, 16s
+            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP codes
+            allowed_methods=["GET", "POST", "HEAD", "OPTIONS"]  # Retry GET and POST requests
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        
         self.session = requests.Session()
         self.session.headers.update(self.headers)
+        self.session.mount("https://", adapter)
+        self.session.mount("http://", adapter)
     
     @staticmethod
     def extract_file_key(figma_url: str) -> str:
@@ -173,6 +188,34 @@ class FigmaAPIClient:
         
         return match.group(1)
     
+    def _handle_rate_limit(self, response: requests.Response) -> None:
+        """
+        Handle rate limit headers and implement smart backoff.
+        
+        Args:
+            response: The response object from Figma API
+        """
+        # Check for rate limit headers
+        remaining = response.headers.get('X-RateLimit-Remaining')
+        reset_time = response.headers.get('X-RateLimit-Reset')
+        
+        if remaining:
+            remaining = int(remaining)
+            logger.info(f"⏱️  Rate limit: {remaining} requests remaining")
+            
+            # If we're approaching the limit, add a small delay
+            if remaining < 5:
+                delay = 2
+                logger.warning(f"⚠️  Approaching rate limit! Waiting {delay}s before next request")
+                time.sleep(delay)
+        
+        if reset_time:
+            reset = int(reset_time)
+            reset_epoch = reset / 1000 if reset > 10000000000 else reset
+            seconds_until_reset = max(0, reset_epoch - time.time())
+            if seconds_until_reset > 0:
+                logger.info(f"⏱️  Rate limit resets in {seconds_until_reset:.0f} seconds")
+    
     def get_file(self, file_key: str) -> Dict[str, Any]:
         """
         Fetch Figma file data.
@@ -190,6 +233,7 @@ class FigmaAPIClient:
         
         logger.info(f"📥 Fetching Figma file: {file_key}")
         response = self.session.get(url)
+        self._handle_rate_limit(response)
         response.raise_for_status()
         
         return response.json()
@@ -215,6 +259,7 @@ class FigmaAPIClient:
         
         logger.info(f"📥 Fetching {len(node_ids)} nodes from Figma file")
         response = self.session.get(url, params=params)
+        self._handle_rate_limit(response)
         response.raise_for_status()
         
         return response.json()

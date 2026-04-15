@@ -5,6 +5,7 @@ Integrates Figma extraction with accessibility, readability, and attention analy
 
 import logging
 import uuid
+import time
 from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 import math
@@ -450,13 +451,18 @@ class FigmaAnalysisService:
             
             # Analyze pages
             page_results = []
-            for page_data in extracted_data["pages"]:
+            for idx, page_data in enumerate(extracted_data["pages"]):
                 page_result = await self._analyze_page(
                     page_data,
                     analysis_scope,
                     analysis_id
                 )
                 page_results.append(page_result)
+                
+                # Small delay between page analysis to avoid rate limiting
+                # Only wait if there are more pages to process
+                if idx < len(extracted_data["pages"]) - 1:
+                    time.sleep(0.5)  # 500ms delay between pages
             
             # Calculate overall metrics
             all_accessibility_scores = [
