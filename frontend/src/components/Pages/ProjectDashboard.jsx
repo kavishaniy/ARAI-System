@@ -183,16 +183,15 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
     .project-header-main {
       background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.03) 100%);
-      border: 1.5px solid rgba(15, 37, 87, 0.12);
+      border: none;
       border-radius: 16px;
-      padding: 32px 40px;
+      padding: 20px 32px;
       margin-bottom: 32px;
       box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
       transition: all 0.3s ease;
     }
 
     .project-header-main:hover {
-      border-color: rgba(15, 37, 87, 0.2);
       box-shadow: 0 15px 50px rgba(15, 37, 87, 0.1);
     }
 
@@ -703,7 +702,6 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
           <button className="dashboard-back-btn" onClick={onBack}>
             ← Back
           </button>
-          <h1 className="dashboard-title">{projectDetails.name}</h1>
         </div>
 
         {/* Container */}
