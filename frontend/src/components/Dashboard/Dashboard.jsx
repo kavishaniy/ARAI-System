@@ -18,6 +18,11 @@ const css = `
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-left: 80px;
+  transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  width: calc(100% - 80px);
+  max-width: calc(100% - 80px);
+  padding: 0;
 }
 
 .btn-new-analysis {
@@ -38,6 +43,10 @@ const css = `
 }
 
 @media (max-width: 768px) {
+  .dashboard-content {
+    margin-left: 60px;
+  }
+
   .btn-new-analysis {
     padding: 10px 18px;
     font-size: 0.85rem;
@@ -46,6 +55,10 @@ const css = `
 }
 
 @media (max-width: 480px) {
+  .dashboard-content {
+    margin-left: 56px;
+  }
+
   .btn-new-analysis {
     width: 100%;
     justify-content: center;
@@ -75,8 +88,13 @@ const css = `
 
 .dashboard-main {
   flex: 1;
-  padding: 32px 40px;
+  padding: 32px 60px;
   overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0 auto;
 }
 
 @media (max-width: 1024px) {
@@ -98,8 +116,9 @@ const css = `
 }
 
 .dashboard-card {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1000px;
+  width: 100%;
+  flex-shrink: 0;
   background: white;
   border: 1.5px solid rgba(15,37,87,0.12);
   border-radius: 16px;

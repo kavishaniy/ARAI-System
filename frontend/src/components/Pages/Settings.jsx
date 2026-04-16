@@ -14,6 +14,8 @@ const Settings = () => {
       flex: 1;
       display: flex;
       flex-direction: column;
+      margin-left: 80px;
+      transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .page-main {
@@ -29,12 +31,20 @@ const Settings = () => {
     }
 
     @media (max-width: 768px) {
+      .page-container {
+        margin-left: 60px;
+      }
+
       .page-main {
         padding: 20px 16px;
       }
     }
 
     @media (max-width: 480px) {
+      .page-container {
+        margin-left: 56px;
+      }
+
       .page-main {
         padding: 16px 12px;
       }

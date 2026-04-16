@@ -13,6 +13,20 @@ const css = `
   background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
   color: #0f2557;
   min-height: 100vh;
+  margin-left: 80px;
+  transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 768px) {
+  .report-container {
+    margin-left: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-container {
+    margin-left: 56px;
+  }
 }
 
 .report-header {

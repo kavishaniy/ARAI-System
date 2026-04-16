@@ -84,7 +84,8 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       flex-direction: column;
       padding: 48px 40px;
       width: 100%;
-      margin-left: 0;
+      margin-left: 80px;
+      transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       overflow-x: auto;
     }
 
@@ -96,8 +97,16 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
     @media (max-width: 768px) {
       .dashboard-content {
+        margin-left: 60px;
         padding: 24px 16px;
       }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-content {
+        margin-left: 56px;
+      }
+    }
     }
 
     @media (max-width: 480px) {
