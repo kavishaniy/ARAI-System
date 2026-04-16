@@ -134,6 +134,12 @@ const Dashboard = () => {
         <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
 
         <div className="dashboard-content" style={{ marginLeft: collapsed ? 72 : 260 }}>
+          {activeTab === 'upload' && (
+            <PageHeader 
+              title="Upload & Analyze"
+              subtitle="Upload your design files to get detailed insights and recommendations"
+            />
+          )}
           {activeTab === 'results' && (
             <PageHeader 
               title="Analysis Results"
