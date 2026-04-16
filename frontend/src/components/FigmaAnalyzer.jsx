@@ -308,12 +308,6 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
     <div className="figma-analyzer-wrapper">
       <style>{css}</style>
 
-      {/* Header */}
-      <div className="figma-analyzer-header">
-        <h1 className="figma-analyzer-title">Figma Analysis</h1>
-        <p className="figma-analyzer-subtitle">Analyze your Figma designs for accessibility, readability, and visual hierarchy</p>
-      </div>
-
       {/* Form Container */}
       <div className="analyzer-form-container">
         {/* Input Section */}
