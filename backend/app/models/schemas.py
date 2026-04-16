@@ -83,3 +83,29 @@ class AnalysisHistory(BaseModel):
     design_name: str
     overall_score: float
     created_at: datetime
+
+
+# Project Models
+class ProjectCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=1000)
+
+
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=1000)
+
+
+class Project(BaseModel):
+    id: UUID
+    user_id: UUID
+    name: str
+    description: Optional[str]
+    analysis_count: Optional[int] = 0
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+
+class ProjectList(BaseModel):
+    projects: list[Project]
+    total: int

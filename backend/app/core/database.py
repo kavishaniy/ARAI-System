@@ -7,6 +7,7 @@ from app.core.config import settings
 from typing import Optional, List, Dict
 from datetime import datetime
 import logging
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -318,4 +319,180 @@ async def delete_figma_analysis(analysis_id: str, user_id: str) -> bool:
     
     except Exception as e:
         logger.error(f"❌ Error deleting Figma analysis: {str(e)}")
+        return False
+
+
+# ==================== Project Management Functions ====================
+
+
+async def create_project(
+    user_id: str,
+    project_name: str,
+    project_description: Optional[str] = None
+) -> Dict:
+    """
+    Create a new project for a user
+    """
+    try:
+        project_id = str(uuid.uuid4())
+        
+        project_data = {
+            "id": project_id,
+            "user_id": user_id,
+            "name": project_name,
+            "description": project_description or "",
+            "created_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase_admin.table("projects").insert(project_data).execute()
+        
+        logger.info(f"✅ Project created: {project_id} for user {user_id}")
+        return response.data[0] if response.data else project_data
+        
+    except Exception as e:
+        logger.error(f"❌ Error creating project: {str(e)}")
+        raise
+
+
+async def get_user_projects(user_id: str, limit: int = 100) -> List[Dict]:
+    """
+    Get all projects for a specific user with analysis count
+    """
+    try:
+        response = supabase_admin.table("projects") \
+            .select("*") \
+            .eq("user_id", user_id) \
+            .order("created_at", desc=True) \
+            .limit(limit) \
+            .execute()
+        
+        logger.info(f"✅ Retrieved {len(response.data)} projects for user {user_id}")
+        
+        # Enhance with analysis count
+        projects_with_count = []
+        for project in response.data:
+            try:
+                analyses = await get_project_analyses(project["id"])
+                project["analysis_count"] = len(analyses)
+            except:
+                project["analysis_count"] = 0
+            projects_with_count.append(project)
+        
+        return projects_with_count
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching user projects: {str(e)}")
+        raise
+
+
+async def get_project_by_id(project_id: str, user_id: Optional[str] = None) -> Optional[Dict]:
+    """
+    Get a specific project by ID
+    """
+    try:
+        query = supabase_admin.table("projects").select("*").eq("id", project_id)
+        
+        if user_id:
+            query = query.eq("user_id", user_id)
+        
+        response = query.single().execute()
+        
+        logger.info(f"✅ Retrieved project: {project_id}")
+        return response.data
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching project: {str(e)}")
+        return None
+
+
+async def update_project(
+    project_id: str,
+    user_id: str,
+    **kwargs
+) -> Optional[Dict]:
+    """
+    Update project details (name, description, etc.)
+    """
+    try:
+        update_data = {
+            **kwargs,
+            "updated_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase_admin.table("projects") \
+            .update(update_data) \
+            .eq("id", project_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        logger.info(f"✅ Project updated: {project_id}")
+        return response.data[0] if response.data else None
+        
+    except Exception as e:
+        logger.error(f"❌ Error updating project: {str(e)}")
+        raise
+
+
+async def delete_project(project_id: str, user_id: str) -> bool:
+    """
+    Delete a project and its associated analyses
+    """
+    try:
+        # Delete associated analyses
+        analyses = await get_project_analyses(project_id)
+        for analysis in analyses:
+            await delete_analysis(analysis["id"], user_id)
+        
+        # Delete project
+        supabase_admin.table("projects") \
+            .delete() \
+            .eq("id", project_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        logger.info(f"✅ Project deleted: {project_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Error deleting project: {str(e)}")
+        return False
+
+
+async def get_project_analyses(project_id: str, limit: int = 100) -> List[Dict]:
+    """
+    Get all analyses within a project
+    """
+    try:
+        response = supabase_admin.table("analyses") \
+            .select("*") \
+            .eq("project_id", project_id) \
+            .order("created_at", desc=True) \
+            .limit(limit) \
+            .execute()
+        
+        logger.info(f"✅ Retrieved {len(response.data)} analyses for project {project_id}")
+        return response.data
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching project analyses: {str(e)}")
+        return []
+
+
+async def link_analysis_to_project(analysis_id: str, project_id: str, user_id: str) -> bool:
+    """
+    Associate an analysis with a project
+    """
+    try:
+        supabase_admin.table("analyses") \
+            .update({"project_id": project_id}) \
+            .eq("id", analysis_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        logger.info(f"✅ Analysis {analysis_id} linked to project {project_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Error linking analysis to project: {str(e)}")
         return False
