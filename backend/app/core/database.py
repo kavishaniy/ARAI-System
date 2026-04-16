@@ -60,35 +60,55 @@ async def save_analysis_to_db(
 ) -> Dict:
     """
     Save analysis results to the analyses table
+    
+    Note: The actual Supabase schema has these required columns:
+    - id (UUID)
+    - user_id (UUID) 
+    - design_name (text)
+    - design_url (text)
+    - accessibility_score (numeric)
+    - readability_score (numeric)
+    - attention_score (numeric)
+    - arai_score (numeric)
+    - overall_score (numeric)
+    - overall_grade (text)
+    - status (text)
     """
     try:
+        logger.info(f"💾 Attempting to save analysis: {analysis_id} for user: {user_id}")
+        
         # Extract key metrics from results
+        overall_score = results.get("arai_score", 0)
+        
         analysis_data = {
             "id": analysis_id,
             "user_id": user_id,
             "design_name": design_name,
-            "filename": filename,
-            "file_path": file_path,
+            "design_url": file_path,  # Use file_path as the design_url
+            "accessibility_score": results.get("accessibility", {}).get("score", 0),
+            "readability_score": results.get("readability", {}).get("score", 0),
+            "attention_score": results.get("attention", {}).get("score", 0),
+            "arai_score": results.get("arai_score", 0),
+            "overall_score": overall_score,  # Same as arai_score
+            "overall_grade": results.get("overall_grade", "N/A"),
             "status": "completed",
-            "arai_score": results.get("arai_score"),
-            "overall_grade": results.get("overall_grade"),
-            "conformance_level": results.get("accessibility", {}).get("conformance", "N/A"),
-            "accessibility_score": results.get("accessibility", {}).get("score"),
-            "readability_score": results.get("readability", {}).get("score"),
-            "attention_score": results.get("attention", {}).get("score"),
-            "results": results,  # Store full results as JSONB
-            "created_at": datetime.now().isoformat(),
-            "updated_at": datetime.now().isoformat()
         }
         
+        logger.info(f"📋 Analysis data prepared: {analysis_data}")
+        
         # Insert into database using admin client to bypass RLS during API calls
+        logger.info(f"🔄 Inserting into 'analyses' table...")
         response = supabase_admin.table("analyses").insert(analysis_data).execute()
         
         logger.info(f"✅ Analysis saved to database: {analysis_id}")
+        logger.info(f"📝 Response data: {response.data}")
         return response.data[0] if response.data else analysis_data
         
     except Exception as e:
         logger.error(f"❌ Error saving analysis to database: {str(e)}")
+        logger.error(f"📌 Exception type: {type(e).__name__}")
+        import traceback
+        logger.error(f"📌 Full traceback: {traceback.format_exc()}")
         raise
 
 

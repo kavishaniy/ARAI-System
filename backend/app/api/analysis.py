@@ -351,6 +351,7 @@ async def upload_design(
         
         # Save to Supabase database
         try:
+            logger.info(f"💾 Attempting to save analysis to database...")
             await save_analysis_to_db(
                 user_id=str(current_user.id),
                 analysis_id=analysis_id,
@@ -359,10 +360,13 @@ async def upload_design(
                 file_path=storage_path,
                 results=final_results
             )
-            logger.info(f"💾 Analysis saved to database")
+            logger.info(f"✅ Analysis saved to database successfully")
         except Exception as db_error:
             logger.error(f"❌ Database save failed: {db_error}")
+            import traceback
+            logger.error(f"📌 Full traceback: {traceback.format_exc()}")
             # Continue even if DB save fails - return results anyway
+            # This allows the API to still return results to the user even if DB save fails
         
         # Save results to JSON (local backup)
         import json

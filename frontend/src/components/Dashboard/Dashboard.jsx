@@ -247,7 +247,7 @@ const Dashboard = () => {
                 )
               )}
               {activeTab === 'history' && (
-                <HistorySection key={refreshHistory} onSelectAnalysis={setCurrentAnalysis} />
+                <HistorySection refreshTrigger={refreshHistory} />
               )}
             </div>
           </main>
