@@ -333,7 +333,7 @@ const css = `
 `;
 
 const navItems = [
-  { to: '/', label: 'New Analysis', Icon: FilePlus, id: 'upload' },
+  { to: '/dashboard', label: 'New Analysis', Icon: FilePlus, id: 'upload' },
   { to: '/figma', label: 'Figma Analysis', Icon: Figma, id: 'figma' },
   { to: '/projects', label: 'Projects', Icon: Folder, id: 'projects' },
   { to: '/history', label: 'History', Icon: Clock, id: 'history' },
@@ -370,6 +370,7 @@ const Sidebar = ({ active = 'home', onNavigate = () => {} }) => {
   const handleNavClick = (id, to) => {
     if (id === 'upload') {
       handleNewAnalysis();
+      navigate(to);
     } else {
       onNavigate(id);
       navigate(to);

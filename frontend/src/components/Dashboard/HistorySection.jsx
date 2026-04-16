@@ -31,7 +31,7 @@ const HistorySection = ({ refreshTrigger = 0 }) => {
   };
 
   const handleViewReport = (analysisId) => {
-    navigate(`/analysis/${analysisId}`);
+    navigate(`/history?view=${analysisId}`);
   };
 
   const formatDate = (dateString) => {
@@ -50,22 +50,6 @@ const HistorySection = ({ refreshTrigger = 0 }) => {
       }
     } catch (e) {
       return dateString;
-    }
-  };
-
-  const getGradeColor = (grade) => {
-    switch (grade?.toUpperCase()) {
-      case 'A':
-        return 'text-green-600 bg-green-50';
-      case 'B':
-        return 'text-blue-600 bg-blue-50';
-      case 'C':
-        return 'text-amber-600 bg-amber-50';
-      case 'D':
-      case 'F':
-        return 'text-red-600 bg-red-50';
-      default:
-        return 'text-gray-600 bg-gray-50';
     }
   };
 
@@ -101,24 +85,10 @@ const HistorySection = ({ refreshTrigger = 0 }) => {
             </p>
           </div>
           <div className="flex items-center gap-3 ml-4">
-            {analysis.arai_score && (
-              <>
-                <div className="text-right">
-                  <div className="text-sm font-semibold text-gray-800">
-                    {analysis.arai_score?.toFixed(0)}/100
-                  </div>
-                  {analysis.overall_grade && (
-                    <div className={`text-xs font-bold px-2 py-1 rounded ${getGradeColor(analysis.overall_grade)}`}>
-                      Grade {analysis.overall_grade}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
             <button 
               onClick={() => handleViewReport(analysis.analysis_id)}
               className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-              title="View detailed report"
+              title="View detailed analysis results"
             >
               <Eye size={18} />
             </button>
