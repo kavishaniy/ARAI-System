@@ -88,6 +88,24 @@ const HistoryPage = () => {
       overflow-y: auto;
     }
 
+    @media (max-width: 1024px) {
+      .page-main {
+        padding: 24px 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-main {
+        padding: 20px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-main {
+        padding: 16px 12px;
+      }
+    }
+
     .page-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -104,6 +122,13 @@ const HistoryPage = () => {
       background: white;
       transition: all 0.2s ease;
       font-family: inherit;
+    }
+
+    @media (max-width: 480px) {
+      .history-search-input {
+        font-size: 0.85rem;
+        padding: 10px 14px 10px 36px;
+      }
     }
 
     .history-search-input::placeholder {
@@ -124,6 +149,14 @@ const HistoryPage = () => {
       transform: translateY(-50%);
       color: rgba(15, 37, 87, 0.4);
       pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .search-icon {
+        left: 10px;
+        width: 16px;
+        height: 16px;
+      }
     }
 
     .search-clear-btn {
@@ -152,6 +185,12 @@ const HistoryPage = () => {
       white-space: nowrap;
     }
 
+    @media (max-width: 480px) {
+      .history-search-results {
+        font-size: 0.75rem;
+      }
+    }
+
     .history-main {
       background: white;
       border: 1.5px solid rgba(15, 37, 87, 0.12);
@@ -169,9 +208,28 @@ const HistoryPage = () => {
       font-size: 0.95rem;
     }
 
+    @media (max-width: 480px) {
+      .history-error {
+        padding: 16px 20px;
+        font-size: 0.85rem;
+      }
+    }
+
     .history-empty {
       padding: 60px 40px;
       text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .history-empty {
+        padding: 40px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .history-empty {
+        padding: 30px 16px;
+      }
     }
 
     .empty-icon {
@@ -186,6 +244,14 @@ const HistoryPage = () => {
       opacity: 0.5;
     }
 
+    @media (max-width: 480px) {
+      .empty-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 16px;
+      }
+    }
+
     .empty-title {
       font-size: 1.3rem;
       font-weight: 600;
@@ -193,10 +259,23 @@ const HistoryPage = () => {
       margin: 0 0 8px 0;
     }
 
+    @media (max-width: 480px) {
+      .empty-title {
+        font-size: 1.1rem;
+      }
+    }
+
     .empty-text {
       color: rgba(15, 37, 87, 0.6);
       margin: 0 0 24px 0;
       font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      .empty-text {
+        font-size: 0.85rem;
+        margin: 0 0 18px 0;
+      }
     }
 
     .empty-button {

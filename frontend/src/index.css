@@ -72,11 +72,37 @@ code, pre, kbd, samp {
   padding-right: 20px;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
 .card {
   background: white;
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 12px;
+  }
 }
 
 .solid-card {
@@ -92,6 +118,13 @@ code, pre, kbd, samp {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
+}
+
+@media (max-width: 480px) {
+  .btn-primary {
+    padding: 9px 12px;
+    font-size: 0.9rem;
+  }
 }
 
 .btn-primary:hover {
@@ -134,6 +167,13 @@ code, pre, kbd, samp {
   background: white;
   color: var(--text-primary);
   font-family: 'DM Sans', sans-serif;
+}
+
+@media (max-width: 480px) {
+  .form-input {
+    padding: 9px 11px;
+    font-size: 0.95rem;
+  }
 }
 
 .form-input:focus {

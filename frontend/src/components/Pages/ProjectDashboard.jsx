@@ -88,6 +88,24 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       overflow-x: auto;
     }
 
+    @media (max-width: 1024px) {
+      .dashboard-content {
+        padding: 32px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-content {
+        padding: 24px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-content {
+        padding: 16px 12px;
+      }
+    }
+
     .dashboard-header-top {
       max-width: 1200px;
       margin: 0 auto 32px;
@@ -95,6 +113,15 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 24px;
+        gap: 12px;
+      }
     }
 
     .dashboard-title {
@@ -105,6 +132,18 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       margin: 0;
       line-height: 1.2;
       flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-title {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-title {
+        font-size: 1.3rem;
+      }
     }
 
     .dashboard-container {
@@ -180,6 +219,13 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       gap: 24px;
     }
 
+    @media (max-width: 768px) {
+      .project-header-content {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+
     .project-title-section {
       flex: 1;
     }
@@ -191,6 +237,18 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       font-weight: 400;
       color: #0f2557;
       line-height: 1.2;
+    }
+
+    @media (max-width: 768px) {
+      .project-name-main {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .project-name-main {
+        font-size: 1.3rem;
+      }
     }
 
     .project-subtitle-main {
@@ -227,6 +285,13 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       display: flex;
       gap: 12px;
       align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .project-actions-main {
+        width: 100%;
+        flex-wrap: wrap;
+      }
     }
 
     .project-back-button {
@@ -353,6 +418,20 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       margin-bottom: 24px;
     }
 
+    @media (max-width: 768px) {
+      .dashboard-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
     .dashboard-stat-card {
       background: white;
       border: 1.5px solid rgba(15, 37, 87, 0.12);
@@ -364,9 +443,28 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
     }
 
+    @media (max-width: 768px) {
+      .dashboard-stat-card {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-stat-card {
+        padding: 16px;
+        gap: 12px;
+      }
+    }
+
     .dashboard-stat-icon {
       font-size: 2.5rem;
       opacity: 0.7;
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-stat-icon {
+        font-size: 2rem;
+      }
     }
 
     .dashboard-stat-info {
@@ -383,12 +481,31 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       margin-bottom: 4px;
     }
 
+    @media (max-width: 480px) {
+      .dashboard-stat-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.3px;
+      }
+    }
+
     .dashboard-stat-value {
       display: block;
       font-family: 'DM Serif Display', serif;
       font-size: 1.8rem;
       font-weight: 400;
       color: #0f2557;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-stat-value {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-stat-value {
+        font-size: 1.2rem;
+      }
     }
 
     .dashboard-tabs {
@@ -405,6 +522,14 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       padding: 0;
       margin: 0;
       background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.02) 100%);
+      overflow-x: auto;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-tab-buttons {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
     }
 
     .dashboard-tab-btn {
@@ -418,6 +543,21 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       transition: all 0.2s ease;
       border-bottom: 3px solid transparent;
       margin-bottom: -2px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-tab-btn {
+        padding: 12px 18px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-tab-btn {
+        padding: 10px 14px;
+        font-size: 0.75rem;
+      }
     }
 
     .dashboard-tab-btn:hover {

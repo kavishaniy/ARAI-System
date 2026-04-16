@@ -22,6 +22,24 @@ const Settings = () => {
       overflow-y: auto;
     }
 
+    @media (max-width: 1024px) {
+      .page-main {
+        padding: 24px 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-main {
+        padding: 20px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-main {
+        padding: 16px 12px;
+      }
+    }
+
     .page-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -37,6 +55,18 @@ const Settings = () => {
       transition: all 0.3s ease;
     }
 
+    @media (max-width: 768px) {
+      .settings-card {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .settings-card {
+        padding: 16px;
+      }
+    }
+
     .settings-card:hover {
       border-color: rgba(15, 37, 87, 0.2);
       box-shadow: 0 15px 50px rgba(15, 37, 87, 0.1);
@@ -46,6 +76,13 @@ const Settings = () => {
       margin-bottom: 32px;
       padding-bottom: 32px;
       border-bottom: 1px solid rgba(15, 37, 87, 0.08);
+    }
+
+    @media (max-width: 480px) {
+      .settings-section {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+      }
     }
 
     .settings-section:last-child {
@@ -61,6 +98,12 @@ const Settings = () => {
       margin: 0 0 16px 0;
     }
 
+    @media (max-width: 480px) {
+      .settings-section-title {
+        font-size: 1rem;
+      }
+    }
+
     .settings-section-description {
       font-size: 0.9rem;
       color: rgba(15, 37, 87, 0.6);
@@ -74,14 +117,40 @@ const Settings = () => {
       padding: 16px 0;
     }
 
+    @media (max-width: 768px) {
+      .settings-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .settings-item {
+        padding: 12px 0;
+      }
+    }
+
     .settings-item-label {
       font-weight: 500;
       color: #0f2557;
     }
 
+    @media (max-width: 480px) {
+      .settings-item-label {
+        font-size: 0.95rem;
+      }
+    }
+
     .settings-item-value {
       color: rgba(15, 37, 87, 0.6);
       font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      .settings-item-value {
+        font-size: 0.85rem;
+      }
     }
 
     .settings-button {
@@ -96,6 +165,21 @@ const Settings = () => {
       transition: all 0.2s ease;
     }
 
+    @media (max-width: 768px) {
+      .settings-button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .settings-button {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+      }
+    }
+
     .settings-button:hover {
       background: linear-gradient(135deg, #091840, #051026);
       box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
@@ -106,22 +190,6 @@ const Settings = () => {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
-    }
-
-    @media (max-width: 768px) {
-      .page-main {
-        padding: 20px 16px;
-      }
-
-      .settings-card {
-        padding: 20px;
-      }
-
-      .settings-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
     }
   `;
 

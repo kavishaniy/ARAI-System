@@ -13,6 +13,24 @@ const PageHeader = ({ title, subtitle, actions = null }) => {
       backdrop-filter: blur(8px);
     }
 
+    @media (max-width: 1024px) {
+      .page-header {
+        padding: 36px 30px 18px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 24px 16px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header {
+        padding: 18px 12px 12px;
+      }
+    }
+
     .page-header-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -24,6 +42,19 @@ const PageHeader = ({ title, subtitle, actions = null }) => {
       align-items: flex-start;
       justify-content: space-between;
       gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .page-header-section {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header-section {
+        gap: 12px;
+      }
     }
 
     .page-header-title {
@@ -41,12 +72,43 @@ const PageHeader = ({ title, subtitle, actions = null }) => {
       line-height: 1.2;
     }
 
+    @media (max-width: 1024px) {
+      .page-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 1.3rem;
+      }
+    }
+
     .page-subtitle {
       font-size: 0.95rem;
       color: rgba(15, 37, 87, 0.6);
       font-weight: 300;
       letter-spacing: 0.3px;
       margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .page-subtitle {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 0.2px;
+      }
     }
 
     .page-header-actions {
@@ -56,21 +118,15 @@ const PageHeader = ({ title, subtitle, actions = null }) => {
     }
 
     @media (max-width: 768px) {
-      .page-header {
-        padding: 24px 16px 16px;
-      }
-
-      .page-header-section {
-        flex-direction: column;
-        gap: 16px;
-      }
-
       .page-header-actions {
         width: 100%;
+        flex-wrap: wrap;
       }
+    }
 
-      .page-title {
-        font-size: 1.6rem;
+    @media (max-width: 480px) {
+      .page-header-actions {
+        gap: 8px;
       }
     }
   `;

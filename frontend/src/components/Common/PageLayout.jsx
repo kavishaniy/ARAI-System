@@ -24,6 +24,24 @@ const PageLayout = ({ children, header = null, mainContent = null }) => {
       overflow-y: auto;
     }
 
+    @media (max-width: 1024px) {
+      .page-main {
+        padding: 24px 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-main {
+        padding: 20px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-main {
+        padding: 16px 12px;
+      }
+    }
+
     .page-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -39,19 +57,23 @@ const PageLayout = ({ children, header = null, mainContent = null }) => {
       transition: all 0.3s ease;
     }
 
+    @media (max-width: 768px) {
+      .page-card {
+        padding: 20px;
+        border-radius: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-card {
+        padding: 16px;
+        border-radius: 10px;
+      }
+    }
+
     .page-card:hover {
       border-color: rgba(15, 37, 87, 0.2);
       box-shadow: 0 15px 50px rgba(15, 37, 87, 0.1);
-    }
-
-    @media (max-width: 768px) {
-      .page-main {
-        padding: 20px 16px;
-      }
-
-      .page-card {
-        padding: 20px;
-      }
     }
   `;
 

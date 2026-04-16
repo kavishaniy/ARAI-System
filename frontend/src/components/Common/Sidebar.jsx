@@ -26,6 +26,26 @@ const css = `
   width: 240px;
 }
 
+@media (max-width: 768px) {
+  .side-rail {
+    width: 60px;
+    border-right-width: 0;
+  }
+  
+  .side-rail.expanded {
+    position: fixed;
+    width: 240px;
+    height: 100vh;
+    z-index: 999;
+  }
+}
+
+@media (max-width: 480px) {
+  .side-rail {
+    width: 56px;
+  }
+}
+
 .sidebar-wrapper {
   display: flex;
   flex-direction: column;
@@ -91,6 +111,13 @@ const css = `
   padding: 0 12px;
   margin: 0;
   gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .nav-item {
+    width: 44px;
+    height: 40px;
+  }
 }
 
 .nav-item:hover {

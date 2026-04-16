@@ -127,6 +127,24 @@ const Projects = () => {
       overflow-y: auto;
     }
 
+    @media (max-width: 1024px) {
+      .page-main {
+        padding: 24px 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-main {
+        padding: 20px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-main {
+        padding: 16px 12px;
+      }
+    }
+
     .page-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -143,6 +161,13 @@ const Projects = () => {
       background: white;
       transition: all 0.2s ease;
       font-family: inherit;
+    }
+
+    @media (max-width: 480px) {
+      .projects-search-input {
+        font-size: 0.85rem;
+        padding: 10px 14px 10px 36px;
+      }
     }
 
     .projects-search-input::placeholder {
@@ -165,6 +190,14 @@ const Projects = () => {
       pointer-events: none;
       width: 18px;
       height: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .search-icon-projects {
+        width: 16px;
+        height: 16px;
+        left: 10px;
+      }
     }
 
     .search-clear-btn-projects {
@@ -200,6 +233,22 @@ const Projects = () => {
       white-space: nowrap;
     }
 
+    @media (max-width: 768px) {
+      .projects-button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .projects-button {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+      }
+    }
+    }
+
     .projects-button:hover {
       background: linear-gradient(135deg, #091840, #051026);
       box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
@@ -226,6 +275,16 @@ const Projects = () => {
       align-items: center;
     }
 
+    @media (max-width: 480px) {
+      .projects-error {
+        padding: 16px 20px;
+        font-size: 0.85rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+    }
+
     .projects-error button {
       background: none;
       border: none;
@@ -240,6 +299,18 @@ const Projects = () => {
       text-align: center;
     }
 
+    @media (max-width: 768px) {
+      .projects-empty {
+        padding: 40px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .projects-empty {
+        padding: 30px 16px;
+      }
+    }
+
     .empty-icon {
       width: 80px;
       height: 80px;
@@ -252,6 +323,14 @@ const Projects = () => {
       opacity: 0.5;
     }
 
+    @media (max-width: 480px) {
+      .empty-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 16px;
+      }
+    }
+
     .empty-title {
       font-size: 1.3rem;
       font-weight: 600;
@@ -259,10 +338,23 @@ const Projects = () => {
       margin: 0 0 8px 0;
     }
 
+    @media (max-width: 480px) {
+      .empty-title {
+        font-size: 1.1rem;
+      }
+    }
+
     .empty-text {
       color: rgba(15, 37, 87, 0.6);
       margin: 0 0 24px 0;
       font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      .empty-text {
+        font-size: 0.85rem;
+        margin: 0 0 18px 0;
+      }
     }
 
     .projects-list {
@@ -282,6 +374,23 @@ const Projects = () => {
       cursor: pointer;
     }
 
+    @media (max-width: 768px) {
+      .projects-item {
+        padding: 18px 24px;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .projects-item {
+        padding: 14px 16px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
     .projects-item:last-child {
       border-bottom: none;
     }
@@ -295,6 +404,12 @@ const Projects = () => {
       min-width: 0;
     }
 
+    @media (max-width: 480px) {
+      .projects-item-content {
+        width: 100%;
+      }
+    }
+
     .projects-item-name {
       margin: 0 0 8px 0;
       font-weight: 600;
@@ -303,6 +418,12 @@ const Projects = () => {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      .projects-item-name {
+        font-size: 0.95rem;
+      }
     }
 
     .projects-item-description {

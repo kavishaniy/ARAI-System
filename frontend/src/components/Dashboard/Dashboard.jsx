@@ -37,10 +37,34 @@ const css = `
   gap: 8px;
 }
 
+@media (max-width: 768px) {
+  .btn-new-analysis {
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-new-analysis {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 0.8rem;
+  }
+}
+
 .btn-new-analysis-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .btn-new-analysis-icon {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .btn-new-analysis:hover {
@@ -55,6 +79,24 @@ const css = `
   overflow-y: auto;
 }
 
+@media (max-width: 1024px) {
+  .dashboard-main {
+    padding: 24px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-main {
+    padding: 16px 12px;
+  }
+}
+
 .dashboard-card {
   max-width: 1200px;
   margin: 0 auto;
@@ -66,24 +108,23 @@ const css = `
   transition: all 0.3s ease;
 }
 
+@media (max-width: 768px) {
+  .dashboard-card {
+    padding: 20px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+}
+
 .dashboard-card:hover {
   border-color: rgba(15,37,87,0.2);
   box-shadow: 0 15px 50px rgba(15,37,87,0.1);
-}
-
-@media (max-width: 768px) {
-  .dashboard-main {
-    padding: 20px 16px;
-  }
-
-  .dashboard-card {
-    padding: 20px;
-  }
-
-  .btn-new-analysis {
-    width: 100%;
-    text-align: center;
-  }
 }
 `;
 
