@@ -5,6 +5,7 @@ import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
 import MultipleAnalysisResults from '../Analysis/MultipleAnalysisResults';
 import HistorySection from './HistorySection';
 import Sidebar from '../Common/Sidebar';
+import PageHeader from '../Common/PageHeader';
 
 const css = `
 .dashboard-shell {
@@ -17,54 +18,6 @@ const css = `
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-
-.dashboard-header {
-  padding: 48px 40px 24px;
-  border-bottom: 1px solid rgba(15,37,87,0.08);
-  background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(8px);
-}
-
-.dashboard-header-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.dashboard-title-section {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.dashboard-title {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dashboard-title h1 {
-  margin: 0;
-  font-family: 'DM Serif Display', serif;
-  font-size: 2.2rem;
-  font-weight: 400;
-  color: #0f2557;
-  line-height: 1.2;
-}
-
-.dashboard-subtitle {
-  font-size: 0.95rem;
-  color: rgba(15,37,87,0.6);
-  font-weight: 300;
-  letter-spacing: 0.3px;
-}
-
-.dashboard-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .btn-new-analysis {
@@ -119,29 +72,12 @@ const css = `
 }
 
 @media (max-width: 768px) {
-  .dashboard-header {
-    padding: 24px 16px 16px;
-  }
-
   .dashboard-main {
     padding: 20px 16px;
   }
 
   .dashboard-card {
     padding: 20px;
-  }
-
-  .dashboard-title h1 {
-    font-size: 1.6rem;
-  }
-
-  .dashboard-title-section {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .dashboard-actions {
-    width: 100%;
   }
 
   .btn-new-analysis {
@@ -199,23 +135,16 @@ const Dashboard = () => {
 
         <div className="dashboard-content" style={{ marginLeft: collapsed ? 72 : 260 }}>
           {activeTab === 'results' && (
-            <div className="dashboard-header">
-              <div className="dashboard-header-content">
-                <div className="dashboard-title-section">
-                  <div className="dashboard-title">
-                    <h1>Analysis Results</h1>
-                    <p className="dashboard-subtitle">View detailed insights and recommendations for your design</p>
-                  </div>
-
-                  <div className="dashboard-actions">
-                    <button onClick={handleNewAnalysis} className="btn-new-analysis">
-                      <FilePlus className="btn-new-analysis-icon" />
-                      New Analysis
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PageHeader 
+              title="Analysis Results"
+              subtitle="View detailed insights and recommendations for your design"
+              actions={
+                <button onClick={handleNewAnalysis} className="btn-new-analysis">
+                  <FilePlus className="btn-new-analysis-icon" />
+                  New Analysis
+                </button>
+              }
+            />
           )}
 
           <main className="dashboard-main">

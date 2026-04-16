@@ -1,15 +1,185 @@
 import React from 'react';
 import Sidebar from '../Common/Sidebar';
+import PageHeader from '../Common/PageHeader';
 
 const Settings = () => {
+  const css = `
+    .page-shell {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
+    }
+
+    .page-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-main {
+      flex: 1;
+      padding: 32px 40px;
+      overflow-y: auto;
+    }
+
+    .page-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .settings-card {
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
+      transition: all 0.3s ease;
+    }
+
+    .settings-card:hover {
+      border-color: rgba(15, 37, 87, 0.2);
+      box-shadow: 0 15px 50px rgba(15, 37, 87, 0.1);
+    }
+
+    .settings-section {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(15, 37, 87, 0.08);
+    }
+
+    .settings-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .settings-section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0f2557;
+      margin: 0 0 16px 0;
+    }
+
+    .settings-section-description {
+      font-size: 0.9rem;
+      color: rgba(15, 37, 87, 0.6);
+      margin: 0;
+    }
+
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+    }
+
+    .settings-item-label {
+      font-weight: 500;
+      color: #0f2557;
+    }
+
+    .settings-item-value {
+      color: rgba(15, 37, 87, 0.6);
+      font-size: 0.95rem;
+    }
+
+    .settings-button {
+      padding: 11px 20px;
+      background: linear-gradient(135deg, #0f2557, #091840);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .settings-button:hover {
+      background: linear-gradient(135deg, #091840, #051026);
+      box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .settings-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 768px) {
+      .page-main {
+        padding: 20px 16px;
+      }
+
+      .settings-card {
+        padding: 20px;
+      }
+
+      .settings-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+    }
+  `;
+
   return (
-    <div className="app-shell">
+    <div className="page-shell">
       <Sidebar />
-      <main className="content-area" style={{ marginLeft: 200 }}>
-        <div className="container">
-          <div className="glass-card">
-            <h2 style={{ marginTop: 0 }}>Settings</h2>
-            <p className="muted">Account and application settings.</p>
+      <main className="page-container">
+        <style>{css}</style>
+        
+        <PageHeader 
+          title="Settings"
+          subtitle="Manage your account and application settings"
+        />
+
+        <div className="page-main">
+          <div className="page-content">
+            <div className="settings-card">
+              <div className="settings-section">
+                <h3 className="settings-section-title">Account Settings</h3>
+                <p className="settings-section-description">Manage your account preferences and profile information</p>
+                
+                <div className="settings-item">
+                  <span className="settings-item-label">Email</span>
+                  <span className="settings-item-value">user@example.com</span>
+                </div>
+                
+                <div className="settings-item">
+                  <span className="settings-item-label">Account Status</span>
+                  <span className="settings-item-value">Active</span>
+                </div>
+              </div>
+
+              <div className="settings-section">
+                <h3 className="settings-section-title">Preferences</h3>
+                <p className="settings-section-description">Customize your experience with the application</p>
+                
+                <div className="settings-item">
+                  <span className="settings-item-label">Theme</span>
+                  <span className="settings-item-value">Light</span>
+                </div>
+                
+                <div className="settings-item">
+                  <span className="settings-item-label">Notifications</span>
+                  <span className="settings-item-value">Enabled</span>
+                </div>
+              </div>
+
+              <div className="settings-section">
+                <h3 className="settings-section-title">Danger Zone</h3>
+                <p className="settings-section-description">Irreversible actions</p>
+                
+                <div className="settings-item">
+                  <button className="settings-button" style={{ background: 'linear-gradient(135deg, #dc2626, #991b1b)' }}>
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

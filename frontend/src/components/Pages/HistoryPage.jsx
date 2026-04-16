@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Calendar, Zap, Search, X } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
+import PageHeader from '../Common/PageHeader';
 import { analysisService } from '../../services/analysis';
 
 const HistoryPage = () => {
@@ -69,54 +70,28 @@ const HistoryPage = () => {
   });
 
   const css = `
-    .history-page-wrapper {
+    .page-shell {
       display: flex;
       min-height: 100vh;
       background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
     }
 
-    .history-content {
+    .page-container {
       flex: 1;
       display: flex;
       flex-direction: column;
+    }
+
+    .page-main {
+      flex: 1;
       padding: 32px 40px;
       overflow-y: auto;
     }
 
-    .history-header {
+    .page-content {
       max-width: 1200px;
-      margin: 0 auto 32px;
+      margin: 0 auto;
       width: 100%;
-    }
-
-    .history-title {
-      margin: 0 0 8px 0;
-      font-family: 'DM Serif Display', serif;
-      font-size: 2.2rem;
-      font-weight: 400;
-      color: #0f2557;
-      line-height: 1.2;
-    }
-
-    .history-subtitle {
-      font-size: 0.95rem;
-      color: rgba(15, 37, 87, 0.6);
-      font-weight: 300;
-      letter-spacing: 0.3px;
-      margin: 0;
-    }
-
-    .history-search-wrapper {
-      margin-top: 20px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .history-search-container {
-      position: relative;
-      flex: 1;
-      max-width: 400px;
     }
 
     .history-search-input {
@@ -149,8 +124,6 @@ const HistoryPage = () => {
       transform: translateY(-50%);
       color: rgba(15, 37, 87, 0.4);
       pointer-events: none;
-      width: 18px;
-      height: 18px;
     }
 
     .search-clear-btn {
@@ -176,15 +149,7 @@ const HistoryPage = () => {
     .history-search-results {
       font-size: 0.85rem;
       color: rgba(15, 37, 87, 0.6);
-      margin-top: 4px;
       white-space: nowrap;
-    }
-
-    .history-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
     }
 
     .history-main {
@@ -194,6 +159,14 @@ const HistoryPage = () => {
       padding: 0;
       box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
       overflow: hidden;
+    }
+
+    .history-error {
+      padding: 20px 40px;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
+      border-bottom: 1.5px solid rgba(239, 68, 68, 0.2);
+      color: #991b1b;
+      font-size: 0.95rem;
     }
 
     .history-empty {
@@ -243,14 +216,6 @@ const HistoryPage = () => {
       background: linear-gradient(135deg, #091840, #051026);
       box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
       transform: translateY(-2px);
-    }
-
-    .history-error {
-      padding: 20px 40px;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
-      border-bottom: 1.5px solid rgba(239, 68, 68, 0.2);
-      color: #991b1b;
-      font-size: 0.95rem;
     }
 
     .history-list {
@@ -1128,16 +1093,15 @@ const HistoryPage = () => {
   `;
 
   return (
-    <div className="history-page-wrapper">
+    <div className="page-shell">
       <style>{css}</style>
       <Sidebar />
-      <main className="history-content">
-        <div className="history-header">
-          <h1 className="history-title">Analysis History</h1>
-          <p className="history-subtitle">View all your previous design analyses and results</p>
-          
-          <div className="history-search-wrapper">
-            <div className="history-search-container">
+      <main className="page-container">
+        <PageHeader 
+          title="Analysis History"
+          subtitle="View all your previous design analyses and results"
+          actions={
+            <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
               <Search className="search-icon" />
               <input
                 type="text"
@@ -1156,87 +1120,86 @@ const HistoryPage = () => {
                 </button>
               )}
             </div>
-            {searchQuery && (
-              <div className="history-search-results">
-                {filteredAnalyses.length} result{filteredAnalyses.length !== 1 ? 's' : ''}
-              </div>
-            )}
-          </div>
-        </div>
+          }
+        />
 
-        <div className="history-container">
-          <div className="history-main">
+        <div className="page-main">
+          <div className="page-content">
             {error && (
-              <div className="history-error">
-                {error}
+              <div className="history-main" style={{ marginBottom: '20px' }}>
+                <div className="history-error">
+                  {error}
+                </div>
               </div>
             )}
 
-            {loading ? (
-              <div className="history-loading">
-                <span className="loading-spinner"></span>
-                Loading your analysis history...
-              </div>
-            ) : analyses.length === 0 ? (
-              <div className="history-empty">
-                <div className="empty-icon">
-                  <Zap size={40} />
+            <div className="history-main">
+              {loading ? (
+                <div className="history-loading">
+                  <span className="loading-spinner"></span>
+                  Loading your analysis history...
                 </div>
-                <h3 className="empty-title">No analyses yet</h3>
-                <p className="empty-text">
-                  Start by uploading a design or connecting your Figma file to get your first analysis
-                </p>
-                <button className="empty-button" onClick={() => navigate('/dashboard')}>
-                  Start Analyzing
-                </button>
-              </div>
-            ) : filteredAnalyses.length === 0 ? (
-              <div className="history-empty">
-                <div className="empty-icon">
-                  <Search size={40} />
+              ) : analyses.length === 0 ? (
+                <div className="history-empty">
+                  <div className="empty-icon">
+                    <Zap size={40} />
+                  </div>
+                  <h3 className="empty-title">No analyses yet</h3>
+                  <p className="empty-text">
+                    Start by uploading a design or connecting your Figma file to get your first analysis
+                  </p>
+                  <button className="empty-button" onClick={() => navigate('/dashboard')}>
+                    Start Analyzing
+                  </button>
                 </div>
-                <h3 className="empty-title">No results found</h3>
-                <p className="empty-text">
-                  No analyses match "{searchQuery}". Try searching with a different name.
-                </p>
-                <button className="empty-button" onClick={() => setSearchQuery('')}>
-                  Clear Search
-                </button>
-              </div>
-            ) : (
-              <ul className="history-list">
-                {filteredAnalyses.map((analysis) => (
-                  <li key={analysis.analysis_id} className="history-item">
-                    <div className="history-item-content">
-                      <h3 className="history-item-name">
-                        {analysis.design_name}
-                      </h3>
-                      <div className="history-item-meta">
-                        <span className="history-item-date">
-                          <Calendar size={16} />
-                          {formatDate(analysis.timestamp)}
-                        </span>
+              ) : filteredAnalyses.length === 0 ? (
+                <div className="history-empty">
+                  <div className="empty-icon">
+                    <Search size={40} />
+                  </div>
+                  <h3 className="empty-title">No results found</h3>
+                  <p className="empty-text">
+                    No analyses match "{searchQuery}". Try searching with a different name.
+                  </p>
+                  <button className="empty-button" onClick={() => setSearchQuery('')}>
+                    Clear Search
+                  </button>
+                </div>
+              ) : (
+                <ul className="history-list">
+                  {filteredAnalyses.map((analysis) => (
+                    <li key={analysis.analysis_id} className="history-item">
+                      <div className="history-item-content">
+                        <h3 className="history-item-name">
+                          {analysis.design_name}
+                        </h3>
+                        <div className="history-item-meta">
+                          <span className="history-item-date">
+                            <Calendar size={16} />
+                            {formatDate(analysis.timestamp)}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="history-item-score">
-                    </div>
+                      <div className="history-item-score">
+                      </div>
 
-                    <div className="history-item-actions">
-                      <button
-                        className="action-button delete"
-                        onClick={() => handleDelete(analysis.analysis_id)}
-                        disabled={deleting === analysis.analysis_id}
-                        title="Delete this analysis"
-                      >
-                        <Trash2 size={16} />
-                        {deleting === analysis.analysis_id ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+                      <div className="history-item-actions">
+                        <button
+                          className="action-button delete"
+                          onClick={() => handleDelete(analysis.analysis_id)}
+                          disabled={deleting === analysis.analysis_id}
+                          title="Delete this analysis"
+                        >
+                          <Trash2 size={16} />
+                          {deleting === analysis.analysis_id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </main>

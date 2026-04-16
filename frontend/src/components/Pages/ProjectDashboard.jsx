@@ -697,23 +697,16 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       <main className="dashboard-content">
         <style>{css}</style>
 
-        {/* Header */}
-        <div className="dashboard-header-top">
-          <button className="dashboard-back-btn" onClick={onBack}>
-            ← Back
-          </button>
-        </div>
+        {/* Error */}
+        {error && (
+          <div className="dashboard-error">
+            <span>{error}</span>
+            <button onClick={() => setError(null)}>×</button>
+          </div>
+        )}
 
         {/* Container */}
         <div className="dashboard-container">
-          {/* Error */}
-          {error && (
-            <div className="dashboard-error">
-              <span>{error}</span>
-              <button onClick={() => setError(null)}>×</button>
-            </div>
-          )}
-
           {/* Project Header */}
           <div className="project-header-main">
             <div className="project-header-content">
@@ -740,6 +733,9 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
               </div>
 
               <div className="project-actions-main">
+                <button className="dashboard-back-btn" onClick={onBack}>
+                  ← Back
+                </button>
                 {isEditing ? (
                   <>
                     <button

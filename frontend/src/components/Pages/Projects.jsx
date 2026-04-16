@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../Common/Sidebar';
+import PageHeader from '../Common/PageHeader';
 import CreateProjectModal from './CreateProjectModal';
 import ProjectDashboard from './ProjectDashboard';
 import { projectService } from '../../services/projects';
@@ -108,57 +109,28 @@ const Projects = () => {
   };
 
   const css = `
-    .projects-page-wrapper {
+    .page-shell {
       display: flex;
       min-height: 100vh;
       background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
-      width: 100%;
     }
 
-    .projects-content {
+    .page-container {
       flex: 1;
       display: flex;
       flex-direction: column;
+    }
+
+    .page-main {
+      flex: 1;
       padding: 32px 40px;
-      width: 100%;
-      margin-left: 0;
       overflow-y: auto;
     }
 
-    .projects-header {
+    .page-content {
       max-width: 1200px;
-      margin: 0 auto 32px;
+      margin: 0 auto;
       width: 100%;
-    }
-
-    .projects-title {
-      margin: 0 0 8px 0;
-      font-family: 'DM Serif Display', serif;
-      font-size: 2.2rem;
-      font-weight: 400;
-      color: #0f2557;
-      line-height: 1.2;
-    }
-
-    .projects-subtitle {
-      font-size: 0.95rem;
-      color: rgba(15, 37, 87, 0.6);
-      font-weight: 300;
-      letter-spacing: 0.3px;
-      margin: 0;
-    }
-
-    .projects-search-wrapper {
-      margin-top: 20px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .projects-search-container {
-      position: relative;
-      flex: 1;
-      max-width: 400px;
     }
 
     .projects-search-input {
@@ -215,13 +187,6 @@ const Projects = () => {
       color: rgba(15, 37, 87, 0.7);
     }
 
-    .projects-search-results {
-      font-size: 0.85rem;
-      color: rgba(15, 37, 87, 0.6);
-      margin-top: 4px;
-      white-space: nowrap;
-    }
-
     .projects-button {
       padding: 11px 20px;
       background: linear-gradient(135deg, #0f2557, #091840);
@@ -239,13 +204,6 @@ const Projects = () => {
       background: linear-gradient(135deg, #091840, #051026);
       box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
       transform: translateY(-2px);
-    }
-
-    .projects-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
     }
 
     .projects-main {
@@ -460,7 +418,7 @@ const Projects = () => {
 
   if (selectedProject) {
     return (
-      <div className="projects-page-wrapper">
+      <div className="page-shell">
         <Sidebar />
         <ProjectDashboard 
           project={selectedProject}
@@ -471,120 +429,123 @@ const Projects = () => {
     );
   }
 
+  const headerActions = (
+    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+        <svg className="search-icon-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input
+          type="text"
+          placeholder="Search projects by name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="projects-search-input"
+        />
+        {searchTerm && (
+          <button 
+            className="search-clear-btn-projects"
+            onClick={() => setSearchTerm('')}
+          >
+            ×
+          </button>
+        )}
+      </div>
+      <button 
+        className="projects-button"
+        onClick={() => setShowCreateModal(true)}
+      >
+        + New Project
+      </button>
+    </div>
+  );
+
   return (
-    <div className="projects-page-wrapper">
+    <div className="page-shell">
       <Sidebar />
-      <main className="projects-content">
+      <main className="page-container">
         <style>{css}</style>
         
-        {/* Header */}
-        <div className="projects-header">
-          <h1 className="projects-title">Projects</h1>
-          <p className="projects-subtitle">Organize and manage your design analyses</p>
-          
-          <div className="projects-search-wrapper">
-            <div className="projects-search-container">
-              <svg className="search-icon-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-              </svg>
-              <input
-                type="text"
-                placeholder="Search projects by name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="projects-search-input"
-              />
-              {searchTerm && (
-                <button 
-                  className="search-clear-btn-projects"
-                  onClick={() => setSearchTerm('')}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-            <button 
-              className="projects-button"
-              onClick={() => setShowCreateModal(true)}
-            >
-              + New Project
-            </button>
-          </div>
-        </div>
+        <PageHeader 
+          title="Projects"
+          subtitle="Organize and manage your design analyses"
+          actions={headerActions}
+        />
 
-        {/* Container */}
-        <div className="projects-container">
-          {/* Error */}
-          {error && (
-            <div className="projects-main" style={{ marginBottom: '20px' }}>
-              <div className="projects-error">
-                <span>{error}</span>
-                <button onClick={() => setError(null)}>×</button>
+        <div className="page-main">
+          <div className="page-content">
+            {/* Error */}
+            {error && (
+              <div className="projects-main" style={{ marginBottom: '20px' }}>
+                <div className="projects-error">
+                  <span>{error}</span>
+                  <button onClick={() => setError(null)}>×</button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Main Content */}
-          <div className="projects-main">
-            {loading ? (
-              <div className="projects-loading">
-                <div className="projects-spinner"></div>
-                <p>Loading projects...</p>
-              </div>
-            ) : projects.length === 0 ? (
-              <div className="projects-empty">
-                <div className="empty-icon">📁</div>
-                <h2 className="empty-title">No Projects Yet</h2>
-                <p className="empty-text">Create your first project to get started with design analysis</p>
-                <button 
-                  className="projects-button"
-                  onClick={() => setShowCreateModal(true)}
-                >
-                  + Create Project
-                </button>
-              </div>
-            ) : (
-              <ul className="projects-list">
-                {projects.map(project => (
-                  <li 
-                    key={project.id}
-                    className="projects-item"
-                    onClick={() => setSelectedProject(project)}
+            {/* Main Content */}
+            <div className="projects-main">
+              {loading ? (
+                <div className="projects-loading">
+                  <div className="projects-spinner"></div>
+                  <p>Loading projects...</p>
+                </div>
+              ) : projects.length === 0 ? (
+                <div className="projects-empty">
+                  <div className="empty-icon">📁</div>
+                  <h2 className="empty-title">No Projects Yet</h2>
+                  <p className="empty-text">Create your first project to get started with design analysis</p>
+                  <button 
+                    className="projects-button"
+                    onClick={() => setShowCreateModal(true)}
                   >
-                    <div className="projects-item-content">
-                      <h3 className="projects-item-name">{project.name}</h3>
-                      {project.description && (
-                        <p className="projects-item-description">{project.description}</p>
-                      )}
-                      <div className="projects-item-meta">
-                        <div className="projects-item-stat">
-                          <span>📊</span>
-                          <span>{project.analysis_count || 0} analyses</span>
-                        </div>
-                        <div className="projects-item-stat">
-                          <span>📅</span>
-                          <span>{formatDate(project.created_at)}</span>
+                    + Create Project
+                  </button>
+                </div>
+              ) : (
+                <ul className="projects-list">
+                  {projects.map(project => (
+                    <li 
+                      key={project.id}
+                      className="projects-item"
+                      onClick={() => setSelectedProject(project)}
+                    >
+                      <div className="projects-item-content">
+                        <h3 className="projects-item-name">{project.name}</h3>
+                        {project.description && (
+                          <p className="projects-item-description">{project.description}</p>
+                        )}
+                        <div className="projects-item-meta">
+                          <div className="projects-item-stat">
+                            <span>📊</span>
+                            <span>{project.analysis_count || 0} analyses</span>
+                          </div>
+                          <div className="projects-item-stat">
+                            <span>📅</span>
+                            <span>{formatDate(project.created_at)}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="projects-item-actions">
-                      <button
-                        className="projects-delete-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteProject(project.id);
-                        }}
-                        disabled={deletingProjectId === project.id}
-                        title="Delete project"
-                      >
-                        {deletingProjectId === project.id ? '⏳' : '🗑️'}
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+                      <div className="projects-item-actions">
+                        <button
+                          className="projects-delete-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteProject(project.id);
+                          }}
+                          disabled={deletingProjectId === project.id}
+                          title="Delete project"
+                        >
+                          {deletingProjectId === project.id ? '⏳' : '🗑️'}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
 
@@ -603,4 +564,3 @@ const Projects = () => {
 };
 
 export default Projects;
-

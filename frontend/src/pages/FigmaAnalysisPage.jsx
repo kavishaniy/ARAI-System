@@ -1,97 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/Common/Sidebar';
+import PageHeader from '../components/Common/PageHeader';
 import FigmaAnalyzer from '../components/FigmaAnalyzer';
 import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 
 const FigmaAnalysisPage = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
 
-  useEffect(() => {
-    const read = () => {
-      try {
-        const v = localStorage.getItem('sidebar_collapsed');
-        setCollapsed(v === 'true');
-      } catch (e) {
-        setCollapsed(false);
-      }
-    };
-
-    read();
-    const onStorage = (e) => { if (e.key === 'sidebar_collapsed') read(); };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
   const css = `
-/* Main shell - matches dashboard-shell */
-.figma-shell {
+.page-shell {
   display: flex;
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
 }
 
-/* Content wrapper - matches dashboard-content */
-.figma-content {
+.page-container {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Header - exact match with dashboard-header */
-.figma-header {
-  padding: 48px 40px 24px;
-  border-bottom: 1px solid rgba(15,37,87,0.08);
-  background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(8px);
-}
-
-.figma-header-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.figma-header-section {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.figma-header-title {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.figma-title {
-  margin: 0;
-  font-family: 'DM Serif Display', serif;
-  font-size: 2.2rem;
-  font-weight: 400;
-  color: #0f2557;
-  line-height: 1.2;
-}
-
-.figma-subtitle {
-  font-size: 0.95rem;
-  color: rgba(15,37,87,0.6);
-  font-weight: 300;
-  letter-spacing: 0.3px;
-}
-
-/* Main content area - exact match with dashboard-main */
-.figma-main {
+.page-main {
   flex: 1;
   padding: 32px 40px;
   overflow-y: auto;
 }
 
-/* Card - exact match with dashboard-card */
-.figma-card {
+.page-content {
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+}
+
+.page-card {
   background: white;
   border: 1.5px solid rgba(15,37,87,0.12);
   border-radius: 16px;
@@ -100,32 +41,18 @@ const FigmaAnalysisPage = () => {
   transition: all 0.3s ease;
 }
 
-.figma-card:hover {
+.page-card:hover {
   border-color: rgba(15,37,87,0.2);
   box-shadow: 0 15px 50px rgba(15,37,87,0.1);
 }
 
-/* Mobile adjustments - match dashboard */
 @media (max-width: 768px) {
-  .figma-header {
-    padding: 24px 16px 16px;
-  }
-
-  .figma-main {
+  .page-main {
     padding: 20px 16px;
   }
 
-  .figma-card {
+  .page-card {
     padding: 20px;
-  }
-
-  .figma-title {
-    font-size: 1.6rem;
-  }
-
-  .figma-header-section {
-    flex-direction: column;
-    gap: 16px;
   }
 }
 `;
@@ -133,19 +60,25 @@ const FigmaAnalysisPage = () => {
   return (
     <>
       <style>{css}</style>
-      <div className="figma-shell">
+      <div className="page-shell">
         <Sidebar />
-        <div className="figma-content" style={{ marginLeft: collapsed ? 72 : 260 }}>
-          <main className="figma-main">
-            <div className="figma-card">
-              {analysisResults ? (
-                <MultipleAnalysisResults
-                  results={analysisResults}
-                  onNewAnalysis={() => setAnalysisResults(null)}
-                />
-              ) : (
-                <FigmaAnalyzer onAnalysisComplete={setAnalysisResults} />
-              )}
+        <div className="page-container">
+          <PageHeader 
+            title="Figma Analysis"
+            subtitle="Connect and analyze your Figma designs directly"
+          />
+          <main className="page-main">
+            <div className="page-content">
+              <div className="page-card">
+                {analysisResults ? (
+                  <MultipleAnalysisResults
+                    results={analysisResults}
+                    onNewAnalysis={() => setAnalysisResults(null)}
+                  />
+                ) : (
+                  <FigmaAnalyzer onAnalysisComplete={setAnalysisResults} />
+                )}
+              </div>
             </div>
           </main>
         </div>
