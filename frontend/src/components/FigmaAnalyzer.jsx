@@ -16,14 +16,6 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
       width: 100%;
     }
 
-    .figma-analyzer-title {
-      margin: 0 0 24px 0;
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.8rem;
-      font-weight: 400;
-      color: #0f2557;
-    }
-
     /* Input section - matches dashboard style */
     .analyzer-input-section {
       margin-bottom: 32px;
@@ -240,10 +232,6 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
       .summary-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       }
-
-      .figma-analyzer-title {
-        font-size: 1.4rem;
-      }
     }
   `;
 
@@ -290,8 +278,6 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
   return (
     <div className="figma-analyzer-wrapper">
       <style>{css}</style>
-
-      <h1 className="figma-analyzer-title">Figma Design Analyzer</h1>
 
       {/* Input Section */}
       <div className="analyzer-input-section">
