@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Eye, Calendar, Zap, X } from 'lucide-react';
+import { Trash2, Calendar, Zap } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import { analysisService } from '../../services/analysis';
 
@@ -9,9 +9,6 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(null);
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
-  const [viewingResults, setViewingResults] = useState(false);
-  const [resultsLoading, setResultsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,25 +27,6 @@ const HistoryPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleViewReport = async (analysisId) => {
-    try {
-      setResultsLoading(true);
-      const results = await analysisService.getAnalysis(analysisId);
-      setSelectedAnalysis(results);
-      setViewingResults(true);
-    } catch (err) {
-      console.error('Failed to fetch analysis results:', err);
-      setError('Failed to load analysis results. Please try again.');
-    } finally {
-      setResultsLoading(false);
-    }
-  };
-
-  const closeResultsModal = () => {
-    setViewingResults(false);
-    setSelectedAnalysis(null);
   };
 
   const handleDelete = async (analysisId) => {
@@ -1122,15 +1100,6 @@ const HistoryPage = () => {
 
                     <div className="history-item-actions">
                       <button
-                        className="action-button"
-                        onClick={() => handleViewReport(analysis.analysis_id)}
-                        title="View detailed analysis results"
-                        disabled={resultsLoading}
-                      >
-                        <Eye size={16} />
-                        {resultsLoading ? 'Loading...' : 'View'}
-                      </button>
-                      <button
                         className="action-button delete"
                         onClick={() => handleDelete(analysis.analysis_id)}
                         disabled={deleting === analysis.analysis_id}
@@ -1147,284 +1116,6 @@ const HistoryPage = () => {
           </div>
         </div>
       </main>
-
-      {viewingResults && selectedAnalysis && (
-        <div className="history-modal-overlay" onClick={closeResultsModal}>
-          <div className="history-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="history-modal-header">
-              <h2 className="history-modal-title">{selectedAnalysis.design_name || 'Analysis Results'}</h2>
-              <button className="history-modal-close" onClick={closeResultsModal} title="Close">
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="history-modal-body">
-              {/* MAIN SCORES SECTION */}
-              <div className="modal-main-scores">
-                <div className="modal-score-grid">
-                  {/* ARAI Score - Large */}
-                  <div className="modal-arai-card">
-                    <div className="modal-arai-value">{selectedAnalysis.arai_score?.toFixed(1) || 0}</div>
-                    <div className="modal-arai-label">ARAI Score</div>
-                    {selectedAnalysis.overall_grade && (
-                      <div className="modal-arai-grade">{selectedAnalysis.overall_grade}</div>
-                    )}
-                  </div>
-
-                  {/* Component Scores */}
-                  <div className="modal-sub-scores">
-                    {selectedAnalysis.accessibility?.score !== undefined && (
-                      <div className="modal-sub-score-item accessibility">
-                        <div className="modal-sub-score-value">{selectedAnalysis.accessibility.score?.toFixed(1)}</div>
-                        <div className="modal-sub-score-label">Accessibility</div>
-                      </div>
-                    )}
-                    {selectedAnalysis.readability?.score !== undefined && (
-                      <div className="modal-sub-score-item readability">
-                        <div className="modal-sub-score-value">{selectedAnalysis.readability.score?.toFixed(1)}</div>
-                        <div className="modal-sub-score-label">Readability</div>
-                      </div>
-                    )}
-                    {selectedAnalysis.attention?.score !== undefined && (
-                      <div className="modal-sub-score-item attention">
-                        <div className="modal-sub-score-value">{selectedAnalysis.attention.score?.toFixed(1)}</div>
-                        <div className="modal-sub-score-label">Attention</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* ACCESSIBILITY SECTION */}
-              {selectedAnalysis.accessibility && (
-                <div className="modal-analysis-section">
-                  <h3 className="modal-section-title">
-                    ♿ Accessibility Analysis
-                  </h3>
-                  
-                  {selectedAnalysis.accessibility.conformance && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">WCAG Conformance Level</label>
-                      <div className="modal-detail-value">{selectedAnalysis.accessibility.conformance}</div>
-                    </div>
-                  )}
-
-                  {selectedAnalysis.accessibility.issues && selectedAnalysis.accessibility.issues.length > 0 && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Issues Found: {selectedAnalysis.accessibility.issues.length}</label>
-                      <div className="modal-issues-list">
-                        {selectedAnalysis.accessibility.issues.map((issue, idx) => (
-                          <div key={idx} className={`modal-issue-item modal-issue-${issue.severity?.toLowerCase() || 'medium'}`}>
-                            <div className="modal-issue-severity">{issue.severity}</div>
-                            <div className="modal-issue-text">
-                              <div className="modal-issue-title">{issue.title || issue.type}</div>
-                              {issue.description && (
-                                <div className="modal-issue-desc">{issue.description}</div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedAnalysis.accessibility.recommendations && selectedAnalysis.accessibility.recommendations.length > 0 && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Recommendations: {selectedAnalysis.accessibility.recommendations.length}</label>
-                      <div className="modal-recommendations-list">
-                        {selectedAnalysis.accessibility.recommendations.map((rec, idx) => (
-                          <div key={idx} className="modal-recommendation-item">
-                            <div className="modal-rec-icon">💡</div>
-                            <div className="modal-rec-text">
-                              <div className="modal-rec-title">{rec.title || rec}</div>
-                              {typeof rec === 'object' && rec.description && (
-                                <div className="modal-rec-desc">{rec.description}</div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* READABILITY SECTION */}
-              {selectedAnalysis.readability && (
-                <div className="modal-analysis-section">
-                  <h3 className="modal-section-title">
-                    📖 Readability Analysis
-                  </h3>
-
-                  {selectedAnalysis.readability.metrics && (
-                    <div className="modal-metrics-grid">
-                      {selectedAnalysis.readability.metrics.flesch_kincaid_grade !== undefined && (
-                        <div className="modal-metric-card">
-                          <div className="modal-metric-value">{selectedAnalysis.readability.metrics.flesch_kincaid_grade?.toFixed(1)}</div>
-                          <div className="modal-metric-label">Flesch-Kincaid Grade</div>
-                          <div className="modal-metric-desc">Grade level needed to understand</div>
-                        </div>
-                      )}
-                      {selectedAnalysis.readability.metrics.avg_word_length !== undefined && (
-                        <div className="modal-metric-card">
-                          <div className="modal-metric-value">{selectedAnalysis.readability.metrics.avg_word_length?.toFixed(2)}</div>
-                          <div className="modal-metric-label">Avg Word Length</div>
-                          <div className="modal-metric-desc">Characters per word</div>
-                        </div>
-                      )}
-                      {selectedAnalysis.readability.metrics.avg_sentence_length !== undefined && (
-                        <div className="modal-metric-card">
-                          <div className="modal-metric-value">{selectedAnalysis.readability.metrics.avg_sentence_length?.toFixed(1)}</div>
-                          <div className="modal-metric-label">Avg Sentence Length</div>
-                          <div className="modal-metric-desc">Words per sentence</div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {selectedAnalysis.readability.issues && selectedAnalysis.readability.issues.length > 0 && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Readability Issues: {selectedAnalysis.readability.issues.length}</label>
-                      <div className="modal-issues-list">
-                        {selectedAnalysis.readability.issues.map((issue, idx) => (
-                          <div key={idx} className={`modal-issue-item modal-issue-${issue.severity?.toLowerCase() || 'medium'}`}>
-                            <div className="modal-issue-severity">{issue.severity}</div>
-                            <div className="modal-issue-text">
-                              <div className="modal-issue-title">{issue.title || issue.type}</div>
-                              {issue.description && (
-                                <div className="modal-issue-desc">{issue.description}</div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedAnalysis.readability.recommendations && selectedAnalysis.readability.recommendations.length > 0 && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Recommendations: {selectedAnalysis.readability.recommendations.length}</label>
-                      <div className="modal-recommendations-list">
-                        {selectedAnalysis.readability.recommendations.map((rec, idx) => (
-                          <div key={idx} className="modal-recommendation-item">
-                            <div className="modal-rec-icon">💡</div>
-                            <div className="modal-rec-text">
-                              <div className="modal-rec-title">{rec.title || rec}</div>
-                              {typeof rec === 'object' && rec.description && (
-                                <div className="modal-rec-desc">{rec.description}</div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* ATTENTION SECTION */}
-              {selectedAnalysis.attention && (
-                <div className="modal-analysis-section">
-                  <h3 className="modal-section-title">
-                    👁️ Visual Attention Analysis
-                  </h3>
-
-                  {selectedAnalysis.attention.distribution && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Visual Distribution</label>
-                      <div className="modal-detail-value">{selectedAnalysis.attention.distribution}</div>
-                    </div>
-                  )}
-
-                  {selectedAnalysis.attention.focus_areas && selectedAnalysis.attention.focus_areas.length > 0 && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Focus Areas Detected: {selectedAnalysis.attention.focus_areas.length}</label>
-                      <div className="modal-focus-areas">
-                        {selectedAnalysis.attention.focus_areas.map((area, idx) => (
-                          <div key={idx} className="modal-focus-area-item">
-                            <div className="modal-focus-area-content">
-                              {area.title && <div className="modal-focus-title">{area.title}</div>}
-                              {area.location && <div className="modal-focus-location">Location: {area.location}</div>}
-                              {area.intensity && <div className="modal-focus-intensity">Intensity: {area.intensity}</div>}
-                              {area.description && <div className="modal-focus-desc">{area.description}</div>}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedAnalysis.attention.issues && selectedAnalysis.attention.issues.length > 0 && (
-                    <div className="modal-detail-group">
-                      <label className="modal-detail-label">Attention Issues: {selectedAnalysis.attention.issues.length}</label>
-                      <div className="modal-issues-list">
-                        {selectedAnalysis.attention.issues.map((issue, idx) => (
-                          <div key={idx} className={`modal-issue-item modal-issue-${issue.severity?.toLowerCase() || 'medium'}`}>
-                            <div className="modal-issue-severity">{issue.severity}</div>
-                            <div className="modal-issue-text">
-                              <div className="modal-issue-title">{issue.title || issue.type}</div>
-                              {issue.description && (
-                                <div className="modal-issue-desc">{issue.description}</div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* ISSUE SUMMARY */}
-              {selectedAnalysis.issue_summary && (
-                <div className="modal-analysis-section">
-                  <h3 className="modal-section-title">📊 Issue Summary</h3>
-                  <div className="modal-issue-summary-grid">
-                    {selectedAnalysis.issue_summary.critical !== undefined && (
-                      <div className="modal-summary-card critical">
-                        <div className="modal-summary-icon">🔴</div>
-                        <div className="modal-summary-label">Critical</div>
-                        <div className="modal-summary-value">{selectedAnalysis.issue_summary.critical}</div>
-                      </div>
-                    )}
-                    {selectedAnalysis.issue_summary.high !== undefined && (
-                      <div className="modal-summary-card high">
-                        <div className="modal-summary-icon">🟠</div>
-                        <div className="modal-summary-label">High</div>
-                        <div className="modal-summary-value">{selectedAnalysis.issue_summary.high}</div>
-                      </div>
-                    )}
-                    {selectedAnalysis.issue_summary.medium !== undefined && (
-                      <div className="modal-summary-card medium">
-                        <div className="modal-summary-icon">🟡</div>
-                        <div className="modal-summary-label">Medium</div>
-                        <div className="modal-summary-value">{selectedAnalysis.issue_summary.medium}</div>
-                      </div>
-                    )}
-                    {selectedAnalysis.issue_summary.passing !== undefined && (
-                      <div className="modal-summary-card passing">
-                        <div className="modal-summary-icon">🟢</div>
-                        <div className="modal-summary-label">Passing</div>
-                        <div className="modal-summary-value">{selectedAnalysis.issue_summary.passing}</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* STATUS */}
-              {selectedAnalysis.status && (
-                <div className="modal-status-bar">
-                  <span className="modal-status-label">Analysis Status:</span>
-                  <span className={`modal-status-value modal-status-${selectedAnalysis.status}`}>
-                    {selectedAnalysis.status === 'completed' ? '✓ Completed' : selectedAnalysis.status}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
