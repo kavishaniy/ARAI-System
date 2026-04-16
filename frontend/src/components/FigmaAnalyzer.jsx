@@ -337,7 +337,7 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
           disabled={!figmaUrl || loading}
           className="analyze-button"
         >
-          {loading ? 'Analyzing... Please wait (this may take 2-5 minutes)' : 'Analyze All Screens'}
+          {loading ? 'Analyzing... Please wait' : 'Analyze All Screens'}
         </button>
       </div>
 
@@ -345,10 +345,6 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
       {loading && (
         <div className="progress-message">
           <div className="progress-message-title">⏳ Analysis in Progress</div>
-          <p>Extracting Figma screens and running analysis... This typically takes 2-5 minutes depending on the project size.</p>
-          <p style={{ marginTop: '12px', fontSize: '0.9rem', color: 'rgba(30, 64, 175, 0.7)' }}>
-            💡 <strong>Tip:</strong> You can check your browser's console (Developer Tools → Console) to see real-time analysis logs.
-          </p>
         </div>
       )}
 
