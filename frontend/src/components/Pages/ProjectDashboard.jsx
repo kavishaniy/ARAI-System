@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { FilePlus } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import { projectService } from '../../services/projects';
 import UploadAnalysisMultiple from '../Analysis/UploadAnalysisMultiple';
@@ -96,25 +97,6 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       gap: 16px;
     }
 
-    .dashboard-back-btn {
-      background: linear-gradient(135deg, #0f2557, #091840);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .dashboard-back-btn:hover {
-      background: linear-gradient(135deg, #091840, #051026);
-      box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
-      transform: translateY(-2px);
-    }
-
     .dashboard-title {
       font-family: 'DM Serif Display', serif;
       font-size: 2.2rem;
@@ -182,23 +164,19 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     }
 
     .project-header-main {
-      background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.03) 100%);
+      background: transparent;
       border: none;
-      border-radius: 16px;
-      padding: 20px 32px;
+      border-radius: 0;
+      padding: 0 0 32px 0;
       margin-bottom: 32px;
-      box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
+      box-shadow: none;
       transition: all 0.3s ease;
-    }
-
-    .project-header-main:hover {
-      box-shadow: 0 15px 50px rgba(15, 37, 87, 0.1);
     }
 
     .project-header-content {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      align-items: flex-start;
+      justify-content: flex-start;
       gap: 24px;
     }
 
@@ -207,9 +185,9 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     }
 
     .project-name-main {
-      margin: 0 0 8px 0;
+      margin: 0;
       font-family: 'DM Serif Display', serif;
-      font-size: 1.8rem;
+      font-size: 2.2rem;
       font-weight: 400;
       color: #0f2557;
       line-height: 1.2;
@@ -217,9 +195,10 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
     .project-subtitle-main {
       color: rgba(15, 37, 87, 0.6);
-      font-size: 0.9rem;
-      margin: 0;
+      font-size: 0.95rem;
+      margin: 8px 0 0 0;
       font-weight: 300;
+      letter-spacing: 0.3px;
     }
 
     .edit-form-inline {
@@ -246,12 +225,34 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
     .project-actions-main {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
     }
 
+    .project-back-button {
+      padding: 8px 0;
+      background: none;
+      border: none;
+      color: #0f2557;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      opacity: 0.7;
+      margin-top: 8px;
+      align-self: flex-start;
+    }
+
+    .project-back-button:hover {
+      opacity: 1;
+      transform: translateX(-4px);
+    }
+
     .project-btn {
-      padding: 11px 18px;
+      padding: 10px 16px;
       border: none;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -634,11 +635,17 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       }
 
       .project-header-main {
-        padding: 24px;
+        padding: 0;
+        margin-bottom: 24px;
       }
 
       .project-header-content {
         flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .project-back-button {
+        margin-bottom: 12px;
       }
 
       .project-actions-main {
@@ -648,7 +655,11 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
       .project-btn {
         flex: 1;
-        min-width: 120px;
+        min-width: 100px;
+      }
+
+      .project-name-main {
+        font-size: 1.6rem;
       }
 
       .dashboard-stats-grid {
@@ -710,6 +721,9 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
           {/* Project Header */}
           <div className="project-header-main">
             <div className="project-header-content">
+              <button className="project-back-button" onClick={onBack} title="Go back">
+                ←
+              </button>
               <div className="project-title-section">
                 {isEditing ? (
                   <div className="edit-form-inline">
@@ -733,9 +747,6 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
               </div>
 
               <div className="project-actions-main">
-                <button className="dashboard-back-btn" onClick={onBack}>
-                  ← Back
-                </button>
                 {isEditing ? (
                   <>
                     <button
@@ -750,7 +761,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                       onClick={handleSaveChanges}
                       disabled={isSaving}
                     >
-                      {isSaving ? '⏳ Saving...' : '✓ Save'}
+                      {isSaving ? 'Saving...' : 'Save'}
                     </button>
                   </>
                 ) : (
@@ -759,17 +770,14 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                       className="project-btn project-btn-secondary"
                       onClick={() => setIsEditing(true)}
                     >
-                      ✏️ Edit
+                      Edit
                     </button>
                     <button
-                      className="project-btn project-btn-danger"
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this project?')) {
-                          onDelete(project.id);
-                        }
-                      }}
+                      className="project-btn project-btn-primary"
+                      onClick={handleSaveChanges}
+                      disabled={isSaving}
                     >
-                      🗑️ Delete
+                      {isSaving ? 'Saving...' : 'Save'}
                     </button>
                   </>
                 )}
@@ -799,7 +807,8 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                 className={`dashboard-tab-btn ${activeTab === 'analyze' ? 'active' : ''}`}
                 onClick={() => setActiveTab('analyze')}
               >
-                + Analyze Design
+                <FilePlus size={16} style={{ display: 'inline-block', marginRight: '6px', verticalAlign: 'middle' }} />
+                Analyze Design
               </button>
               <button
                 className={`dashboard-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
