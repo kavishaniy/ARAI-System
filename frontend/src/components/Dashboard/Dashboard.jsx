@@ -198,34 +198,25 @@ const Dashboard = () => {
         <Sidebar active={activeTab} onNavigate={(id) => setActiveTab(id)} />
 
         <div className="dashboard-content" style={{ marginLeft: collapsed ? 72 : 260 }}>
-          <div className="dashboard-header">
-            <div className="dashboard-header-content">
-              <div className="dashboard-title-section">
-                <div className="dashboard-title">
-                  {activeTab === 'results' ? (
-                    <>
-                      <h1>Analysis Results</h1>
-                      <p className="dashboard-subtitle">View detailed insights and recommendations for your design</p>
-                    </>
-                  ) : (
-                    <>
-                      <h1>Dashboard</h1>
-                      <p className="dashboard-subtitle">Upload designs and view analysis</p>
-                    </>
-                  )}
-                </div>
+          {activeTab === 'results' && (
+            <div className="dashboard-header">
+              <div className="dashboard-header-content">
+                <div className="dashboard-title-section">
+                  <div className="dashboard-title">
+                    <h1>Analysis Results</h1>
+                    <p className="dashboard-subtitle">View detailed insights and recommendations for your design</p>
+                  </div>
 
-                <div className="dashboard-actions">
-                  {activeTab === 'results' && (
+                  <div className="dashboard-actions">
                     <button onClick={handleNewAnalysis} className="btn-new-analysis">
                       <FilePlus className="btn-new-analysis-icon" />
                       New Analysis
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           <main className="dashboard-main">
             <div className="dashboard-card">

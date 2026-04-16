@@ -248,6 +248,35 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       width: 100%;
     }
 
+    .upload-analysis-header {
+      max-width: 1200px;
+      margin: 0 auto 32px;
+      width: 100%;
+    }
+
+    .upload-analysis-title {
+      margin: 0 0 8px 0;
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: #0f2557;
+      line-height: 1.2;
+    }
+
+    .upload-analysis-subtitle {
+      font-size: 0.95rem;
+      color: rgba(15, 37, 87, 0.6);
+      font-weight: 300;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .upload-form-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
     .upload-form {
       display: flex;
       flex-direction: column;
@@ -490,7 +519,15 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
     <div className="upload-analysis-wrapper">
       <style>{css}</style>
 
-      <form className="upload-form" onSubmit={handleSubmit}>
+      {/* Header */}
+      <div className="upload-analysis-header">
+        <h1 className="upload-analysis-title">New Analysis</h1>
+        <p className="upload-analysis-subtitle">Upload and analyze your design file with AI-powered insights</p>
+      </div>
+
+      {/* Form Container */}
+      <div className="upload-form-container">
+        <form className="upload-form" onSubmit={handleSubmit}>
         {/* File Upload Section */}
         <div className="form-section">
           <label className="form-label">Design File</label>
@@ -587,7 +624,8 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
             {retryMessage}
           </div>
         )}
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

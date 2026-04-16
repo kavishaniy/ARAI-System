@@ -16,6 +16,35 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
       width: 100%;
     }
 
+    .figma-analyzer-header {
+      max-width: 1200px;
+      margin: 0 auto 32px;
+      width: 100%;
+    }
+
+    .figma-analyzer-title {
+      margin: 0 0 8px 0;
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: #0f2557;
+      line-height: 1.2;
+    }
+
+    .figma-analyzer-subtitle {
+      font-size: 0.95rem;
+      color: rgba(15, 37, 87, 0.6);
+      font-weight: 300;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .analyzer-form-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
     /* Input section - matches dashboard style */
     .analyzer-input-section {
       margin-bottom: 32px;
@@ -279,8 +308,16 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
     <div className="figma-analyzer-wrapper">
       <style>{css}</style>
 
-      {/* Input Section */}
-      <div className="analyzer-input-section">
+      {/* Header */}
+      <div className="figma-analyzer-header">
+        <h1 className="figma-analyzer-title">Figma Analysis</h1>
+        <p className="figma-analyzer-subtitle">Analyze your Figma designs for accessibility, readability, and visual hierarchy</p>
+      </div>
+
+      {/* Form Container */}
+      <div className="analyzer-form-container">
+        {/* Input Section */}
+        <div className="analyzer-input-section">
         <div className="input-field-group">
           <label className="input-label">Figma File URL</label>
           <input
@@ -358,7 +395,7 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
           )}
         </div>
       )}
-
+      </div>
     </div>
   );
 };
