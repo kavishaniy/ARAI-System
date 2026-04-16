@@ -86,14 +86,11 @@ const Projects = () => {
   // If a project is selected, show the dashboard
   if (selectedProject) {
     return (
-      <div className="app-shell">
-        <Sidebar />
-        <ProjectDashboard 
-          project={selectedProject}
-          onBack={() => setSelectedProject(null)}
-          onDelete={handleDeleteProject}
-        />
-      </div>
+      <ProjectDashboard 
+        project={selectedProject}
+        onBack={() => setSelectedProject(null)}
+        onDelete={handleDeleteProject}
+      />
     );
   }
 
@@ -115,6 +112,7 @@ const Projects = () => {
       display: flex;
       min-height: 100vh;
       background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
+      width: 100%;
     }
 
     .projects-content {
@@ -122,6 +120,9 @@ const Projects = () => {
       display: flex;
       flex-direction: column;
       padding: 48px 40px;
+      width: 100%;
+      margin-left: 0;
+      overflow-x: auto;
     }
 
     .projects-header {

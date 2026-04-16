@@ -71,6 +71,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       display: flex;
       min-height: 100vh;
       background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
+      width: 100%;
     }
 
     .dashboard-content {
@@ -78,6 +79,9 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       display: flex;
       flex-direction: column;
       padding: 48px 40px;
+      width: 100%;
+      margin-left: 0;
+      overflow-x: auto;
     }
 
     .dashboard-header-top {
