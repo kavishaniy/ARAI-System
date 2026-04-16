@@ -79,7 +79,8 @@ const HistoryPage = () => {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 48px 40px;
+      padding: 32px 40px;
+      overflow-y: auto;
     }
 
     .history-header {

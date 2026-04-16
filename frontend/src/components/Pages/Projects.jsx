@@ -119,10 +119,10 @@ const Projects = () => {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 48px 40px;
+      padding: 32px 40px;
       width: 100%;
       margin-left: 0;
-      overflow-x: auto;
+      overflow-y: auto;
     }
 
     .projects-header {
