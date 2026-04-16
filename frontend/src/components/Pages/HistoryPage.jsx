@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Calendar, Zap } from 'lucide-react';
+import { Trash2, Calendar, Zap, Search, X } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import { analysisService } from '../../services/analysis';
 
@@ -9,6 +9,7 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +60,14 @@ const HistoryPage = () => {
     }
   };
 
+  const filteredAnalyses = analyses.filter(analysis => {
+    const query = searchQuery.toLowerCase();
+    const designName = (analysis.design_name || '').toLowerCase();
+    const filename = (analysis.filename || '').toLowerCase();
+    
+    return designName.includes(query) || filename.includes(query);
+  });
+
   const css = `
     .history-page-wrapper {
       display: flex;
@@ -94,6 +103,80 @@ const HistoryPage = () => {
       font-weight: 300;
       letter-spacing: 0.3px;
       margin: 0;
+    }
+
+    .history-search-wrapper {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .history-search-container {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .history-search-input {
+      width: 100%;
+      padding: 11px 16px 11px 40px;
+      border: 1.5px solid rgba(15, 37, 87, 0.15);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #0f2557;
+      background: white;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .history-search-input::placeholder {
+      color: rgba(15, 37, 87, 0.4);
+    }
+
+    .history-search-input:focus {
+      outline: none;
+      border-color: #64b4ff;
+      box-shadow: 0 0 0 3px rgba(100, 180, 255, 0.1);
+      background: white;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(15, 37, 87, 0.4);
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(15, 37, 87, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .search-clear-btn:hover {
+      color: rgba(15, 37, 87, 0.7);
+    }
+
+    .history-search-results {
+      font-size: 0.85rem;
+      color: rgba(15, 37, 87, 0.6);
+      margin-top: 4px;
+      white-space: nowrap;
     }
 
     .history-container {
@@ -1051,6 +1134,33 @@ const HistoryPage = () => {
         <div className="history-header">
           <h1 className="history-title">Analysis History</h1>
           <p className="history-subtitle">View all your previous design analyses and results</p>
+          
+          <div className="history-search-wrapper">
+            <div className="history-search-container">
+              <Search className="search-icon" />
+              <input
+                type="text"
+                className="history-search-input"
+                placeholder="Search by design name or filename..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  className="search-clear-btn"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <div className="history-search-results">
+                {filteredAnalyses.length} result{filteredAnalyses.length !== 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="history-container">
@@ -1079,9 +1189,22 @@ const HistoryPage = () => {
                   Start Analyzing
                 </button>
               </div>
+            ) : filteredAnalyses.length === 0 ? (
+              <div className="history-empty">
+                <div className="empty-icon">
+                  <Search size={40} />
+                </div>
+                <h3 className="empty-title">No results found</h3>
+                <p className="empty-text">
+                  No analyses match "{searchQuery}". Try searching with a different name.
+                </p>
+                <button className="empty-button" onClick={() => setSearchQuery('')}>
+                  Clear Search
+                </button>
+              </div>
             ) : (
               <ul className="history-list">
-                {analyses.map((analysis) => (
+                {filteredAnalyses.map((analysis) => (
                   <li key={analysis.analysis_id} className="history-item">
                     <div className="history-item-content">
                       <h3 className="history-item-name">
