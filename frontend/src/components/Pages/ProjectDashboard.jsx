@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../Common/Sidebar';
 import { projectService } from '../../services/projects';
+import UploadAnalysisMultiple from '../Analysis/UploadAnalysisMultiple';
+import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
 
 const ProjectDashboard = ({ project, onBack, onDelete }) => {
   const [projectDetails, setProjectDetails] = useState(project);
@@ -11,7 +13,8 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
   const [editedName, setEditedName] = useState(project.name);
   const [editedDescription, setEditedDescription] = useState(project.description || '');
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('analyze');
+  const [analysisResults, setAnalysisResults] = useState(null);
 
   const fetchProjectDetails = useCallback(async () => {
     try {
@@ -179,17 +182,23 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     }
 
     .project-header-main {
-      background: white;
+      background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.03) 100%);
       border: 1.5px solid rgba(15, 37, 87, 0.12);
       border-radius: 16px;
-      padding: 40px;
-      margin-bottom: 24px;
+      padding: 32px 40px;
+      margin-bottom: 32px;
       box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
+      transition: all 0.3s ease;
+    }
+
+    .project-header-main:hover {
+      border-color: rgba(15, 37, 87, 0.2);
+      box-shadow: 0 15px 50px rgba(15, 37, 87, 0.1);
     }
 
     .project-header-content {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 24px;
     }
@@ -199,9 +208,9 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     }
 
     .project-name-main {
-      margin: 0 0 12px 0;
+      margin: 0 0 8px 0;
       font-family: 'DM Serif Display', serif;
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 400;
       color: #0f2557;
       line-height: 1.2;
@@ -209,7 +218,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
     .project-subtitle-main {
       color: rgba(15, 37, 87, 0.6);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       margin: 0;
       font-weight: 300;
     }
@@ -238,18 +247,22 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
     .project-actions-main {
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      align-items: center;
     }
 
     .project-btn {
-      padding: 10px 16px;
+      padding: 11px 18px;
       border: none;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .project-btn-primary {
@@ -264,26 +277,27 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     }
 
     .project-btn-secondary {
-      background: transparent;
-      color: rgba(15, 37, 87, 0.6);
+      background: white;
+      color: rgba(15, 37, 87, 0.7);
       border: 1.5px solid rgba(15, 37, 87, 0.15);
     }
 
     .project-btn-secondary:hover {
       background: rgba(15, 37, 87, 0.05);
+      border-color: rgba(15, 37, 87, 0.25);
       color: #0f2557;
-      border-color: rgba(15, 37, 87, 0.3);
     }
 
     .project-btn-danger {
-      background: transparent;
+      background: white;
       color: #dc2626;
       border: 1.5px solid rgba(220, 38, 38, 0.3);
     }
 
     .project-btn-danger:hover {
-      background: rgba(220, 38, 38, 0.05);
+      background: rgba(220, 38, 38, 0.08);
       border-color: #dc2626;
+      color: #b91c1c;
     }
 
     .project-btn:disabled {
@@ -515,6 +529,14 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     .analyses-empty-text {
       color: rgba(15, 37, 87, 0.6);
       margin: 0;
+    }
+
+    .project-analyzer-section {
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
     }
 
     .analyses-list-main {
@@ -776,54 +798,63 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
             </div>
           )}
 
-          {/* Stats */}
-          <div className="dashboard-stats-grid">
-            <div className="dashboard-stat-card">
-              <div className="dashboard-stat-icon">📈</div>
-              <div className="dashboard-stat-info">
-                <span className="dashboard-stat-label">Total Analyses</span>
-                <span className="dashboard-stat-value">{analyses.length}</span>
-              </div>
-            </div>
-            <div className="dashboard-stat-card">
-              <div className="dashboard-stat-icon">📅</div>
-              <div className="dashboard-stat-info">
-                <span className="dashboard-stat-label">Created</span>
-                <span className="dashboard-stat-value">
-                  {new Date(projectDetails.created_at).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-            <div className="dashboard-stat-card">
-              <div className="dashboard-stat-icon">🔄</div>
-              <div className="dashboard-stat-info">
-                <span className="dashboard-stat-label">Last Updated</span>
-                <span className="dashboard-stat-value">
-                  {new Date(projectDetails.updated_at || projectDetails.created_at).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          </div>
-
           {/* Tabs */}
           <div className="dashboard-tabs">
             <div className="dashboard-tab-buttons">
+              <button
+                className={`dashboard-tab-btn ${activeTab === 'analyze' ? 'active' : ''}`}
+                onClick={() => setActiveTab('analyze')}
+              >
+                + Analyze Design
+              </button>
+              <button
+                className={`dashboard-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+                onClick={() => setActiveTab('history')}
+              >
+                History ({analyses.length})
+              </button>
               <button
                 className={`dashboard-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
                 onClick={() => setActiveTab('overview')}
               >
                 Overview
               </button>
-              <button
-                className={`dashboard-tab-btn ${activeTab === 'analyses' ? 'active' : ''}`}
-                onClick={() => setActiveTab('analyses')}
-              >
-                Analyses ({analyses.length})
-              </button>
             </div>
 
             <div className="dashboard-tab-content">
-              {activeTab === 'overview' && (
+              {activeTab === 'analyze' && (
+                <div className="project-analyzer-section">
+                  {analysisResults ? (
+                    <div>
+                      <button
+                        className="project-btn project-btn-secondary"
+                        onClick={() => setAnalysisResults(null)}
+                        style={{ marginBottom: '24px' }}
+                      >
+                        ← Back to Upload
+                      </button>
+                      {analysisResults.analyses && analysisResults.analyses.length > 0 ? (
+                        <SimplifiedAnalysisResults results={analysisResults.analyses[0]} />
+                      ) : (
+                        <div style={{ padding: '40px', textAlign: 'center' }}>
+                          <p>No analysis results available</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <UploadAnalysisMultiple 
+                      onAnalysisComplete={(results) => {
+                        // Show the analysis results
+                        setAnalysisResults(results);
+                        // Also refresh the analyses list in background
+                        fetchProjectDetails();
+                      }}
+                    />
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'history' && (
                 <div>
                   <div className="overview-card-main">
                     <h3 className="overview-card-title">Project Information</h3>
@@ -898,7 +929,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                 </div>
               )}
 
-              {activeTab === 'analyses' && (
+              {activeTab === 'history' && (
                 <div>
                   {analyses.length === 0 ? (
                     <div className="analyses-empty">
