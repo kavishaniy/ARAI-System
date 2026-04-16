@@ -249,31 +249,26 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
 
   const handleAnalyzeClick = async () => {
     setError(null);
+
+    // Client-side URL format check — no network call needed
+    const trimmedUrl = figmaUrl.trim();
+    if (!trimmedUrl.includes('figma.com/file/') && !trimmedUrl.includes('figma.com/design/')) {
+      setError('Invalid Figma URL. Expected format: https://www.figma.com/design/abc123/ProjectName');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Validate URL
-      console.log('🔍 Validating Figma URL:', figmaUrl);
-      const validationRes = await api.post(
-        '/analysis/validate-url',
-        { url: figmaUrl },
-        { timeout: 10000 } // 10 second timeout for validation
-      );
-
-      if (!validationRes.data.valid) {
-        throw new Error(validationRes.data.message);
-      }
-      console.log('✅ URL validation passed');
-
-      // Use new endpoint for analyzing all screens
+      // Go straight to analysis — the backend validates the URL and token too
       console.log('📊 Starting Figma analysis...');
       const analysisRes = await api.post(
         '/analysis/figma-screens',
         {
-          figma_url: figmaUrl,
+          figma_url: trimmedUrl,
           figma_token: null // Will use env token on backend
         },
-        { timeout: 300000 } // 5 minute timeout for analysis
+        { timeout: 0 } // NO TIMEOUT - analysis can take as long as needed (typically 15-120 seconds)
       );
 
       console.log('✅ Analysis completed, results received:', analysisRes.data);
@@ -337,7 +332,7 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
           disabled={!figmaUrl || loading}
           className="analyze-button"
         >
-          {loading ? 'Analyzing... Please wait' : 'Analyze All Screens'}
+          {loading ? '⏳ Analyzing... This may take 15-60 seconds (no timeout)' : 'Analyze All Screens'}
         </button>
       </div>
 
@@ -345,6 +340,18 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
       {loading && (
         <div className="progress-message">
           <div className="progress-message-title">⏳ Analysis in Progress</div>
+          <div style={{ marginTop: '8px', fontSize: '0.9rem', color: '#1e40af' }}>
+            <p>📊 <strong>What's happening:</strong></p>
+            <ul style={{ marginLeft: '20px', marginTop: '4px' }}>
+              <li>Extracting Figma file structure...</li>
+              <li>Analyzing each frame for accessibility, readability, and attention</li>
+              <li>Generating recommendations...</li>
+              <li>Saving results to database...</li>
+            </ul>
+            <p style={{ marginTop: '8px', fontStyle: 'italic', color: '#3b82f6' }}>
+              💡 This may take 15-60 seconds depending on project size. Please be patient.
+            </p>
+          </div>
         </div>
       )}
 

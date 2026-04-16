@@ -12,6 +12,9 @@ from datetime import datetime
 import math
 
 from app.core.figma_client import FigmaExtractor, FigmaNode
+from app.core.figma_optimization import (
+    PerformanceOptimizer, OptimizationConfig, AnalysisMetrics
+)
 from app.models.figma_models import (
     FigmaAnalysisStatus, FigmaAnalysisResponse, PageAnalysisResult,
     FrameAnalysisResult, AccessibilityScore, ReadabilityScore, AttentionScore,
@@ -417,11 +420,17 @@ class FigmaAnalysisService:
     Main service orchestrating Figma extraction and analysis.
     """
     
-    def __init__(self, figma_token: Optional[str] = None):
+    def __init__(self, figma_token: Optional[str] = None, optimization_config: OptimizationConfig = None):
         self.extractor = FigmaExtractor(figma_token)
         self.accessibility_analyzer = FigmaAccessibilityAnalyzer()
         self.readability_analyzer = FigmaReadabilityAnalyzer()
         self.attention_analyzer = FigmaAttentionAnalyzer()
+        
+        # Initialize performance optimization
+        self.optimizer = PerformanceOptimizer(
+            optimization_config or OptimizationConfig()
+        )
+        self.optimizer.log_config()
     
     async def analyze_from_url(
         self,
@@ -430,6 +439,13 @@ class FigmaAnalysisService:
     ) -> FigmaAnalysisResponse:
         """
         Complete analysis pipeline from Figma URL.
+        
+        Optimizations applied:
+        - Caching of repeated analyses
+        - Frame limiting to max 20
+        - Batch image requests
+        - Parallel analysis of frames
+        - Performance metrics tracking
         
         Args:
             figma_url: Full Figma file URL
@@ -440,33 +456,66 @@ class FigmaAnalysisService:
         """
         analysis_id = str(uuid.uuid4())
         start_time = datetime.utcnow()
+        metrics = AnalysisMetrics(analysis_id, self.optimizer.config.enable_metrics)
         
         if analysis_scope is None:
             analysis_scope = ["accessibility", "readability", "attention"]
         
         try:
-            logger.info(f"[{analysis_id}] Starting Figma analysis from URL")
+            logger.info(f"[{analysis_id}] 🚀 Starting optimized Figma analysis")
+            metrics.mark("start")
 
-            # Run the blocking Figma API call in a thread pool so we don't
-            # freeze FastAPI's event loop (requests is synchronous).
+            # Run the blocking Figma API call in a thread pool
             loop = asyncio.get_event_loop()
             extracted_data = await loop.run_in_executor(
                 None, self.extractor.extract_from_url, figma_url
             )
+            metrics.mark("extraction_complete")
+            
+            file_key = extracted_data["file_key"]
+            
+            # Try cache first
+            all_frame_ids = []
+            for page_data in extracted_data["pages"]:
+                all_frame_ids.extend([
+                    f["frame_id"] for f in page_data["frames"]
+                ])
+            
+            cached_result = self.optimizer.cache.get(file_key, all_frame_ids)
+            if cached_result:
+                logger.info(
+                    f"[{analysis_id}] 💾 Returning cached analysis result"
+                )
+                return cached_result
+            
+            metrics.mark("cache_check")
 
-            # Analyze pages
+            # Analyze pages with frame filtering
             page_results = []
-            for idx, page_data in enumerate(extracted_data["pages"]):
-                page_result = await self._analyze_page(
+            for page_idx, page_data in enumerate(extracted_data["pages"]):
+                # Filter frames for performance
+                filtered_frames, skipped = self.optimizer.limiter.filter_frames(
+                    page_data["frames"]
+                )
+                
+                # Update page_data with filtered frames
+                page_data["frames"] = filtered_frames
+                
+                # Analyze page
+                page_result = await self._analyze_page_optimized(
                     page_data,
                     analysis_scope,
-                    analysis_id
+                    analysis_id,
+                    page_idx,
+                    len(extracted_data["pages"])
                 )
                 page_results.append(page_result)
-
-                # Small delay between pages to avoid Figma rate limiting
-                if idx < len(extracted_data["pages"]) - 1:
-                    await asyncio.sleep(0.3)  # non-blocking sleep
+                
+                # Small delay between pages to avoid rate limiting
+                if page_idx < len(extracted_data["pages"]) - 1:
+                    await asyncio.sleep(0.2)
+            
+            metrics.mark("analysis_complete")
             
             # Calculate overall metrics
             all_accessibility_scores = [
@@ -490,7 +539,7 @@ class FigmaAnalysisService:
             
             response = FigmaAnalysisResponse(
                 analysis_id=analysis_id,
-                file_key=extracted_data["file_key"],
+                file_key=file_key,
                 file_name=extracted_data["file_name"],
                 status=FigmaAnalysisStatus.COMPLETED,
                 page_results=page_results,
@@ -504,7 +553,16 @@ class FigmaAnalysisService:
                 processing_time_seconds=processing_time
             )
             
-            logger.info(f"[{analysis_id}] ✅ Analysis completed in {processing_time:.2f}s")
+            # Cache the result
+            self.optimizer.cache.set(file_key, all_frame_ids, response)
+            
+            metrics.mark("complete")
+            metrics.report()
+            
+            logger.info(
+                f"[{analysis_id}] ✅ Analysis completed in "
+                f"{processing_time:.2f}s ({response.total_frames} frames)"
+            )
             return response
         
         except Exception as e:
@@ -517,7 +575,7 @@ class FigmaAnalysisService:
         analysis_scope: List[str],
         analysis_id: str
     ) -> PageAnalysisResult:
-        """Analyze a single page"""
+        """Analyze a single page (deprecated - use _analyze_page_optimized)"""
         frame_results = []
         
         for frame_data in page_data["frames"]:
@@ -531,6 +589,73 @@ class FigmaAnalysisService:
         accessibility_scores = [f.accessibility.score for f in frame_results if f.accessibility]
         readability_scores = [f.readability.score for f in frame_results if f.readability]
         attention_scores = [f.attention.score for f in frame_results if f.attention]
+        
+        return PageAnalysisResult(
+            page_id=page_data["page_id"],
+            page_name=page_data["page_name"],
+            frame_results=frame_results,
+            total_frames=len(frame_results),
+            average_accessibility_score=sum(accessibility_scores) / len(accessibility_scores) if accessibility_scores else None,
+            average_readability_score=sum(readability_scores) / len(readability_scores) if readability_scores else None,
+            average_attention_score=sum(attention_scores) / len(attention_scores) if attention_scores else None
+        )
+    
+    async def _analyze_page_optimized(
+        self,
+        page_data: Dict[str, Any],
+        analysis_scope: List[str],
+        analysis_id: str,
+        page_idx: int,
+        total_pages: int
+    ) -> PageAnalysisResult:
+        """
+        Analyze a single page with optimizations.
+        
+        Applies:
+        - Parallel frame analysis (3 concurrent)
+        - Progress logging
+        """
+        frame_results = []
+        frames = page_data.get("frames", [])
+        
+        logger.info(
+            f"[{analysis_id}] 📄 Page {page_idx + 1}/{total_pages}: "
+            f"Analyzing {len(frames)} frames in parallel..."
+        )
+        
+        # Analyze frames in parallel batches
+        semaphore = asyncio.Semaphore(
+            self.optimizer.config.max_concurrent_analyses
+        )
+        
+        async def analyze_frame_async(frame_data: Dict):
+            async with semaphore:
+                loop = asyncio.get_event_loop()
+                return await loop.run_in_executor(
+                    None,
+                    self._analyze_frame,
+                    frame_data,
+                    analysis_scope
+                )
+        
+        # Create tasks for all frames
+        tasks = [
+            analyze_frame_async(frame_data)
+            for frame_data in frames
+        ]
+        
+        # Run in parallel
+        frame_results = await asyncio.gather(*tasks, return_exceptions=False)
+        
+        # Calculate page-level metrics
+        accessibility_scores = [f.accessibility.score for f in frame_results if f.accessibility]
+        readability_scores = [f.readability.score for f in frame_results if f.readability]
+        attention_scores = [f.attention.score for f in frame_results if f.attention]
+        
+        logger.info(
+            f"[{analysis_id}] ✅ Page {page_idx + 1}/{total_pages}: "
+            f"Analyzed {len(frame_results)} frames"
+        )
         
         return PageAnalysisResult(
             page_id=page_data["page_id"],

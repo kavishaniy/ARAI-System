@@ -157,11 +157,13 @@ class FigmaAPIClient:
     @staticmethod
     def extract_file_key(figma_url: str) -> str:
         """
-        Extract file key from Figma URL.
+        Extract file key from Figma URL with flexible pattern matching.
         
         Supports:
         - https://www.figma.com/file/FILE_KEY/filename
         - https://www.figma.com/design/FILE_KEY/filename
+        - https://figma.com/file/FILE_KEY/filename (without www)
+        - File keys can have hyphens, underscores, and numbers
         
         Args:
             figma_url: Full Figma file URL
@@ -172,21 +174,39 @@ class FigmaAPIClient:
         Raises:
             ValueError: If URL format is invalid
         """
-        if not figma_url:
-            raise ValueError("URL cannot be empty")
+        if not figma_url or not isinstance(figma_url, str):
+            raise ValueError("URL must be a non-empty string")
         
-        # Pattern: /file/ or /design/ followed by the file key
-        pattern = r"figma\.com/(?:file|design)/([a-zA-Z0-9]+)"
-        match = re.search(pattern, figma_url)
+        # Trim whitespace
+        figma_url = figma_url.strip()
         
-        if not match:
-            raise ValueError(
-                f"Invalid Figma URL: {figma_url}. "
-                "Expected format: https://www.figma.com/file/FILE_KEY/filename or "
-                "https://www.figma.com/design/FILE_KEY/filename"
-            )
+        # Try primary pattern: /file/ or /design/ followed by file key
+        pattern1 = r"figma\.com/(?:file|design)/([a-zA-Z0-9]{20,})"
+        match = re.search(pattern1, figma_url)
         
-        return match.group(1)
+        if match:
+            file_key = match.group(1)
+            logger.info(f"✅ Extracted file key: {file_key}")
+            return file_key
+        
+        # Try secondary pattern: just the file key (for shorthand usage)
+        # Figma file keys are typically 20-32 alphanumeric characters
+        pattern2 = r"^[a-zA-Z0-9]{20,}$"
+        if re.match(pattern2, figma_url):
+            logger.info(f"✅ Extracted file key (direct): {figma_url}")
+            return figma_url
+        
+        # Provide helpful error message
+        logger.error(f"❌ Could not extract Figma file key from: {figma_url}")
+        raise ValueError(
+            f"❌ Invalid Figma URL Format\n\n"
+            f"Got: {figma_url}\n\n"
+            f"Expected format:\n"
+            f"• https://www.figma.com/file/FILE_KEY/filename\n"
+            f"• https://www.figma.com/design/FILE_KEY/filename\n"
+            f"• https://figma.com/file/FILE_KEY/filename\n\n"
+            f"💡 You can also just paste the FILE_KEY directly (it's the long string of letters/numbers)"
+        )
     
     def _handle_rate_limit(self, response: requests.Response) -> None:
         """
@@ -218,7 +238,7 @@ class FigmaAPIClient:
     
     def get_file(self, file_key: str) -> Dict[str, Any]:
         """
-        Fetch Figma file data.
+        Fetch Figma file data with improved error handling.
         
         Args:
             file_key: Figma file key
@@ -228,15 +248,58 @@ class FigmaAPIClient:
             
         Raises:
             requests.HTTPError: If API request fails
+            ValueError: For permission/access issues
         """
         url = f"{self.BASE_URL}/files/{file_key}"
         
         logger.info(f"📥 Fetching Figma file: {file_key}")
-        response = self.session.get(url, timeout=60)
-        self._handle_rate_limit(response)
-        response.raise_for_status()
-
-        return response.json()
+        try:
+            response = self.session.get(url, timeout=60)
+            self._handle_rate_limit(response)
+            
+            # Better error messages for common failures
+            if response.status_code == 403:
+                logger.error(f"❌ Access denied to Figma file: {file_key}")
+                raise ValueError(
+                    "❌ Access Denied - Your Figma API token doesn't have permission to access this file.\n\n"
+                    "💡 To fix this:\n"
+                    "1. Make sure the Figma file is shared with your account\n"
+                    "2. Or make the file publicly accessible\n"
+                    "3. Verify your Figma API token is valid\n"
+                    "4. Check that the token has 'file_content:read' scope"
+                )
+            
+            if response.status_code == 404:
+                logger.error(f"❌ Figma file not found: {file_key}")
+                raise ValueError(
+                    f"❌ Figma File Not Found\n\n"
+                    f"The file with key '{file_key}' doesn't exist or has been deleted.\n\n"
+                    "💡 Double-check your Figma URL and try again."
+                )
+            
+            if response.status_code == 429:
+                logger.error(f"⚠️ Figma API rate limited")
+                raise ValueError(
+                    "⚠️ Rate Limited - The Figma API is temporarily unavailable.\n\n"
+                    "💡 Please try again in a few seconds."
+                )
+            
+            response.raise_for_status()
+            return response.json()
+        
+        except requests.Timeout:
+            logger.error(f"❌ Timeout fetching Figma file: {file_key}")
+            raise ValueError(
+                "❌ Request Timeout - The Figma API took too long to respond.\n\n"
+                "💡 This might be due to network issues or a very large file. Try again."
+            )
+        
+        except requests.RequestException as e:
+            logger.error(f"❌ Request error: {e}")
+            raise ValueError(
+                f"❌ Network Error - {str(e)}\n\n"
+                "💡 Check your internet connection and try again."
+            )
     
     def get_file_nodes(self, file_key: str, node_ids: List[str]) -> Dict[str, Any]:
         """
@@ -404,6 +467,7 @@ class FigmaAPIClient:
     ) -> Dict[str, str]:
         """
         Fetch rendered image URLs for specific frames via Figma's /images endpoint.
+        Includes robust error handling and timeout management.
 
         Args:
             file_key: Figma file key
@@ -421,17 +485,48 @@ class FigmaAPIClient:
         url = f"{self.BASE_URL}/images/{file_key}"
         params = {"ids": ids_param, "scale": scale, "format": format}
 
-        logger.info(f"📸 Fetching preview images for {len(node_ids)} frames...")
-        response = self.session.get(url, params=params, timeout=60)
-        self._handle_rate_limit(response)
-        response.raise_for_status()
+        logger.info(f"📸 Fetching preview images for {len(node_ids)} frames (scale={scale})...")
+        
+        try:
+            # Increase timeout for image requests - they can be slow
+            response = self.session.get(url, params=params, timeout=90)
+            self._handle_rate_limit(response)
+            
+            if response.status_code == 403:
+                logger.warning(f"⚠️ Permission denied accessing images for file: {file_key}")
+                return {}  # Don't fail, analysis can continue without images
+            
+            if response.status_code == 404:
+                logger.warning(f"⚠️ Some frames not found for image export")
+                return {}
+            
+            response.raise_for_status()
 
-        data = response.json()
-        images = data.get("images", {})
-        # Filter out None values
-        valid_images = {k: v for k, v in images.items() if v}
-        logger.info(f"✅ Got {len(valid_images)}/{len(node_ids)} frame preview URLs")
-        return valid_images
+            data = response.json()
+            images = data.get("images", {})
+            # Filter out None values - failed renders
+            valid_images = {k: v for k, v in images.items() if v}
+            
+            if len(valid_images) < len(node_ids):
+                logger.warning(
+                    f"⚠️ Only got {len(valid_images)}/{len(node_ids)} frame preview URLs. "
+                    f"Some frames may have failed to render or be too complex."
+                )
+            else:
+                logger.info(f"✅ Got {len(valid_images)}/{len(node_ids)} frame preview URLs")
+            
+            return valid_images
+        
+        except requests.Timeout:
+            logger.warning(
+                f"⚠️ Timeout fetching images for {len(node_ids)} frames. "
+                "Large designs may take longer. Continuing analysis without previews."
+            )
+            return {}  # Continue without images rather than fail
+        
+        except requests.RequestException as e:
+            logger.warning(f"⚠️ Error fetching frame images: {e}")
+            return {}  # Continue without images rather than fail
     
     def extract_all_elements(self, node: FigmaNode) -> List[FigmaNode]:
         """

@@ -638,37 +638,51 @@ async def analyze_figma_screens(
         
         # Generate analysis ID
         analysis_id = str(uuid.uuid4())
-        timestamp = datetime.now().isoformat()
+        start_time = datetime.now()
+        timestamp = start_time.isoformat()
         
         logger.info(f"[{analysis_id}] 🔍 Starting Figma screens analysis for: {figma_url[:60]}...")
         
-        # Import Figma service
-        from app.services.figma_service import FigmaAnalysisService
-        from app.core.figma_client import FigmaAPIClient
-        
+        # Imports needed for image analysis
+        import tempfile
+        from app.core.figma_client import FigmaAPIClient, FigmaExtractor
+        from app.core.figma_optimization import ImageOptimizer, OptimizationConfig
+
+        MAX_FRAMES_PER_PAGE = 5  # Analyze at most 5 frames per page
+
         try:
             # Extract file key from URL
             file_key = FigmaAPIClient.extract_file_key(figma_url)
             logger.info(f"[{analysis_id}] 📁 Extracted file key: {file_key}")
-            
-            # Initialize service with token
-            service = FigmaAnalysisService(figma_token=token_to_use)
-            
-            # Run analysis
-            logger.info(f"[{analysis_id}] 📊 Analyzing all screens...")
-            analysis_result = await service.analyze_from_url(
-                figma_url,
-                analysis_scope=["accessibility", "readability", "attention"]
+
+            # Step 1 — Fetch Figma file structure + preview URLs in one shot.
+            # extract_from_url() already calls /images at scale=0.5 internally,
+            # so we reuse those URLs and avoid a second Figma API call.
+            extractor = FigmaExtractor(token_to_use)
+            loop = asyncio.get_event_loop()
+            logger.info(f"[{analysis_id}] 📥 Fetching Figma file structure...")
+            extracted_data = await loop.run_in_executor(
+                None, extractor.extract_from_url, figma_url
             )
-            
-            if not analysis_result or analysis_result.total_frames == 0:
-                logger.warning(f"[{analysis_id}] ⚠️ No frames found in Figma file")
+
+            file_name = extracted_data["file_name"]
+
+            # Step 2 — Collect frames, capped to MAX_FRAMES_PER_PAGE per page.
+            # flat list of (page_name, page_id, frame_dict)
+            all_frames = []
+            total_pages = len(extracted_data["pages"])
+            for page_data in extracted_data["pages"]:
+                for frame in page_data["frames"][:MAX_FRAMES_PER_PAGE]:
+                    all_frames.append((page_data["page_name"], page_data["page_id"], frame))
+
+            if not all_frames:
                 raise HTTPException(
                     status_code=400,
-                    detail="No frames or screens found in the Figma file. Please ensure the file contains at least one frame or board."
+                    detail="No frames or screens found in the Figma file. "
+                           "Please ensure the file contains at least one frame or board."
                 )
 
-            logger.info(f"[{analysis_id}] ✅ Figma analysis completed: {analysis_result.total_frames} frames across {analysis_result.total_pages} pages")
+            logger.info(f"[{analysis_id}] 🖼️ {len(all_frames)} frames selected across {total_pages} page(s)")
 
             def get_grade(score):
                 if score >= 90: return "A"
@@ -677,199 +691,123 @@ async def analyze_figma_screens(
                 elif score >= 60: return "D"
                 else: return "F"
 
-            # Fetch frame preview images from Figma's /images API (non-blocking).
-            frame_preview_map: dict = {}
-            try:
-                all_frame_ids = [
-                    frame_result.frame_id
-                    for page_result in analysis_result.page_results
-                    for frame_result in page_result.frame_results
-                ]
-                if all_frame_ids:
-                    loop = asyncio.get_event_loop()
-                    batch_size = 200
-                    for i in range(0, len(all_frame_ids), batch_size):
-                        batch = all_frame_ids[i : i + batch_size]
-                        # Run blocking HTTP call in thread pool
-                        batch_images = await loop.run_in_executor(
-                            None,
-                            lambda b=batch: service.extractor.client.get_frame_images(
-                                file_key, b, scale=0.5
-                            )
-                        )
-                        frame_preview_map.update(batch_images)
-                    logger.info(f"[{analysis_id}] 📸 Fetched {len(frame_preview_map)} frame preview URLs")
-            except Exception as img_err:
-                logger.warning(f"[{analysis_id}] ⚠️ Could not fetch frame previews: {img_err}")
+            # Step 3 — Download all selected frame images in parallel (async aiohttp).
+            image_optimizer = ImageOptimizer(OptimizationConfig())
+            image_urls = {
+                frame["frame_id"]: frame["preview_url"]
+                for _, _, frame in all_frames
+                if frame.get("preview_url")
+            }
+            logger.info(f"[{analysis_id}] 📸 Downloading {len(image_urls)} frame images in parallel...")
+            frame_images: dict = await image_optimizer.download_and_process_batch(image_urls)
+            logger.info(f"[{analysis_id}] ✅ Downloaded {len(frame_images)}/{len(image_urls)} images")
 
-            # Convert to format compatible with SimplifiedAnalysisResults / MultipleAnalysisResults
+            # Step 4 — Analyze each frame image with pixel-based analyzers.
+            # Run the 3 analyzers in PARALLEL per frame (not sequential),
+            # and process up to 3 frames concurrently.
+            frame_image_analysis: dict = {}
+
+            async def _analyze_one_frame(frame_id: str, img_bytes: bytes) -> None:
+                tmp_path = None
+                try:
+                    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+                        tmp_path = tmp.name
+                        tmp.write(img_bytes)
+
+                    # Run all 3 analyzers in parallel on this frame image
+                    acc_res, read_res, attn_res = await asyncio.gather(
+                        loop.run_in_executor(None, get_wcag_analyzer().analyze_design, tmp_path),
+                        loop.run_in_executor(None, get_readability_analyzer().analyze_design, tmp_path),
+                        loop.run_in_executor(None, get_attention_analyzer().analyze_design, tmp_path),
+                    )
+                    frame_image_analysis[frame_id] = {
+                        "accessibility": acc_res,
+                        "readability": read_res,
+                        "attention": attn_res,
+                    }
+                    logger.info(f"[{analysis_id}] ✅ Analyzed frame {frame_id}")
+                except Exception as e:
+                    logger.warning(f"[{analysis_id}] ⚠️ Analysis failed for frame {frame_id}: {e}")
+                finally:
+                    if tmp_path:
+                        try:
+                            os.unlink(tmp_path)
+                        except Exception:
+                            pass
+
+            if frame_images:
+                sem = asyncio.Semaphore(3)
+
+                async def _analyze_with_sem(fid: str, img: bytes) -> None:
+                    async with sem:
+                        await _analyze_one_frame(fid, img)
+
+                await asyncio.gather(
+                    *[_analyze_with_sem(fid, img) for fid, img in frame_images.items()]
+                )
+                logger.info(
+                    f"[{analysis_id}] 📊 Pixel analysis complete: "
+                    f"{len(frame_image_analysis)}/{len(frame_images)} frames"
+                )
+
+            # Step 5 — Build the response, using pixel-based results where available.
             converted_analyses = []
 
-            for page_result in analysis_result.page_results:
-                for frame_result in page_result.frame_results:
-                    arai_score = float(frame_result.overall_score or 50)
-                    accessibility_score = float(frame_result.accessibility.score if frame_result.accessibility else 50)
-                    readability_score = float(frame_result.readability.score if frame_result.readability else 50)
-                    attention_score = float(frame_result.attention.score if frame_result.attention else 50)
+            for page_name, page_id, frame_data in all_frames:
+                frame_id = frame_data["frame_id"]
+                frame_name = frame_data["frame_name"]
+                img_analysis = frame_image_analysis.get(frame_id)
 
-                    # Build structured accessibility issues
-                    accessibility_issues = []
-                    if frame_result.accessibility:
-                        for issue in (frame_result.accessibility.contrast_issues or []):
-                            accessibility_issues.append({
-                                "title": "Color Contrast Issue",
-                                "description": issue,
-                                "severity": "high",
-                                "improvement_points": "Increase the contrast ratio between foreground and background colors to meet WCAG 2.1 standards.",
-                                "how_to_fix": [
-                                    "Use a contrast checker tool to measure the current ratio",
-                                    "Aim for a minimum contrast ratio of 4.5:1 for normal text",
-                                    "Use darker text on light backgrounds or lighter text on dark backgrounds"
-                                ],
-                                "best_practice": "WCAG 2.1 Level AA requires a minimum contrast ratio of 4.5:1 for normal text and 3:1 for large text."
-                            })
-                        for issue in (frame_result.accessibility.font_size_issues or []):
-                            accessibility_issues.append({
-                                "title": "Font Size Too Small",
-                                "description": issue,
-                                "severity": "medium",
-                                "improvement_points": "Increase the font size so text is readable without zooming.",
-                                "how_to_fix": [
-                                    "Use a minimum font size of 16px for body text",
-                                    "Ensure all text can be scaled up to 200% without loss of content",
-                                    "Avoid using font sizes below 12px"
-                                ],
-                                "best_practice": "Use relative units (rem/em) instead of fixed px values to support user font-size preferences."
-                            })
-                        for rec in (frame_result.accessibility.recommendations or []):
-                            accessibility_issues.append({
-                                "title": "Accessibility Recommendation",
-                                "description": rec,
-                                "severity": "medium",
-                                "improvement_points": rec,
-                                "how_to_fix": [rec],
-                                "best_practice": "Follow WCAG 2.1 guidelines for accessible design."
-                            })
-                    if not accessibility_issues:
-                        accessibility_issues.append({
-                            "title": "Accessibility Check Passed",
-                            "description": f"No major accessibility issues detected. Score: {accessibility_score:.1f}",
-                            "severity": "success",
-                            "improvement_points": "Continue following accessible design practices.",
-                            "how_to_fix": [],
-                            "best_practice": "Run periodic accessibility audits as the design evolves."
-                        })
+                if img_analysis:
+                    accessibility_score = float(img_analysis["accessibility"].get("score", 50))
+                    readability_score   = float(img_analysis["readability"].get("score", 50))
+                    attention_score     = float(img_analysis["attention"].get("score", 50))
+                    arai_score = accessibility_score * 0.4 + readability_score * 0.3 + attention_score * 0.3
+                    accessibility_issues = img_analysis["accessibility"].get("issues", [])
+                    readability_issues   = img_analysis["readability"].get("issues", [])
+                    attention_issues     = img_analysis["attention"].get("issues", [])
+                else:
+                    # Fallback when image could not be downloaded/analyzed
+                    accessibility_score = readability_score = attention_score = arai_score = 50.0
+                    accessibility_issues = [{"title": "Analysis Unavailable", "description": "Could not download frame image for analysis.", "severity": "medium", "improvement_points": "", "how_to_fix": [], "best_practice": ""}]
+                    readability_issues   = accessibility_issues[:]
+                    attention_issues     = accessibility_issues[:]
 
-                    # Build structured readability issues
-                    readability_issues = []
-                    if frame_result.readability:
-                        if frame_result.readability.text_density > 70:
-                            readability_issues.append({
-                                "title": "High Text Density",
-                                "description": f"Text density is {frame_result.readability.text_density:.1f}%, which may overwhelm readers.",
-                                "severity": "medium",
-                                "improvement_points": "Reduce the amount of text on screen or add more white space to improve readability.",
-                                "how_to_fix": [
-                                    "Break long paragraphs into shorter ones",
-                                    "Add more padding and margins between text blocks",
-                                    "Use bullet points or numbered lists to present dense information"
-                                ],
-                                "best_practice": "Aim for a text density below 40% for comfortable reading on digital screens."
-                            })
-                        for rec in (frame_result.readability.recommendations or []):
-                            readability_issues.append({
-                                "title": "Readability Recommendation",
-                                "description": rec,
-                                "severity": "medium",
-                                "improvement_points": rec,
-                                "how_to_fix": [rec],
-                                "best_practice": "Follow typography best practices for clear communication."
-                            })
-                    if not readability_issues:
-                        readability_issues.append({
-                            "title": "Readability Check Passed",
-                            "description": f"No major readability issues detected. Score: {readability_score:.1f}",
-                            "severity": "success",
-                            "improvement_points": "Continue using clear typography and proper spacing.",
-                            "how_to_fix": [],
-                            "best_practice": "Regularly review typography choices as content changes."
-                        })
-
-                    # Build structured attention/visual hierarchy issues
-                    attention_issues = []
-                    if frame_result.attention:
-                        if frame_result.attention.visual_hierarchy == "weak":
-                            attention_issues.append({
-                                "title": "Weak Visual Hierarchy",
-                                "description": "The design lacks a clear visual hierarchy, making it hard for users to prioritise information.",
-                                "severity": "medium",
-                                "improvement_points": "Create stronger size and weight distinctions between primary and secondary content.",
-                                "how_to_fix": [
-                                    "Use larger font sizes or bolder weights for headings",
-                                    "Increase contrast between primary and secondary elements",
-                                    "Apply visual weight through size, colour, and positioning"
-                                ],
-                                "best_practice": "Strong visual hierarchy guides users through content naturally, reducing cognitive load."
-                            })
-                        for rec in (frame_result.attention.recommendations or []):
-                            attention_issues.append({
-                                "title": "Visual Attention Recommendation",
-                                "description": rec,
-                                "severity": "medium",
-                                "improvement_points": rec,
-                                "how_to_fix": [rec],
-                                "best_practice": "Guide user attention with clear visual cues and focal points."
-                            })
-                    if not attention_issues:
-                        attention_issues.append({
-                            "title": "Visual Hierarchy Check Passed",
-                            "description": f"Visual hierarchy appears well structured. Score: {attention_score:.1f}",
-                            "severity": "success",
-                            "improvement_points": "Continue using clear size and weight distinctions between elements.",
-                            "how_to_fix": [],
-                            "best_practice": "Test your design with real users to confirm the hierarchy feels intuitive."
-                        })
-
-                    screen_analysis = {
-                        "designName": f"{page_result.page_name} - {frame_result.frame_name}",
-                        # Fields required by SimplifiedAnalysisResults
-                        "arai_score": arai_score,
-                        "overall_grade": get_grade(arai_score),
-                        "arai_breakdown": {
-                            "accessibility": accessibility_score,
-                            "readability": readability_score,
-                            "attention": attention_score
-                        },
-                        "accessibility": {
-                            "score": accessibility_score,
-                            "issues": accessibility_issues
-                        },
-                        "readability": {
-                            "score": readability_score,
-                            "issues": readability_issues
-                        },
-                        "attention": {
-                            "score": attention_score,
-                            "issues": attention_issues
-                        },
-                        # Frame preview image URL (from Figma /images API)
-                        "preview": frame_preview_map.get(frame_result.frame_id),
-                        # Metadata
-                        "fileName": f"{analysis_result.file_name} - {page_result.page_name}",
-                        "timestamp": timestamp,
-                        "analysisId": analysis_id,
-                        "pageId": page_result.page_id,
-                        "frameId": frame_result.frame_id,
-                        "figmaUrl": figma_url,
-                        "source": "figma"
-                    }
-
-                    converted_analyses.append(screen_analysis)
+                screen_analysis = {
+                    "designName": f"{page_name} - {frame_name}",
+                    "arai_score": arai_score,
+                    "overall_grade": get_grade(arai_score),
+                    "arai_breakdown": {
+                        "accessibility": accessibility_score,
+                        "readability": readability_score,
+                        "attention": attention_score,
+                    },
+                    "accessibility": {"score": accessibility_score, "issues": accessibility_issues},
+                    "readability":   {"score": readability_score,   "issues": readability_issues},
+                    "attention":     {"score": attention_score,     "issues": attention_issues},
+                    "preview":   image_urls.get(frame_id),
+                    "fileName":  f"{file_name} - {page_name}",
+                    "timestamp": timestamp,
+                    "analysisId": analysis_id,
+                    "pageId":    page_id,
+                    "frameId":   frame_id,
+                    "figmaUrl":  figma_url,
+                    "source":    "figma",
+                }
+                converted_analyses.append(screen_analysis)
 
             avg_arai = (
                 sum(a["arai_score"] for a in converted_analyses) / len(converted_analyses)
                 if converted_analyses else 50
             )
+            accessibility_scores = [a["accessibility"]["score"] for a in converted_analyses]
+            readability_scores   = [a["readability"]["score"]   for a in converted_analyses]
+            attention_scores     = [a["attention"]["score"]     for a in converted_analyses]
+            avg_accessibility = sum(accessibility_scores) / len(accessibility_scores) if accessibility_scores else None
+            avg_readability   = sum(readability_scores)   / len(readability_scores)   if readability_scores   else None
+            avg_attention     = sum(attention_scores)     / len(attention_scores)     if attention_scores     else None
+
+            processing_time = (datetime.now() - start_time).total_seconds()
 
             # Prepare combined response
             combined_response = {
@@ -877,11 +815,16 @@ async def analyze_figma_screens(
                 "timestamp": timestamp,
                 "analysisId": analysis_id,
                 "totalScreens": len(converted_analyses),
-                "totalPages": analysis_result.total_pages,
-                "fileName": analysis_result.file_name,
+                "totalPages": total_pages,
+                "fileName": file_name,
+                "file_name": file_name,
                 "figmaUrl": figma_url,
                 "averageAraiScore": avg_arai,
-                "processingTime": analysis_result.processing_time_seconds
+                "average_accessibility_score": avg_accessibility,
+                "average_readability_score": avg_readability,
+                "average_attention_score": avg_attention,
+                "processingTime": processing_time,
+                "file_key": file_key,
             }
             
             # Save to database using the Figma-specific function
