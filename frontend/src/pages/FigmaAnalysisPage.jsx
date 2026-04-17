@@ -18,7 +18,7 @@ const FigmaAnalysisPage = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 80px;
+  margin-left: 240px;
   transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -46,6 +46,12 @@ const FigmaAnalysisPage = () => {
 .page-card:hover {
   border-color: rgba(15,37,87,0.2);
   box-shadow: 0 15px 50px rgba(15,37,87,0.1);
+}
+
+@media (max-width: 1024px) {
+  .page-container {
+    margin-left: 80px;
+  }
 }
 
 @media (max-width: 768px) {

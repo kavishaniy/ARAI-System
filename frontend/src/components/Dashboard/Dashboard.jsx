@@ -18,11 +18,19 @@ const css = `
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 80px;
+  margin-left: 240px;
   transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  width: calc(100% - 80px);
-  max-width: calc(100% - 80px);
+  width: calc(100% - 240px);
+  max-width: calc(100% - 240px);
   padding: 0;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+    max-width: calc(100% - 80px);
+  }
 }
 
 .btn-new-analysis {

@@ -80,7 +80,7 @@ const HistoryPage = () => {
       flex: 1;
       display: flex;
       flex-direction: column;
-      margin-left: 80px;
+      margin-left: 240px;
       transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -91,6 +91,10 @@ const HistoryPage = () => {
     }
 
     @media (max-width: 1024px) {
+      .page-container {
+        margin-left: 80px;
+      }
+
       .page-main {
         padding: 24px 30px;
       }

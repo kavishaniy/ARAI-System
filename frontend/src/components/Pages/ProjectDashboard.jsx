@@ -84,13 +84,14 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       flex-direction: column;
       padding: 48px 40px;
       width: 100%;
-      margin-left: 80px;
+      margin-left: 240px;
       transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       overflow-x: auto;
     }
 
     @media (max-width: 1024px) {
       .dashboard-content {
+        margin-left: 80px;
         padding: 32px 24px;
       }
     }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Calendar, Trash2, BarChart2 } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import PageHeader from '../Common/PageHeader';
 import CreateProjectModal from './CreateProjectModal';
@@ -119,7 +120,7 @@ const Projects = () => {
       flex: 1;
       display: flex;
       flex-direction: column;
-      margin-left: 80px;
+      margin-left: 240px;
       transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -132,6 +133,12 @@ const Projects = () => {
     @media (max-width: 1024px) {
       .page-main {
         padding: 24px 30px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .page-container {
+        margin-left: 80px;
       }
     }
 
@@ -465,25 +472,37 @@ const Projects = () => {
       gap: 12px;
     }
 
-    .projects-delete-btn {
-      background: none;
-      border: none;
+    .action-button {
+      padding: 10px 14px;
+      border: 1.5px solid rgba(15, 37, 87, 0.2);
+      background: white;
+      border-radius: 8px;
       cursor: pointer;
-      color: rgba(15, 37, 87, 0.6);
-      padding: 8px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 6px;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #0f2557;
       transition: all 0.2s ease;
+      font-weight: 500;
     }
 
-    .projects-delete-btn:hover {
-      background: rgba(239, 68, 68, 0.1);
-      color: #dc2626;
+    .action-button:hover:not(:disabled) {
+      border-color: rgba(15, 37, 87, 0.4);
+      background: rgba(15, 37, 87, 0.02);
     }
 
-    .projects-delete-btn:disabled {
+    .action-button.delete {
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #991b1b;
+    }
+
+    .action-button.delete:hover:not(:disabled) {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .action-button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
@@ -650,18 +669,18 @@ const Projects = () => {
                         )}
                         <div className="projects-item-meta">
                           <div className="projects-item-stat">
-                            <span>📊</span>
+                            <BarChart2 size={16} />
                             <span>{project.analysis_count || 0} analyses</span>
                           </div>
                           <div className="projects-item-stat">
-                            <span>📅</span>
+                            <Calendar size={16} />
                             <span>{formatDate(project.created_at)}</span>
                           </div>
                         </div>
                       </div>
                       <div className="projects-item-actions">
                         <button
-                          className="projects-delete-btn"
+                          className="action-button delete"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeleteProject(project.id);
@@ -669,7 +688,8 @@ const Projects = () => {
                           disabled={deletingProjectId === project.id}
                           title="Delete project"
                         >
-                          {deletingProjectId === project.id ? '⏳' : '🗑️'}
+                          <Trash2 size={16} />
+                          {deletingProjectId === project.id ? 'Deleting...' : 'Delete'}
                         </button>
                       </div>
                     </li>

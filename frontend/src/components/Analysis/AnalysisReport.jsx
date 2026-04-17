@@ -13,8 +13,14 @@ const css = `
   background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
   color: #0f2557;
   min-height: 100vh;
-  margin-left: 80px;
+  margin-left: 240px;
   transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 1024px) {
+  .report-container {
+    margin-left: 80px;
+  }
 }
 
 @media (max-width: 768px) {
