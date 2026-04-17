@@ -216,7 +216,14 @@ async def delete_account(credentials: HTTPAuthorizationCredentials = Depends(sec
 
         user_id = str(user.user.id)
 
-        # Delete user via admin client (removes auth user + cascades to profiles)
+        # Nullify created_by on projects to remove the FK constraint blocking deletion
+        supabase_admin.table("projects").update({"created_by": None}).eq("created_by", user_id).execute()
+
+        # Delete user's analyses and projects (profiles cascade from auth.users)
+        supabase_admin.table("analyses").delete().eq("user_id", user_id).execute()
+        supabase_admin.table("projects").delete().eq("user_id", user_id).execute()
+
+        # Delete auth user — cascades to profiles
         supabase_admin.auth.admin.delete_user(user_id)
 
         return {"message": "Account deleted successfully"}
