@@ -18,10 +18,6 @@ class ValidateURLRequest(BaseModel):
     url: str
 
 
-class FigmaScreensAnalysisRequest(BaseModel):
-    figma_url: str
-    figma_token: Optional[str] = None
-
 # Check for LITE_MODE (skips PyTorch to save memory on free tier hosting)
 LITE_MODE = os.getenv("LITE_MODE", "false").lower() == "true"
 if LITE_MODE:
@@ -60,7 +56,6 @@ def _import_attention_analyzer():
 from app.core.database import (
     upload_design_to_storage,
     save_analysis_to_db,
-    save_figma_analysis_to_db,
     get_user_analyses,
     get_analysis_by_id,
     delete_analysis,
@@ -587,14 +582,14 @@ async def get_analysis_status():
 
 
 @router.post("/validate-url")
-async def validate_figma_url(request: ValidateURLRequest):
+async def validate_url(request: ValidateURLRequest):
     """
-    Validate if a URL is a valid Figma file link.
+    Validate if a URL is a valid URL.
     
     Request body:
     ```json
     {
-      "url": "https://www.figma.com/file/..."
+      "url": "https://example.com"
     }
     ```
     """
@@ -606,26 +601,17 @@ async def validate_figma_url(request: ValidateURLRequest):
                 "message": "URL is required"
             }
         
-        if "figma.com/file/" not in url and "figma.com/design/" not in url:
+        # Basic URL validation
+        if not (url.startswith("http://") or url.startswith("https://")):
             return {
                 "valid": False,
-                "message": "Invalid Figma URL. Must be a Figma file or design URL like https://www.figma.com/design/abc123/ProjectName"
+                "message": "Invalid URL. Must start with http:// or https://"
             }
         
-        # Try to extract file key
-        try:
-            from app.core.figma_client import FigmaAPIClient
-            file_key = FigmaAPIClient.extract_file_key(url)
-            return {
-                "valid": True,
-                "file_key": file_key,
-                "message": "Valid Figma URL"
-            }
-        except ValueError as e:
-            return {
-                "valid": False,
-                "message": f"Invalid Figma URL: {str(e)}"
-            }
+        return {
+            "valid": True,
+            "message": "Valid URL"
+        }
     except Exception as e:
         return {
             "valid": False,
@@ -633,261 +619,4 @@ async def validate_figma_url(request: ValidateURLRequest):
         }
 
 
-@router.post("/figma-screens")
-async def analyze_figma_screens(
-    request: FigmaScreensAnalysisRequest,
-    current_user = Depends(get_current_user)
-):
-    """
-    Analyze all screens in a Figma project file.
-    Returns individual analysis results for each screen in the same format as image uploads.
-
-    Request body:
-    {
-      "figma_url": "https://www.figma.com/design/abc123/ProjectName",
-      "figma_token": "optional-token"
-    }
-    """
-    try:
-        figma_url = request.figma_url
-        figma_token = request.figma_token
-
-        logger.info(f"📋 Figma screens analysis request from user: {current_user.id}")
-
-        # Validate URL
-        if not figma_url:
-            raise HTTPException(status_code=400, detail="figma_url is required")
-
-        if "figma.com/file/" not in figma_url and "figma.com/design/" not in figma_url:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid Figma URL. Must be a Figma file or design URL like https://www.figma.com/design/abc123/ProjectName"
-            )
-        
-        # Use provided token, environment token, or raise error
-        token_to_use = figma_token or settings.FIGMA_API_TOKEN
-        if not token_to_use:
-            raise HTTPException(
-                status_code=401,
-                detail="No Figma token provided. Set FIGMA_API_TOKEN or provide figma_token parameter."
-            )
-        
-        # Generate analysis ID
-        analysis_id = str(uuid.uuid4())
-        start_time = datetime.now()
-        timestamp = start_time.isoformat()
-        
-        logger.info(f"[{analysis_id}] 🔍 Starting Figma screens analysis for: {figma_url[:60]}...")
-        
-        # Imports needed for image analysis
-        import tempfile
-        from app.core.figma_client import FigmaAPIClient, FigmaExtractor
-        from app.core.figma_optimization import ImageOptimizer, OptimizationConfig
-
-        MAX_FRAMES_PER_PAGE = 5  # Analyze at most 5 frames per page
-
-        try:
-            # Extract file key from URL
-            file_key = FigmaAPIClient.extract_file_key(figma_url)
-            logger.info(f"[{analysis_id}] 📁 Extracted file key: {file_key}")
-
-            # Step 1 — Fetch Figma file structure + preview URLs in one shot.
-            # extract_from_url() already calls /images at scale=0.5 internally,
-            # so we reuse those URLs and avoid a second Figma API call.
-            extractor = FigmaExtractor(token_to_use)
-            loop = asyncio.get_event_loop()
-            logger.info(f"[{analysis_id}] 📥 Fetching Figma file structure...")
-            extracted_data = await loop.run_in_executor(
-                None, extractor.extract_from_url, figma_url
-            )
-
-            file_name = extracted_data["file_name"]
-
-            # Step 2 — Collect frames, capped to MAX_FRAMES_PER_PAGE per page.
-            # flat list of (page_name, page_id, frame_dict)
-            all_frames = []
-            total_pages = len(extracted_data["pages"])
-            for page_data in extracted_data["pages"]:
-                for frame in page_data["frames"][:MAX_FRAMES_PER_PAGE]:
-                    all_frames.append((page_data["page_name"], page_data["page_id"], frame))
-
-            if not all_frames:
-                raise HTTPException(
-                    status_code=400,
-                    detail="No frames or screens found in the Figma file. "
-                           "Please ensure the file contains at least one frame or board."
-                )
-
-            logger.info(f"[{analysis_id}] 🖼️ {len(all_frames)} frames selected across {total_pages} page(s)")
-
-            def get_grade(score):
-                if score >= 90: return "A"
-                elif score >= 80: return "B"
-                elif score >= 70: return "C"
-                elif score >= 60: return "D"
-                else: return "F"
-
-            # Step 3 — Download all selected frame images in parallel (async aiohttp).
-            image_optimizer = ImageOptimizer(OptimizationConfig())
-            image_urls = {
-                frame["frame_id"]: frame["preview_url"]
-                for _, _, frame in all_frames
-                if frame.get("preview_url")
-            }
-            logger.info(f"[{analysis_id}] 📸 Downloading {len(image_urls)} frame images in parallel...")
-            frame_images: dict = await image_optimizer.download_and_process_batch(image_urls)
-            logger.info(f"[{analysis_id}] ✅ Downloaded {len(frame_images)}/{len(image_urls)} images")
-
-            # Step 4 — Analyze each frame image with pixel-based analyzers.
-            # Run the 3 analyzers in PARALLEL per frame (not sequential),
-            # and process up to 3 frames concurrently.
-            frame_image_analysis: dict = {}
-
-            async def _analyze_one_frame(frame_id: str, img_bytes: bytes) -> None:
-                tmp_path = None
-                try:
-                    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
-                        tmp_path = tmp.name
-                        tmp.write(img_bytes)
-
-                    # Run all 3 analyzers in parallel on this frame image
-                    acc_res, read_res, attn_res = await asyncio.gather(
-                        loop.run_in_executor(None, get_wcag_analyzer().analyze_design, tmp_path),
-                        loop.run_in_executor(None, get_readability_analyzer().analyze_design, tmp_path),
-                        loop.run_in_executor(None, get_attention_analyzer().analyze_design, tmp_path),
-                    )
-                    frame_image_analysis[frame_id] = {
-                        "accessibility": acc_res,
-                        "readability": read_res,
-                        "attention": attn_res,
-                    }
-                    logger.info(f"[{analysis_id}] ✅ Analyzed frame {frame_id}")
-                except Exception as e:
-                    logger.warning(f"[{analysis_id}] ⚠️ Analysis failed for frame {frame_id}: {e}")
-                finally:
-                    if tmp_path:
-                        try:
-                            os.unlink(tmp_path)
-                        except Exception:
-                            pass
-
-            if frame_images:
-                sem = asyncio.Semaphore(3)
-
-                async def _analyze_with_sem(fid: str, img: bytes) -> None:
-                    async with sem:
-                        await _analyze_one_frame(fid, img)
-
-                await asyncio.gather(
-                    *[_analyze_with_sem(fid, img) for fid, img in frame_images.items()]
-                )
-                logger.info(
-                    f"[{analysis_id}] 📊 Pixel analysis complete: "
-                    f"{len(frame_image_analysis)}/{len(frame_images)} frames"
-                )
-
-            # Step 5 — Build the response, using pixel-based results where available.
-            converted_analyses = []
-
-            for page_name, page_id, frame_data in all_frames:
-                frame_id = frame_data["frame_id"]
-                frame_name = frame_data["frame_name"]
-                img_analysis = frame_image_analysis.get(frame_id)
-
-                if img_analysis:
-                    accessibility_score = float(img_analysis["accessibility"].get("score", 50))
-                    readability_score   = float(img_analysis["readability"].get("score", 50))
-                    attention_score     = float(img_analysis["attention"].get("score", 50))
-                    arai_score = accessibility_score * 0.4 + readability_score * 0.3 + attention_score * 0.3
-                    accessibility_issues = img_analysis["accessibility"].get("issues", [])
-                    readability_issues   = img_analysis["readability"].get("issues", [])
-                    attention_issues     = img_analysis["attention"].get("issues", [])
-                else:
-                    # Fallback when image could not be downloaded/analyzed
-                    accessibility_score = readability_score = attention_score = arai_score = 50.0
-                    accessibility_issues = [{"title": "Analysis Unavailable", "description": "Could not download frame image for analysis.", "severity": "medium", "improvement_points": "", "how_to_fix": [], "best_practice": ""}]
-                    readability_issues   = accessibility_issues[:]
-                    attention_issues     = accessibility_issues[:]
-
-                screen_analysis = {
-                    "designName": f"{page_name} - {frame_name}",
-                    "arai_score": arai_score,
-                    "overall_grade": get_grade(arai_score),
-                    "arai_breakdown": {
-                        "accessibility": accessibility_score,
-                        "readability": readability_score,
-                        "attention": attention_score,
-                    },
-                    "accessibility": {"score": accessibility_score, "issues": accessibility_issues},
-                    "readability":   {"score": readability_score,   "issues": readability_issues},
-                    "attention":     {"score": attention_score,     "issues": attention_issues},
-                    "preview":   image_urls.get(frame_id),
-                    "fileName":  f"{file_name} - {page_name}",
-                    "timestamp": timestamp,
-                    "analysisId": analysis_id,
-                    "pageId":    page_id,
-                    "frameId":   frame_id,
-                    "figmaUrl":  figma_url,
-                    "source":    "figma",
-                }
-                converted_analyses.append(screen_analysis)
-
-            avg_arai = (
-                sum(a["arai_score"] for a in converted_analyses) / len(converted_analyses)
-                if converted_analyses else 50
-            )
-            accessibility_scores = [a["accessibility"]["score"] for a in converted_analyses]
-            readability_scores   = [a["readability"]["score"]   for a in converted_analyses]
-            attention_scores     = [a["attention"]["score"]     for a in converted_analyses]
-            avg_accessibility = sum(accessibility_scores) / len(accessibility_scores) if accessibility_scores else None
-            avg_readability   = sum(readability_scores)   / len(readability_scores)   if readability_scores   else None
-            avg_attention     = sum(attention_scores)     / len(attention_scores)     if attention_scores     else None
-
-            processing_time = (datetime.now() - start_time).total_seconds()
-
-            # Prepare combined response
-            combined_response = {
-                "analyses": converted_analyses,
-                "timestamp": timestamp,
-                "analysisId": analysis_id,
-                "totalScreens": len(converted_analyses),
-                "totalPages": total_pages,
-                "fileName": file_name,
-                "file_name": file_name,
-                "figmaUrl": figma_url,
-                "averageAraiScore": avg_arai,
-                "average_accessibility_score": avg_accessibility,
-                "average_readability_score": avg_readability,
-                "average_attention_score": avg_attention,
-                "processingTime": processing_time,
-                "file_key": file_key,
-            }
-            
-            # Save to database using the Figma-specific function
-            try:
-                await save_figma_analysis_to_db(
-                    analysis_id=analysis_id,
-                    user_id=str(current_user.id),
-                    figma_url=figma_url,
-                    analysis_data=combined_response
-                )
-                logger.info(f"[{analysis_id}] 💾 Analysis saved to database")
-            except Exception as db_error:
-                logger.warning(f"[{analysis_id}] ⚠️ Failed to save to database: {db_error}")
-                # Continue even if database save fails
-            
-            return combined_response
-        
-        except Exception as figma_error:
-            logger.error(f"[{analysis_id}] ❌ Figma analysis error: {figma_error}")
-            raise HTTPException(
-                status_code=400,
-                detail=f"Figma analysis failed: {str(figma_error)}"
-            )
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"❌ Error in figma-screens endpoint: {e}")
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 

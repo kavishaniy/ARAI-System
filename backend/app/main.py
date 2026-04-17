@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
-from app.api import auth, analysis, figma, projects
+from app.api import auth, analysis, projects
 import re
 
 app = FastAPI(
@@ -149,11 +149,6 @@ app.include_router(
     projects.router,
     prefix=f"{settings.API_V1_STR}",
     tags=["projects"]
-)
-
-app.include_router(
-    figma.router,
-    tags=["figma"]
 )
 
 
