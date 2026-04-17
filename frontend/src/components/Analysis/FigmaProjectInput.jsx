@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCircle, Plus, Trash2, Zap } from 'lucide-react';
+import { AlertCircle, Plus, Trash2 } from 'lucide-react';
 
 const css = `
 .figma-container {
@@ -340,14 +340,6 @@ const FigmaProjectInput = ({ onProjectSubmit }) => {
     <>
       <style>{css}</style>
       <div className="figma-container">
-        <div className="figma-header">
-          <h1>Analyze Figma Frames</h1>
-          <p>
-            Paste the share link for each frame you want to analyze.
-            No API token required — works with any public Figma file.
-          </p>
-        </div>
-
         {/* How-to */}
         <div className="how-to-section">
           <div className="how-to-title">How to copy a frame link from Figma</div>
@@ -405,16 +397,6 @@ const FigmaProjectInput = ({ onProjectSubmit }) => {
             <button type="button" className="add-url-btn" onClick={addUrl}>
               <Plus size={15} /> Add another frame
             </button>
-          </div>
-
-          <div className="info-section">
-            <h4 className="info-title"><Zap size={16} /> What we'll analyze per frame</h4>
-            <ul className="info-list">
-              <li className="info-item">Accessibility — WCAG 2.1 contrast, text size, touch targets</li>
-              <li className="info-item">Readability — sentence length, word complexity, text density</li>
-              <li className="info-item">Visual attention — hierarchy, eye-flow, cognitive load</li>
-              <li className="info-item">Results shown side-by-side, same format as image uploads</li>
-            </ul>
           </div>
 
           <button

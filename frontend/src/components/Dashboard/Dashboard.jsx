@@ -124,7 +124,7 @@ const css = `
 }
 
 .dashboard-card {
-  max-width: 1000px;
+  max-width: 1200px;
   width: 100%;
   flex-shrink: 0;
   background: white;

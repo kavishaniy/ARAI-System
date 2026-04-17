@@ -271,25 +271,29 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
   const css = `
     .upload-multiple-wrapper {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      max-width: 100%;
     }
 
     .upload-multiple-form {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 2rem;
+      width: 100%;
     }
 
     .form-section-multiple {
-      padding: 28px;
-      background: linear-gradient(135deg, rgba(15, 37, 87, 0.03) 0%, rgba(100, 180, 255, 0.05) 100%);
-      border: 1.5px solid rgba(15, 37, 87, 0.1);
+      padding: 2rem;
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
       border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(15, 37, 87, 0.04);
       transition: all 0.3s ease;
     }
 
     .form-section-multiple:hover {
       border-color: rgba(15, 37, 87, 0.15);
-      background: linear-gradient(135deg, rgba(15, 37, 87, 0.05) 0%, rgba(100, 180, 255, 0.08) 100%);
     }
 
     .form-label-multiple {
@@ -297,14 +301,14 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       font-weight: 600;
       font-size: 0.95rem;
       color: #0f2557;
-      margin-bottom: 12px;
+      margin-bottom: 1.5rem;
       letter-spacing: 0.3px;
     }
 
     .upload-area-multiple {
       border: 2px dashed rgba(15, 37, 87, 0.2);
       border-radius: 12px;
-      padding: 40px 24px;
+      padding: 3rem 2rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -324,14 +328,14 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     .upload-icon-multiple {
       width: 48px;
       height: 48px;
-      margin: 0 auto 12px;
+      margin: 0 auto 1rem;
       color: rgba(15, 37, 87, 0.4);
     }
 
     .upload-text-multiple {
       color: #0f2557;
       font-size: 0.95rem;
-      margin: 0 0 8px 0;
+      margin: 0 0 0.5rem 0;
     }
 
     .upload-browse-link-multiple {
@@ -349,21 +353,21 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     .upload-hint-multiple {
       font-size: 0.85rem;
       color: rgba(15, 37, 87, 0.5);
-      margin-top: 8px;
+      margin-top: 0.5rem;
     }
 
     .file-list-multiple {
-      border: 1.5px solid rgba(15, 37, 87, 0.1);
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
       border-radius: 12px;
       max-height: 400px;
       overflow-y: auto;
     }
 
     .file-item-multiple {
-      padding: 16px;
+      padding: 1rem;
       border-bottom: 1px solid rgba(15, 37, 87, 0.08);
       display: flex;
-      gap: 16px;
+      gap: 1rem;
       transition: all 0.2s ease;
     }
 
@@ -372,7 +376,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     }
 
     .file-item-multiple:hover {
-      background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.03) 100%);
+      background: rgba(15, 37, 87, 0.02);
     }
 
     .file-preview-multiple {
@@ -392,24 +396,24 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     .file-name-multiple {
       font-weight: 600;
       color: #0f2557;
-      margin-bottom: 4px;
+      margin-bottom: 0.25rem;
       font-size: 0.95rem;
       word-break: break-word;
     }
 
     .file-meta-multiple {
       display: flex;
-      gap: 12px;
+      gap: 0.75rem;
       align-items: center;
       font-size: 0.85rem;
       color: rgba(15, 37, 87, 0.6);
-      margin-bottom: 8px;
+      margin-bottom: 0.5rem;
     }
 
     .file-status-multiple {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 0.4rem;
       font-size: 0.85rem;
     }
 
@@ -427,7 +431,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
 
     .file-actions-multiple {
       display: flex;
-      gap: 8px;
+      gap: 0.5rem;
     }
 
     .file-remove-btn-multiple {
@@ -435,7 +439,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       border: none;
       cursor: pointer;
       color: rgba(15, 37, 87, 0.6);
-      padding: 4px;
+      padding: 0.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -455,24 +459,27 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
 
     .add-more-btn-multiple {
       width: 100%;
-      padding: 16px;
-      border: 2px dashed rgba(15, 37, 87, 0.2);
+      padding: 0.75rem 1rem;
+      border: 1.5px dashed rgba(15, 37, 87, 0.2);
       background: white;
-      border-radius: 12px;
-      color: #0f2557;
-      font-weight: 600;
-      font-size: 0.95rem;
+      border-radius: 9px;
+      color: rgba(15, 37, 87, 0.6);
+      font-weight: 500;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-family: 'DM Sans', sans-serif;
     }
 
     .add-more-btn-multiple:hover {
-      border-color: rgba(100, 180, 255, 0.4);
-      background: rgba(100, 180, 255, 0.02);
+      border-color: rgba(15, 37, 87, 0.35);
+      color: #0f2557;
+      background: rgba(15, 37, 87, 0.02);
     }
 
     .add-more-btn-multiple:disabled {
@@ -481,38 +488,44 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     }
 
     .error-message-multiple {
-      padding: 16px 20px;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%);
-      border: 1.5px solid rgba(239, 68, 68, 0.2);
-      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      background: #fee2e2;
+      border: 1.5px solid #fecaca;
+      border-radius: 10px;
       color: #991b1b;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
     }
 
     .retry-message-multiple {
-      padding: 16px 20px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
+      padding: 1rem 1.25rem;
+      background: rgba(59, 130, 246, 0.05);
       border: 1.5px solid rgba(59, 130, 246, 0.2);
-      border-radius: 8px;
+      border-radius: 10px;
       color: #1e40af;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 0.75rem;
     }
 
     .info-section-multiple {
-      padding: 16px 20px;
-      background: linear-gradient(135deg, rgba(100, 180, 255, 0.08) 0%, rgba(100, 180, 255, 0.03) 100%);
+      padding: 1.5rem;
+      background: rgba(100, 180, 255, 0.05);
       border: 1.5px solid rgba(100, 180, 255, 0.2);
-      border-radius: 8px;
+      border-radius: 12px;
     }
 
     .info-title-multiple {
       font-weight: 600;
       font-size: 0.95rem;
       color: #0f2557;
-      margin: 0 0 12px 0;
+      margin: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .info-list-multiple {
@@ -520,32 +533,37 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       padding: 0;
       margin: 0;
       font-size: 0.9rem;
-      color: rgba(15, 37, 87, 0.7);
+      color: rgba(15, 37, 87, 0.68);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
     }
 
     .info-list-multiple li {
-      padding: 4px 0;
+      padding: 0;
+      line-height: 1.5;
     }
 
     .info-list-multiple strong {
       color: #0f2557;
+      font-weight: 600;
     }
 
     .info-hint-multiple {
       font-size: 0.85rem;
       color: rgba(15, 37, 87, 0.6);
-      margin-top: 12px;
+      margin-top: 0.75rem;
       font-style: italic;
     }
 
     .button-group-multiple {
       display: flex;
-      gap: 12px;
+      gap: 0.75rem;
     }
 
     .submit-button-multiple {
       flex: 1;
-      padding: 14px 24px;
+      padding: 0.75rem 1.5rem;
       background: linear-gradient(135deg, #0f2557, #091840);
       color: white;
       border: none;
@@ -553,12 +571,13 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
       letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 0.6rem;
+      font-family: 'DM Sans', sans-serif;
     }
 
     .submit-button-multiple:hover:not(:disabled) {
@@ -568,12 +587,12 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     }
 
     .submit-button-multiple:disabled {
-      opacity: 0.5;
+      opacity: 0.55;
       cursor: not-allowed;
     }
 
     .clear-button-multiple {
-      padding: 14px 24px;
+      padding: 0.75rem 1.5rem;
       background: white;
       color: #0f2557;
       border: 1.5px solid rgba(15, 37, 87, 0.15);
@@ -582,6 +601,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
+      font-family: 'DM Sans', sans-serif;
     }
 
     .clear-button-multiple:hover {
@@ -595,11 +615,11 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
 
     @media (max-width: 768px) {
       .form-section-multiple {
-        padding: 20px;
+        padding: 1.5rem;
       }
 
       .upload-area-multiple {
-        padding: 28px 16px;
+        padding: 2rem 1.25rem;
       }
 
       .file-item-multiple {
@@ -613,6 +633,29 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
 
       .button-group-multiple {
         flex-direction: column;
+      }
+
+      .submit-button-multiple {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .upload-multiple-form {
+        gap: 1.5rem;
+      }
+
+      .form-section-multiple {
+        padding: 1.25rem;
+      }
+
+      .upload-area-multiple {
+        padding: 1.75rem 1rem;
+      }
+
+      .submit-button-multiple {
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
       }
     }
   `;
