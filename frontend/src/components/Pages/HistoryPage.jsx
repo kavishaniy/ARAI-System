@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Calendar, Zap, Search, X } from 'lucide-react';
+import { Trash2, Calendar, Zap, Search, X, Eye } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import PageHeader from '../Common/PageHeader';
 import { analysisService } from '../../services/analysis';
+import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
 
 const HistoryPage = () => {
   const [analyses, setAnalyses] = useState([]);
@@ -11,6 +12,8 @@ const HistoryPage = () => {
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [viewLoading, setViewLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +31,19 @@ const HistoryPage = () => {
       setError('Failed to load analysis history. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleView = async (analysis) => {
+    setSelectedAnalysis({ ...analysis, results: null });
+    setViewLoading(true);
+    try {
+      const fullData = await analysisService.getAnalysis(analysis.analysis_id);
+      setSelectedAnalysis({ ...analysis, results: fullData });
+    } catch (err) {
+      console.error('Failed to fetch analysis details:', err);
+    } finally {
+      setViewLoading(false);
     }
   };
 
@@ -1185,12 +1201,42 @@ const HistoryPage = () => {
     }
   `;
 
+  if (selectedAnalysis) {
+    return (
+      <div className="page-shell">
+        <style>{css}</style>
+        <Sidebar />
+        <main className="page-container">
+          <div className="page-main">
+            <div className="page-content">
+              <button
+                className="action-button"
+                onClick={() => setSelectedAnalysis(null)}
+                style={{ marginBottom: '24px' }}
+              >
+                ← Back to History
+              </button>
+              {viewLoading ? (
+                <div className="history-loading">
+                  <span className="loading-spinner"></span>
+                  Loading analysis results...
+                </div>
+              ) : selectedAnalysis.results ? (
+                <SimplifiedAnalysisResults results={selectedAnalysis.results} />
+              ) : null}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="page-shell">
       <style>{css}</style>
       <Sidebar />
       <main className="page-container">
-        <PageHeader 
+        <PageHeader
           title="Analysis History"
           subtitle="View all your previous design analyses and results"
           actions={
@@ -1274,10 +1320,15 @@ const HistoryPage = () => {
                         </div>
                       </div>
 
-                      <div className="history-item-score">
-                      </div>
-
                       <div className="history-item-actions">
+                        <button
+                          className="action-button"
+                          onClick={() => handleView(analysis)}
+                          title="View full results"
+                        >
+                          <Eye size={16} />
+                          View Details
+                        </button>
                         <button
                           className="action-button delete"
                           onClick={() => handleDelete(analysis.analysis_id)}
