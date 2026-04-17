@@ -11,6 +11,7 @@ import AnalysisReport from './components/Analysis/AnalysisReport';
 import Projects from './components/Pages/Projects';
 import HistoryPage from './components/Pages/HistoryPage';
 import Settings from './components/Pages/Settings';
+import Profile from './components/Pages/Profile';
 import FigmaAnalysisPage from './pages/FigmaAnalysisPage';
 // Navbar removed - using left sidebar instead
 
@@ -88,6 +89,14 @@ const AppLayout = () => {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

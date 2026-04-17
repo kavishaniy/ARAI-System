@@ -169,6 +169,41 @@ async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.patch("/profile")
+async def update_profile(
+    update_data: dict,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Update the authenticated user's profile"""
+    try:
+        token = credentials.credentials
+        user = supabase.auth.get_user(token)
+
+        if not user or not user.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+
+        user_id = str(user.user.id)
+
+        allowed_fields = {k: v for k, v in update_data.items() if k in ("full_name",)}
+        if not allowed_fields:
+            raise HTTPException(status_code=400, detail="No valid fields to update")
+
+        supabase_admin.table("profiles").update(allowed_fields).eq("id", user_id).execute()
+
+        # Return updated profile
+        profile = supabase_admin.table("profiles").select("*").eq("id", user_id).single().execute()
+        return {
+            "id": user_id,
+            "email": user.user.email,
+            "full_name": profile.data.get("full_name"),
+            "avatar_url": profile.data.get("avatar_url"),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to update profile: {str(e)}")
+
+
 @router.delete("/delete-account")
 async def delete_account(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Delete the authenticated user's account"""

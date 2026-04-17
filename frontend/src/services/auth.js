@@ -62,6 +62,15 @@ export const authService = {
     return tokenAge > (ONE_HOUR - FIVE_MINUTES);
   },
 
+  async updateProfile(data) {
+    const response = await api.patch('/auth/profile', data);
+    // Sync updated user into localStorage
+    const current = this.getCurrentUser();
+    const updated = { ...current, ...response.data };
+    localStorage.setItem('user', JSON.stringify(updated));
+    return response.data;
+  },
+
   async deleteAccount() {
     const response = await api.delete('/auth/delete-account');
     localStorage.removeItem('access_token');
