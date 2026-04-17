@@ -22,8 +22,23 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       setLoading(true);
       setError(null);
       const data = await projectService.getProjectDetail(project.id);
+      console.log('📊 Project detail response:', data);
+      console.log('📈 Analyses from response:', data.analyses);
       setProjectDetails(data);
-      setAnalyses(data.analyses || []);
+      
+      // Only update analyses if we got a valid response with analyses
+      if (data.analyses && Array.isArray(data.analyses)) {
+        if (data.analyses.length > 0) {
+          console.log('✅ Setting analyses from backend:', data.analyses.length, 'items');
+          setAnalyses(data.analyses);
+        } else {
+          console.log('📝 Backend returned empty analyses array - keeping local state');
+          // Don't clear existing analyses if backend returns empty
+          // This prevents analyses from disappearing if they haven't synced yet
+        }
+      } else {
+        console.warn('⚠️ Invalid analyses in backend response, type:', typeof data.analyses);
+      }
     } catch (err) {
       console.error('Error fetching project details:', err);
       setError('Failed to load project details');
@@ -998,12 +1013,15 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                     <UploadAnalysisMultiple 
                       projectId={project.id}
                       onAnalysisComplete={(results) => {
+                        console.log('✅ Analysis complete, results:', results);
+                        
                         // Show the analysis results
                         setAnalysisResults(results);
                         
                         // Add new analyses to the local state immediately
                         // so the count increases right away
                         if (results.analyses && results.analyses.length > 0) {
+                          console.log('📝 Adding', results.analyses.length, 'analyses to local state');
                           const newAnalyses = results.analyses.map((analysis) => ({
                             id: analysis.analysis_id,
                             design_name: analysis.design_name || analysis.filename,
@@ -1018,88 +1036,22 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                           }));
                           
                           // Add new analyses to the beginning of the list
-                          setAnalyses((prev) => [...newAnalyses, ...prev]);
+                          setAnalyses((prev) => {
+                            const updated = [...newAnalyses, ...prev];
+                            console.log('📊 Updated analyses list:', updated);
+                            return updated;
+                          });
                         }
                         
-                        // Also refresh the analyses list from backend to ensure data consistency
-                        fetchProjectDetails();
+                        // Also refresh the analyses list from backend after a short delay
+                        // to ensure the database has been updated
+                        console.log('⏳ Waiting 2 seconds before fetching from backend...');
+                        setTimeout(() => {
+                          console.log('🔄 Fetching updated project details from backend...');
+                          fetchProjectDetails();
+                        }, 2000);
                       }}
                     />
-                  )}
-                </div>
-              )}
-
-              {activeTab === 'history' && (
-                <div>
-                  <div className="overview-card-main">
-                    <h3 className="overview-card-title">Project Information</h3>
-                    <div className="info-grid-main">
-                      <div className="info-item-main">
-                        <span className="info-label-main">Project Name</span>
-                        <span className="info-value-main">{projectDetails.name}</span>
-                      </div>
-                      <div className="info-item-main">
-                        <span className="info-label-main">Description</span>
-                        <span className="info-value-main">
-                          {projectDetails.description || 'No description provided'}
-                        </span>
-                      </div>
-                      <div className="info-item-main">
-                        <span className="info-label-main">Total Analyses</span>
-                        <span className="info-value-main">{analyses.length}</span>
-                      </div>
-                      <div className="info-item-main">
-                        <span className="info-label-main">Created Date</span>
-                        <span className="info-value-main">
-                          {new Date(projectDetails.created_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {analyses.length > 0 && (
-                    <div className="overview-card-main">
-                      <h3 className="overview-card-title">Quick Stats</h3>
-                      <div className="quick-stats-main">
-                        {analyses.some(a => a.accessibility_score) && (
-                          <div className="quick-stat-main">
-                            <span className="quick-stat-label-main">Avg Accessibility</span>
-                            <span className="quick-stat-value-main">
-                              {(
-                                analyses.reduce((sum, a) => sum + (a.accessibility_score || 0), 0) /
-                                analyses.filter(a => a.accessibility_score).length
-                              ).toFixed(1)}%
-                            </span>
-                          </div>
-                        )}
-                        {analyses.some(a => a.readability_score) && (
-                          <div className="quick-stat-main">
-                            <span className="quick-stat-label-main">Avg Readability</span>
-                            <span className="quick-stat-value-main">
-                              {(
-                                analyses.reduce((sum, a) => sum + (a.readability_score || 0), 0) /
-                                analyses.filter(a => a.readability_score).length
-                              ).toFixed(1)}%
-                            </span>
-                          </div>
-                        )}
-                        {analyses.some(a => a.attention_score) && (
-                          <div className="quick-stat-main">
-                            <span className="quick-stat-label-main">Avg Attention</span>
-                            <span className="quick-stat-value-main">
-                              {(
-                                analyses.reduce((sum, a) => sum + (a.attention_score || 0), 0) /
-                                analyses.filter(a => a.attention_score).length
-                              ).toFixed(1)}%
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
                   )}
                 </div>
               )}

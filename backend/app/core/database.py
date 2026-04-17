@@ -57,7 +57,8 @@ async def save_analysis_to_db(
     design_name: str,
     filename: str,
     file_path: str,
-    results: Dict
+    results: Dict,
+    project_id: Optional[str] = None
 ) -> Dict:
     """
     Save analysis results to the analyses table
@@ -95,6 +96,13 @@ async def save_analysis_to_db(
             "status": "completed",
         }
         
+        # Add project_id if provided
+        if project_id:
+            analysis_data["project_id"] = project_id
+            logger.info(f"📁 Analysis will be linked to project: {project_id}")
+        else:
+            logger.warning(f"⚠️ No project_id provided for analysis {analysis_id}")
+        
         logger.info(f"📋 Analysis data prepared: {analysis_data}")
         
         # Insert into database using admin client to bypass RLS during API calls
@@ -102,6 +110,7 @@ async def save_analysis_to_db(
         response = supabase_admin.table("analyses").insert(analysis_data).execute()
         
         logger.info(f"✅ Analysis saved to database: {analysis_id}")
+        logger.info(f"📝 Inserted data: {response.data}")
         logger.info(f"📝 Response data: {response.data}")
         return response.data[0] if response.data else analysis_data
         
@@ -464,6 +473,7 @@ async def get_project_analyses(project_id: str, limit: int = 100) -> List[Dict]:
     Get all analyses within a project
     """
     try:
+        logger.info(f"🔍 Fetching analyses for project: {project_id}")
         response = supabase_admin.table("analyses") \
             .select("*") \
             .eq("project_id", project_id) \
@@ -472,10 +482,14 @@ async def get_project_analyses(project_id: str, limit: int = 100) -> List[Dict]:
             .execute()
         
         logger.info(f"✅ Retrieved {len(response.data)} analyses for project {project_id}")
+        if len(response.data) > 0:
+            logger.info(f"📊 First analysis: {response.data[0]}")
         return response.data
         
     except Exception as e:
         logger.error(f"❌ Error fetching project analyses: {str(e)}")
+        import traceback
+        logger.error(f"📌 Traceback: {traceback.format_exc()}")
         return []
 
 

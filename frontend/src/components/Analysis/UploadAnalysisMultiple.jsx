@@ -103,6 +103,10 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       if (fileObj.designName) {
         formData.append('design_name', fileObj.designName);
       }
+      if (projectId) {
+        formData.append('project_id', projectId);
+        console.log(`📁 Linking analysis to project: ${projectId}`);
+      }
 
       const apiUrl = process.env.REACT_APP_API_URL || 'https://arai-system.onrender.com/api/v1';
 
