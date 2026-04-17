@@ -429,19 +429,43 @@ async def get_analysis_results(
         analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
         
         if analysis:
-            return analysis.get("results", analysis)
-        
+            # If DB row has full results JSON, return it
+            if analysis.get("results") and isinstance(analysis["results"], dict) and analysis["results"].get("arai_breakdown"):
+                return analysis["results"]
+            # Otherwise fall back to local JSON file (full results saved at upload time)
+            results_path = UPLOAD_DIR / analysis_id / "results.json"
+            if results_path.exists():
+                import json
+                with open(results_path, "r") as f:
+                    return json.load(f)
+            # Last resort: reconstruct minimal structure from flat DB fields
+            return {
+                "analysis_id": analysis.get("id"),
+                "design_name": analysis.get("design_name"),
+                "arai_score": analysis.get("arai_score", 0),
+                "overall_grade": analysis.get("overall_grade", "N/A"),
+                "arai_breakdown": {
+                    "overall": analysis.get("arai_score", 0),
+                    "accessibility": analysis.get("accessibility_score", 0),
+                    "readability": analysis.get("readability_score", 0),
+                    "attention": analysis.get("attention_score", 0),
+                },
+                "accessibility": {"score": analysis.get("accessibility_score", 0), "issues": []},
+                "readability": {"score": analysis.get("readability_score", 0), "issues": []},
+                "attention": {"score": analysis.get("attention_score", 0), "issues": []},
+            }
+
         # Fallback to local file if not in database
         analysis_dir = UPLOAD_DIR / analysis_id
         results_path = analysis_dir / "results.json"
-        
+
         if not results_path.exists():
             raise HTTPException(status_code=404, detail="Analysis not found")
-        
+
         import json
         with open(results_path, "r") as f:
             results = json.load(f)
-        
+
         return results
         
     except HTTPException:

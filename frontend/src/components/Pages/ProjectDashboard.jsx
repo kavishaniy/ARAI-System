@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../Common/Sidebar';
 import { projectService } from '../../services/projects';
+import { analysisService } from '../../services/analysis';
 import UploadAnalysisMultiple from '../Analysis/UploadAnalysisMultiple';
 import SimplifiedAnalysisResults from '../Analysis/SimplifiedAnalysisResults';
 
@@ -16,6 +17,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
   const [activeTab, setActiveTab] = useState('analyze');
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedHistoryAnalysis, setSelectedHistoryAnalysis] = useState(null);
+  const [historyDetailLoading, setHistoryDetailLoading] = useState(false);
 
   const fetchProjectDetails = useCallback(async () => {
     try {
@@ -1067,15 +1069,13 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                       >
                         ← Back to History
                       </button>
-                      {selectedHistoryAnalysis?.results ? (
-                        <SimplifiedAnalysisResults results={selectedHistoryAnalysis.results} />
-                      ) : selectedHistoryAnalysis ? (
+                      {historyDetailLoading ? (
                         <div style={{ padding: '40px', textAlign: 'center' }}>
+                          <div className="dashboard-spinner" style={{ margin: '0 auto 16px' }}></div>
                           <p>Loading analysis results...</p>
-                          <p style={{ fontSize: '0.9rem', color: 'rgba(15, 37, 87, 0.6)' }}>
-                            Results data: {JSON.stringify(selectedHistoryAnalysis).substring(0, 100)}...
-                          </p>
                         </div>
+                      ) : selectedHistoryAnalysis?.results ? (
+                        <SimplifiedAnalysisResults results={selectedHistoryAnalysis.results} />
                       ) : null}
                     </div>
                   ) : analyses.length === 0 ? (
@@ -1126,7 +1126,18 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
                           <button
                             className="analysis-view-btn"
-                            onClick={() => setSelectedHistoryAnalysis(analysis)}
+                            onClick={async () => {
+                              setSelectedHistoryAnalysis(analysis);
+                              setHistoryDetailLoading(true);
+                              try {
+                                const fullData = await analysisService.getAnalysis(analysis.id);
+                                setSelectedHistoryAnalysis({ ...analysis, results: fullData });
+                              } catch (err) {
+                                console.error('Failed to fetch analysis details:', err);
+                              } finally {
+                                setHistoryDetailLoading(false);
+                              }
+                            }}
                             style={{ background: 'transparent', border: '1.5px solid rgba(15, 37, 87, 0.15)', color: '#0f2557', cursor: 'pointer' }}
                           >
                             View Details →

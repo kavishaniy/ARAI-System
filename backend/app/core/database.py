@@ -94,6 +94,7 @@ async def save_analysis_to_db(
             "overall_score": overall_score,  # Same as arai_score
             "overall_grade": results.get("overall_grade", "N/A"),
             "status": "completed",
+            "results": results,
         }
         
         # Add project_id if provided
