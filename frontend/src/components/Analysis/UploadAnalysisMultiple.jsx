@@ -739,7 +739,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
               </>
             ) : (
               <>
-                📁 Analyze {files.length} Design{files.length !== 1 ? 's' : ''}
+                Analyze {files.length} Design{files.length !== 1 ? 's' : ''}
               </>
             )}
           </button>

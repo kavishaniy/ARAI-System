@@ -644,7 +644,7 @@ const Projects = () => {
                 </div>
               ) : projects.length === 0 ? (
                 <div className="projects-empty">
-                  <div className="empty-icon">📁</div>
+                  <div className="empty-icon">�</div>
                   <h2 className="empty-title">No Projects Yet</h2>
                   <p className="empty-text">Create your first project to get started with design analysis</p>
                   <button 

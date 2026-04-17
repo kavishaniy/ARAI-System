@@ -612,7 +612,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
             </>
           ) : (
             <>
-              📁 Analyze Design
+              Analyze Design
             </>
           )}
         </button>
