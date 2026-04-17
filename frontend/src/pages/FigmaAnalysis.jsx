@@ -7,28 +7,106 @@ import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
 import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 
 const css = `
-.figma-page-shell {
+.page-shell {
   display: flex;
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
 }
-.figma-page-content {
+
+.page-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   margin-left: 240px;
+  transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   width: calc(100% - 240px);
   max-width: calc(100% - 240px);
+  padding: 0;
 }
+
 @media (max-width: 1024px) {
-  .figma-page-content {
+  .page-container {
     margin-left: 80px;
     width: calc(100% - 80px);
     max-width: calc(100% - 80px);
   }
 }
-.figma-page-main { flex: 1; overflow-y: auto; }
-.figma-inner { padding: 2rem; }
+
+@media (max-width: 768px) {
+  .page-container {
+    margin-left: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    margin-left: 56px;
+  }
+}
+
+.page-main {
+  flex: 1;
+  padding: 32px 60px;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .page-main {
+    padding: 24px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-main {
+    padding: 20px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-main {
+    padding: 16px 16px;
+  }
+}
+
+.btn-new-analysis {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #0f2557, #091840);
+  color: white;
+  border: 1.5px solid #0f2557;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .btn-new-analysis {
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-new-analysis {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+.btn-new-analysis:hover {
+  background: linear-gradient(135deg, #091840, #051026);
+  box-shadow: 0 8px 24px rgba(15,37,87,0.15);
+  transform: translateY(-2px);
+}
 
 .back-button {
   display: inline-flex;
@@ -45,40 +123,56 @@ const css = `
   transition: all 0.2s;
   margin-bottom: 1.5rem;
 }
+
 .back-button:hover {
   background: rgba(15,37,87,0.05);
   border-color: rgba(15,37,87,0.3);
 }
-.btn-new-analysis {
-  padding: 11px 22px;
-  background: linear-gradient(135deg, #0f2557, #091840);
-  color: white; border: none; border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem; font-weight: 600; cursor: pointer;
-  transition: all 0.2s;
-  display: flex; align-items: center; gap: 7px;
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1.2rem;
 }
-.btn-new-analysis:hover {
-  box-shadow: 0 6px 20px rgba(15,37,87,0.2);
-  transform: translateY(-1px);
-}
-.figma-loading {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; padding: 4rem 2rem; gap: 1.2rem;
-}
-.figma-loading-spinner {
-  width: 48px; height: 48px;
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
   border: 3px solid rgba(15,37,87,0.12);
   border-top-color: #0f2557;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-.figma-loading p { color: rgba(15,37,87,0.6); font-size: 0.95rem; margin: 0; }
-.figma-error {
-  background: #fee2e2; border: 1.5px solid #fecaca;
-  border-radius: 12px; padding: 1.2rem 1.5rem; color: #991b1b;
-  font-size: 0.9rem; margin-bottom: 1.5rem;
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading p {
+  color: rgba(15,37,87,0.6);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.error-message {
+  background: #fee2e2;
+  border: 1.5px solid #fecaca;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  color: #991b1b;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 `;
 
@@ -134,10 +228,10 @@ const FigmaAnalysis = () => {
   return (
     <>
       <style>{css}</style>
-      <div className="figma-page-shell">
+      <div className="page-shell">
         <Sidebar active="figma" onNavigate={() => {}} />
 
-        <div className="figma-page-content">
+        <div className="page-container">
           <PageHeader
             currentPage="Figma Analysis"
             title={pageTitle}
@@ -152,20 +246,19 @@ const FigmaAnalysis = () => {
             }
           />
 
-          <div className="figma-page-main">
-            <div className="figma-inner">
-
+          <div className="page-main">
+            <div className="page-content-wrapper">
               {step === 'results' && (
                 <button className="back-button" onClick={handleNewAnalysis}>
                   <ArrowLeft size={16} /> Back
                 </button>
               )}
 
-              {error && <div className="figma-error">{error}</div>}
+              {error && <div className="error-message">{error}</div>}
 
               {isLoading ? (
-                <div className="figma-loading">
-                  <div className="figma-loading-spinner" />
+                <div className="loading">
+                  <div className="loading-spinner" />
                   <p>{loadingMsg}</p>
                 </div>
               ) : step === 'input' ? (
@@ -176,7 +269,6 @@ const FigmaAnalysis = () => {
                   onNewAnalysis={handleNewAnalysis}
                 />
               ) : null}
-
             </div>
           </div>
         </div>
