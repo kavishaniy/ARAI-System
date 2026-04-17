@@ -62,6 +62,14 @@ export const authService = {
     return tokenAge > (ONE_HOUR - FIVE_MINUTES);
   },
 
+  async deleteAccount() {
+    const response = await api.delete('/auth/delete-account');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token_timestamp');
+    return response.data;
+  },
+
   // Clear expired session
   clearSession() {
     localStorage.removeItem('access_token');

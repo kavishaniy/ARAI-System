@@ -11,7 +11,7 @@ const LogoutModal = ({ open, onClose, onConfirm }) => {
         <p className="text-sm text-gray-600 mt-2">Are you sure you want to logout?</p>
         <div className="mt-4 flex justify-end gap-3">
           <button onClick={onClose} className="px-3 py-1 rounded bg-gray-100 text-gray-700">Cancel</button>
-          <button onClick={onConfirm} className="px-3 py-1 rounded bg-primary-500 text-white">Logout</button>
+          <button onClick={onConfirm} className="px-3 py-1 rounded text-white" style={{ background: 'linear-gradient(135deg, #0f2557, #091840)' }}>Logout</button>
         </div>
       </div>
     </div>

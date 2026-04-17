@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../Common/Sidebar';
 import PageHeader from '../Common/PageHeader';
+import { authService } from '../../services/auth';
 
 const Settings = () => {
+  const [user, setUser] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
+  useEffect(() => {
+    try {
+      const u = authService.getCurrentUser();
+      setUser(u);
+    } catch (e) {
+      setUser(null);
+    }
+  }, []);
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      await authService.deleteAccount();
+      window.location.href = '/';
+    } catch (e) {
+      setDeleteError(e?.response?.data?.detail || 'Failed to delete account. Please try again.');
+      setDeleting(false);
+    }
+  };
   const css = `
     .page-shell {
       display: flex;
@@ -225,11 +251,18 @@ const Settings = () => {
                 <h3 className="settings-section-title">Account Settings</h3>
                 <p className="settings-section-description">Manage your account preferences and profile information</p>
                 
+                {user?.full_name && (
+                  <div className="settings-item">
+                    <span className="settings-item-label">Full Name</span>
+                    <span className="settings-item-value">{user.full_name}</span>
+                  </div>
+                )}
+
                 <div className="settings-item">
                   <span className="settings-item-label">Email</span>
-                  <span className="settings-item-value">user@example.com</span>
+                  <span className="settings-item-value">{user?.email ?? '—'}</span>
                 </div>
-                
+
                 <div className="settings-item">
                   <span className="settings-item-label">Account Status</span>
                   <span className="settings-item-value">Active</span>
@@ -254,12 +287,46 @@ const Settings = () => {
               <div className="settings-section">
                 <h3 className="settings-section-title">Danger Zone</h3>
                 <p className="settings-section-description">Irreversible actions</p>
-                
-                <div className="settings-item">
-                  <button className="settings-button" style={{ background: 'linear-gradient(135deg, #dc2626, #991b1b)' }}>
-                    Delete Account
-                  </button>
-                </div>
+
+                {deleteError && (
+                  <p style={{ color: '#dc2626', fontSize: '0.875rem', margin: '8px 0' }}>{deleteError}</p>
+                )}
+
+                {!showConfirm ? (
+                  <div className="settings-item">
+                    <button
+                      className="settings-button"
+                      style={{ background: 'linear-gradient(135deg, #dc2626, #991b1b)' }}
+                      onClick={() => setShowConfirm(true)}
+                    >
+                      Delete Account
+                    </button>
+                  </div>
+                ) : (
+                  <div className="settings-item" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
+                    <p style={{ margin: 0, color: '#dc2626', fontWeight: 500 }}>
+                      Are you sure? This will permanently delete your account and all data.
+                    </p>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <button
+                        className="settings-button"
+                        style={{ background: 'linear-gradient(135deg, #dc2626, #991b1b)' }}
+                        onClick={handleDeleteAccount}
+                        disabled={deleting}
+                      >
+                        {deleting ? 'Deleting...' : 'Yes, Delete My Account'}
+                      </button>
+                      <button
+                        className="settings-button"
+                        style={{ background: 'linear-gradient(135deg, #6b7280, #4b5563)' }}
+                        onClick={() => { setShowConfirm(false); setDeleteError(''); }}
+                        disabled={deleting}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

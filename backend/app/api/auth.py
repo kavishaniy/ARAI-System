@@ -169,6 +169,28 @@ async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.delete("/delete-account")
+async def delete_account(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Delete the authenticated user's account"""
+    try:
+        token = credentials.credentials
+        user = supabase.auth.get_user(token)
+
+        if not user or not user.user:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+
+        user_id = str(user.user.id)
+
+        # Delete user via admin client (removes auth user + cascades to profiles)
+        supabase_admin.auth.admin.delete_user(user_id)
+
+        return {"message": "Account deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to delete account: {str(e)}")
+
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
     """Get current authenticated user"""
     try:
