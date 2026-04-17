@@ -1,0 +1,51 @@
+FIGMA URL FIX - APPLIED
+════════════════════════════════════════════════════════════════
+
+✅ ISSUE FIXED:
+
+The Figma URL validation was rejecting design URLs.
+
+Your URL: https://www.figma.com/design/dEDYQxZFl9JeaFx4vaPqrh/Athlon_Redesign
+Was being rejected because it uses /design/ instead of /file/
+
+✅ SOLUTION APPLIED:
+
+Updated /frontend/src/components/Analysis/FigmaProjectInput.jsx to:
+
+1. Accept both URL formats:
+   ✓ https://www.figma.com/file/... (old format)
+   ✓ https://www.figma.com/design/... (new format)
+
+2. Extract file ID from both formats:
+   - For /file/ URLs: extracts ID after /file/
+   - For /design/ URLs: extracts ID after /design/
+
+3. Updated placeholder and help text:
+   - Now shows both formats are supported
+   - Better guidance for users
+
+✅ WHAT TO DO NOW:
+
+1. The frontend will automatically rebuild with hot reload
+2. Try your URL again:
+   https://www.figma.com/design/dEDYQxZFl9JeaFx4vaPqrh/Athlon_Redesign
+3. It should now accept it! ✓
+
+✅ TECHNICAL DETAILS:
+
+Changed in FigmaProjectInput.jsx:
+
+OLD: Required URL to contain '/file/'
+NEW: Accepts either '/file/' OR '/design/'
+
+OLD: Only extracted from /file/ format
+NEW: Handles both /file/ and /design/ extraction
+
+OLD: Error message only mentioned /file/ format
+NEW: Error and help text mention both formats
+
+════════════════════════════════════════════════════════════════
+
+Your Figma URL should now work! 🎉
+
+Try it: https://www.figma.com/design/dEDYQxZFl9JeaFx4vaPqrh/Athlon_Redesign

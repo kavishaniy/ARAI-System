@@ -7,12 +7,12 @@ import Landing from './pages/Landing';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
+import FigmaAnalysis from './pages/FigmaAnalysis';
 import AnalysisReport from './components/Analysis/AnalysisReport';
 import Projects from './components/Pages/Projects';
 import HistoryPage from './components/Pages/HistoryPage';
 import Settings from './components/Pages/Settings';
 import Profile from './components/Pages/Profile';
-// Navbar removed - using left sidebar instead
 
 // Protected Route
 const ProtectedRoute = ({ children }) => {
@@ -56,6 +56,14 @@ const AppLayout = () => {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/figma-analysis"
+          element={
+            <ProtectedRoute>
+              <FigmaAnalysis />
             </ProtectedRoute>
           }
         />

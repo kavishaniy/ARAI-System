@@ -925,7 +925,7 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
       </div>
 
       {/* Expanded Design Cards */}
-      {analyses.length > 1 && (
+      {analyses.length >= 1 && (
         <div className="design-cards-container">
           <div className="design-cards">
             {analyses.map((analysis, index) => (

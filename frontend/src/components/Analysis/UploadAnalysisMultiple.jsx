@@ -81,7 +81,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
     const token = localStorage.getItem('access_token');
     if (!token) {
       setError('Please login to upload and analyze designs');
-      return;
+      return null;
     }
 
     if (authService.isTokenExpired()) {
@@ -91,7 +91,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       setTimeout(() => {
         window.location.href = '/login';
       }, 2000);
-      return;
+      return null;
     }
 
     setAnalyzingIndex(fileObj.id);
@@ -115,6 +115,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       // Retry logic for 502 errors
       let retries = 3;
       let lastError = null;
+      let analysisResult = null;
 
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -135,8 +136,9 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
           );
 
           console.log(`✅ ${fileObj.designName} analysis completed`);
+          analysisResult = response.data;
 
-          // Update file with results
+          // Update file state with results
           setFiles((prev) =>
             prev.map((f) =>
               f.id === fileObj.id
@@ -173,6 +175,8 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
         throw lastError;
       }
 
+      return analysisResult;
+
     } catch (err) {
       console.error(`❌ Error analyzing ${fileObj.designName}:`, err);
 
@@ -192,6 +196,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       }
 
       setError(`Error analyzing ${fileObj.designName}: ${errorMsg}`);
+      return null;
     } finally {
       setAnalyzingIndex(null);
       setRetryMessage('');
@@ -206,50 +211,53 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
 
     setIsAnalyzing(true);
 
-    // Analyze files sequentially
+    // Collect results locally to avoid stale closure issues with state
+    const localResults = [];
+
     for (const fileObj of files) {
       if (!fileObj.analyzed) {
-        await analyzeFile(fileObj);
+        const result = await analyzeFile(fileObj);
+        if (result) {
+          localResults.push({ fileObj, result });
+        }
+      } else if (fileObj.results) {
+        localResults.push({ fileObj, result: fileObj.results });
       }
     }
 
     setIsAnalyzing(false);
 
-    // Check if all files are analyzed
-    const allAnalyzed = files.every((f) => f.analyzed);
-    if (allAnalyzed) {
-      // Link each analysis to the project if projectId is provided
-      if (projectId) {
-        for (const fileObj of files) {
-          if (fileObj.results && fileObj.results.analysis_id) {
-            try {
-              console.log(`🔗 Linking analysis ${fileObj.results.analysis_id} to project ${projectId}...`);
-              await projectService.linkAnalysisToProject(projectId, fileObj.results.analysis_id);
-              console.log(`✅ Analysis linked to project successfully`);
-            } catch (linkErr) {
-              console.error(`⚠️ Failed to link analysis to project:`, linkErr);
-              // Don't fail the whole process if linking fails - just log a warning
-            }
+    if (localResults.length === 0) return;
+
+    // Link each analysis to the project if projectId is provided
+    if (projectId) {
+      for (const { result } of localResults) {
+        if (result.analysis_id) {
+          try {
+            console.log(`🔗 Linking analysis ${result.analysis_id} to project ${projectId}...`);
+            await projectService.linkAnalysisToProject(projectId, result.analysis_id);
+            console.log(`✅ Analysis linked to project successfully`);
+          } catch (linkErr) {
+            console.error(`⚠️ Failed to link analysis to project:`, linkErr);
           }
         }
       }
+    }
 
-      // Prepare combined results for callback
-      const combinedResults = {
-        analyses: files.map((f) => ({
-          designName: f.designName,
-          preview: f.preview,
-          ...f.results,
-        })),
-        timestamp: new Date().toISOString(),
-      };
+    // Prepare combined results for callback
+    const combinedResults = {
+      analyses: localResults.map(({ fileObj, result }) => ({
+        designName: fileObj.designName,
+        preview: fileObj.preview,
+        ...result,
+      })),
+      timestamp: new Date().toISOString(),
+    };
 
-      // Call parent callback with all results
-      if (onAnalysisComplete) {
-        setTimeout(() => {
-          onAnalysisComplete(combinedResults);
-        }, 500);
-      }
+    if (onAnalysisComplete) {
+      setTimeout(() => {
+        onAnalysisComplete(combinedResults);
+      }, 500);
     }
   };
 
