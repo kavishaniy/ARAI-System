@@ -86,6 +86,7 @@ async def save_analysis_to_db(
             "id": analysis_id,
             "user_id": user_id,
             "design_name": design_name,
+            "filename": filename,
             "design_url": file_path,  # Use file_path as the design_url
             "accessibility_score": results.get("accessibility", {}).get("score", 0),
             "readability_score": results.get("readability", {}).get("score", 0),
@@ -105,16 +106,27 @@ async def save_analysis_to_db(
             logger.warning(f"⚠️ No project_id provided for analysis {analysis_id}")
         
         logger.info(f"📋 Analysis data prepared: {analysis_data}")
-        
+
         # Insert into database using admin client to bypass RLS during API calls
         logger.info(f"🔄 Inserting into 'analyses' table...")
-        response = supabase_admin.table("analyses").insert(analysis_data).execute()
-        
-        logger.info(f"✅ Analysis saved to database: {analysis_id}")
-        logger.info(f"📝 Inserted data: {response.data}")
-        logger.info(f"📝 Response data: {response.data}")
-        return response.data[0] if response.data else analysis_data
-        
+
+        # Core fields guaranteed to be in the schema
+        core_fields = {"id", "user_id", "design_name", "design_url", "accessibility_score",
+                       "readability_score", "attention_score", "arai_score", "overall_score",
+                       "overall_grade", "status"}
+
+        for attempt, excluded in enumerate([set(), {"results"}, {"results", "filename"}], start=1):
+            candidate = {k: v for k, v in analysis_data.items() if k not in excluded}
+            try:
+                response = supabase_admin.table("analyses").insert(candidate).execute()
+                logger.info(f"✅ Analysis saved to database (attempt {attempt}): {analysis_id}")
+                return response.data[0] if response.data else candidate
+            except Exception as insert_error:
+                if attempt < 3:
+                    logger.warning(f"⚠️ Insert attempt {attempt} failed ({insert_error}), retrying with fewer fields...")
+                else:
+                    raise
+
     except Exception as e:
         logger.error(f"❌ Error saving analysis to database: {str(e)}")
         logger.error(f"📌 Exception type: {type(e).__name__}")
