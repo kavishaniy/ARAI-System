@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import axios from 'axios';
 import { authService } from '../../services/auth';
+import { projectService } from '../../services/projects';
 
 // Upload and Analysis Component - Multiple Images Support
-const UploadAnalysisMultiple = ({ onAnalysisComplete }) => {
+const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
   const [files, setFiles] = useState([]); // Array to hold multiple files with metadata
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
@@ -213,6 +214,22 @@ const UploadAnalysisMultiple = ({ onAnalysisComplete }) => {
     // Check if all files are analyzed
     const allAnalyzed = files.every((f) => f.analyzed);
     if (allAnalyzed) {
+      // Link each analysis to the project if projectId is provided
+      if (projectId) {
+        for (const fileObj of files) {
+          if (fileObj.results && fileObj.results.analysis_id) {
+            try {
+              console.log(`🔗 Linking analysis ${fileObj.results.analysis_id} to project ${projectId}...`);
+              await projectService.linkAnalysisToProject(projectId, fileObj.results.analysis_id);
+              console.log(`✅ Analysis linked to project successfully`);
+            } catch (linkErr) {
+              console.error(`⚠️ Failed to link analysis to project:`, linkErr);
+              // Don't fail the whole process if linking fails - just log a warning
+            }
+          }
+        }
+      }
+
       // Prepare combined results for callback
       const combinedResults = {
         analyses: files.map((f) => ({

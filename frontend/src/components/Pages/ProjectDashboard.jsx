@@ -996,10 +996,32 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                     </div>
                   ) : (
                     <UploadAnalysisMultiple 
+                      projectId={project.id}
                       onAnalysisComplete={(results) => {
                         // Show the analysis results
                         setAnalysisResults(results);
-                        // Also refresh the analyses list in background
+                        
+                        // Add new analyses to the local state immediately
+                        // so the count increases right away
+                        if (results.analyses && results.analyses.length > 0) {
+                          const newAnalyses = results.analyses.map((analysis) => ({
+                            id: analysis.analysis_id,
+                            design_name: analysis.design_name || analysis.filename,
+                            filename: analysis.filename,
+                            created_at: analysis.timestamp || new Date().toISOString(),
+                            accessibility_score: analysis.arai_breakdown?.accessibility,
+                            readability_score: analysis.arai_breakdown?.readability,
+                            attention_score: analysis.arai_breakdown?.attention,
+                            overall_score: analysis.arai_breakdown?.overall,
+                            arai_score: analysis.arai_score,
+                            results: analysis,
+                          }));
+                          
+                          // Add new analyses to the beginning of the list
+                          setAnalyses((prev) => [...newAnalyses, ...prev]);
+                        }
+                        
+                        // Also refresh the analyses list from backend to ensure data consistency
                         fetchProjectDetails();
                       }}
                     />
