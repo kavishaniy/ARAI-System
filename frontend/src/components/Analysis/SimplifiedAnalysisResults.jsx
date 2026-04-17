@@ -570,6 +570,12 @@ const SimplifiedAnalysisResults = ({ results }) => {
 
   const { arai_score, arai_breakdown, overall_grade, accessibility, readability, attention } = results;
 
+  // Fallback to empty objects if data is missing
+  const safeAirBreakdown = arai_breakdown || { accessibility: 0, readability: 0, attention: 0, overall: 0 };
+  const safeAccessibility = accessibility || { score: 0, issues: [] };
+  const safeReadability = readability || { score: 0, issues: [] };
+  const safeAttention = attention || { score: 0, issues: [] };
+
   // Calculate stroke offset for rings
   const calculateStrokeOffset = (score, maxValue = 100) => {
     const percentage = Math.min(score, maxValue) / maxValue;
@@ -688,7 +694,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
                 <div className="sub-score-header">
                   <div className="sub-score-label">Accessibility</div>
                   <div className="sub-score-value-container">
-                    <div className="sub-score-value">{animated ? arai_breakdown.accessibility.toFixed(1) : 0}</div>
+                    <div className="sub-score-value">{animated ? safeAirBreakdown.accessibility.toFixed(1) : 0}</div>
                     <div className="sub-score-unit">%</div>
                   </div>
                 </div>
@@ -700,7 +706,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
                 <div className="sub-score-header">
                   <div className="sub-score-label">Readability</div>
                   <div className="sub-score-value-container">
-                    <div className="sub-score-value">{animated ? arai_breakdown.readability.toFixed(1) : 0}</div>
+                    <div className="sub-score-value">{animated ? safeAirBreakdown.readability.toFixed(1) : 0}</div>
                     <div className="sub-score-unit">%</div>
                   </div>
                 </div>
@@ -712,7 +718,7 @@ const SimplifiedAnalysisResults = ({ results }) => {
                 <div className="sub-score-header">
                   <div className="sub-score-label">Attention</div>
                   <div className="sub-score-value-container">
-                    <div className="sub-score-value">{animated ? arai_breakdown.attention.toFixed(1) : 0}</div>
+                    <div className="sub-score-value">{animated ? safeAirBreakdown.attention.toFixed(1) : 0}</div>
                     <div className="sub-score-unit">%</div>
                   </div>
                 </div>
@@ -773,16 +779,16 @@ const SimplifiedAnalysisResults = ({ results }) => {
         </div>
 
         {/* Accessibility Tab Content */}
-        {activeTab === 'accessibility' && accessibility && (
+        {activeTab === 'accessibility' && safeAccessibility && (
           <div className="category-container">
             <div className="category-header">
               <div className="category-info">
                 <h3>Accessibility Analysis</h3>
               </div>
-              <div className="category-score">Score: {accessibility.score?.toFixed(1) || 'N/A'}</div>
+              <div className="category-score">Score: {safeAccessibility.score?.toFixed(1) || 'N/A'}</div>
             </div>
             <div className="issues-points-grid">
-              {accessibility.issues.map((issue, idx) => (
+              {safeAccessibility.issues.map((issue, idx) => (
                 <IssuePointCard
                   key={idx}
                   issue={issue}
@@ -795,16 +801,16 @@ const SimplifiedAnalysisResults = ({ results }) => {
         )}
 
         {/* Readability Tab Content */}
-        {activeTab === 'readability' && readability && (
+        {activeTab === 'readability' && safeReadability && (
           <div className="category-container">
             <div className="category-header">
               <div className="category-info">
                 <h3>Readability Analysis</h3>
               </div>
-              <div className="category-score">Score: {readability.score?.toFixed(1) || 'N/A'}</div>
+              <div className="category-score">Score: {safeReadability.score?.toFixed(1) || 'N/A'}</div>
             </div>
             <div className="issues-points-grid">
-              {readability.issues.map((issue, idx) => (
+              {safeReadability.issues.map((issue, idx) => (
                 <IssuePointCard
                   key={idx}
                   issue={issue}
@@ -817,16 +823,16 @@ const SimplifiedAnalysisResults = ({ results }) => {
         )}
 
         {/* Attention Tab Content */}
-        {activeTab === 'attention' && attention && (
+        {activeTab === 'attention' && safeAttention && (
           <div className="category-container">
             <div className="category-header">
               <div className="category-info">
                 <h3>Visual Attention Analysis</h3>
               </div>
-              <div className="category-score">Score: {attention.score?.toFixed(1) || 'N/A'}</div>
+              <div className="category-score">Score: {safeAttention.score?.toFixed(1) || 'N/A'}</div>
             </div>
             <div className="issues-points-grid">
-              {attention.issues.map((issue, idx) => (
+              {safeAttention.issues.map((issue, idx) => (
                 <IssuePointCard
                   key={idx}
                   issue={issue}
