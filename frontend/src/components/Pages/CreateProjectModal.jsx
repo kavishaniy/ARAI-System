@@ -409,7 +409,7 @@ const CreateProjectModal = ({ isOpen, onClose, onCreate, isCreating }) => {
                   <span className="create-spinner-small"></span> Creating...
                 </>
               ) : (
-                '✓ Create Project'
+                'Create Project'
               )}
             </button>
           </div>

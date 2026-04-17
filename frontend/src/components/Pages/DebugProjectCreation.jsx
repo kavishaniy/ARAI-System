@@ -187,7 +187,7 @@ const DebugProjectCreation = () => {
             opacity: loading || !token ? 0.5 : 1,
           }}
         >
-          {loading ? '⏳ Loading...' : '📋 Get Projects'}
+          {loading ? 'Loading...' : 'Get Projects'}
         </button>
 
         <button
@@ -203,7 +203,7 @@ const DebugProjectCreation = () => {
             opacity: loading || !token ? 0.5 : 1,
           }}
         >
-          {loading ? '⏳ Loading...' : '➕ Test Create Project'}
+          {loading ? 'Loading...' : 'Test Create Project'}
         </button>
 
         <button
@@ -219,7 +219,7 @@ const DebugProjectCreation = () => {
             opacity: !token ? 0.5 : 1,
           }}
         >
-          🔐 Decode Token
+          Decode Token
         </button>
       </div>
 

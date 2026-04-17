@@ -349,16 +349,16 @@ const FigmaAnalyzer = ({ onAnalysisComplete }) => {
           disabled={!figmaUrl || loading}
           className="analyze-button"
         >
-          {loading ? '⏳ Analyzing... This may take 15-60 seconds (no timeout)' : 'Analyze All Screens'}
+          {loading ? 'Analyzing... This may take 15-60 seconds (no timeout)' : 'Analyze All Screens'}
         </button>
       </div>
 
       {/* Loading Progress */}
       {loading && (
         <div className="progress-message">
-          <div className="progress-message-title">⏳ Analysis in Progress</div>
+          <div className="progress-message-title">Analysis in Progress</div>
           <div style={{ marginTop: '8px', fontSize: '0.9rem', color: '#1e40af' }}>
-            <p>📊 <strong>What's happening:</strong></p>
+            <p> <strong>What's happening:</strong></p>
             <ul style={{ marginLeft: '20px', marginTop: '4px' }}>
               <li>Extracting Figma file structure...</li>
               <li>Analyzing each frame for accessibility, readability, and attention</li>

@@ -590,7 +590,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
 
         {/* Analysis Info */}
         <div className="info-section">
-          <h3 className="info-title">✓ What We'll Analyze:</h3>
+          <h3 className="info-title">What We'll Analyze:</h3>
           <ul className="info-list">
             <li><strong>Accessibility:</strong> WCAG 2.1 compliance (contrast, text size, touch targets)</li>
             <li><strong>Readability:</strong> Text clarity, reading level, content density</li>

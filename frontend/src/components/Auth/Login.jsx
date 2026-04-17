@@ -260,7 +260,7 @@ body, html { height: 100%; }
 }
 
 .feature-icon::before {
-  content: '✓';
+  content: '•';
   color: rgba(255, 255, 255, 0.8);
   font-weight: bold;
   font-size: 0.75rem;

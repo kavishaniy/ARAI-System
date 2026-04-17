@@ -992,7 +992,6 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
             {/* Show the currently selected design name with Export button */}
             <div className="detailed-analysis-header">
               <div className="detailed-analysis-header-content">
-                <span className="detailed-analysis-header-icon">📋</span>
                 <div className="detailed-analysis-header-text">
                   Detailed Analysis for: <strong>{currentAnalysis.designName}</strong>
                 </div>

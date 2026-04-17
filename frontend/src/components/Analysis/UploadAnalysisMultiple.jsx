@@ -663,11 +663,11 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
                       {/* Status */}
                       <div className="file-status-multiple">
                         {fileObj.analyzed ? (
-                          <span className="status-complete">✓ Analysis complete</span>
+                          <span className="status-complete">Analysis complete</span>
                         ) : analyzingIndex === fileObj.id ? (
-                          <span className="status-analyzing">⏳ Analyzing...</span>
+                          <span className="status-analyzing">Analyzing...</span>
                         ) : (
-                          <span className="status-pending">⏸ Pending</span>
+                          <span className="status-pending">Pending</span>
                         )}
                       </div>
                     </div>
@@ -708,7 +708,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
 
         {/* Analysis Info */}
         <div className="info-section-multiple">
-          <h3 className="info-title-multiple">✓ What We'll Analyze:</h3>
+          <h3 className="info-title-multiple">What We'll Analyze:</h3>
           <ul className="info-list-multiple">
             <li><strong>Accessibility:</strong> WCAG 2.1 compliance (contrast, text size, touch targets)</li>
             <li><strong>Readability:</strong> Text clarity, reading level, content density</li>

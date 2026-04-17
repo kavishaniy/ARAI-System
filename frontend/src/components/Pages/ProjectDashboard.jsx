@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FilePlus } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import { projectService } from '../../services/projects';
 import UploadAnalysisMultiple from '../Analysis/UploadAnalysisMultiple';
@@ -972,7 +971,6 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                 className={`dashboard-tab-btn ${activeTab === 'analyze' ? 'active' : ''}`}
                 onClick={() => setActiveTab('analyze')}
               >
-                <FilePlus size={16} style={{ display: 'inline-block', marginRight: '6px', verticalAlign: 'middle' }} />
                 Analyze Design
               </button>
               <button
