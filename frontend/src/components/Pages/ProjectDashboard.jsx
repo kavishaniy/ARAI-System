@@ -15,6 +15,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('analyze');
   const [analysisResults, setAnalysisResults] = useState(null);
+  const [selectedHistoryAnalysis, setSelectedHistoryAnalysis] = useState(null);
 
   const fetchProjectDetails = useCallback(async () => {
     try {
@@ -29,7 +30,12 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       if (data.analyses && Array.isArray(data.analyses)) {
         if (data.analyses.length > 0) {
           console.log('✅ Setting analyses from backend:', data.analyses.length, 'items');
-          setAnalyses(data.analyses);
+          // Store the full analysis object so all details are available
+          const analyzesWithResults = data.analyses.map(analysis => ({
+            ...analysis,
+            results: analysis,  // Store entire object for viewing
+          }));
+          setAnalyses(analyzesWithResults);
         } else {
           console.log('📝 Backend returned empty analyses array - keeping local state');
           // Don't clear existing analyses if backend returns empty
@@ -979,12 +985,6 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
               >
                 History ({analyses.length})
               </button>
-              <button
-                className={`dashboard-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => setActiveTab('overview')}
-              >
-                Overview
-              </button>
             </div>
 
             <div className="dashboard-tab-content">
@@ -1030,6 +1030,8 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                             attention_score: analysis.arai_breakdown?.attention,
                             overall_score: analysis.arai_breakdown?.overall,
                             arai_score: analysis.arai_score,
+                            // Store the entire analysis object for viewing details
+                            // It contains all the accessibility, readability, attention data
                             results: analysis,
                           }));
                           
@@ -1056,7 +1058,27 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
 
               {activeTab === 'history' && (
                 <div>
-                  {analyses.length === 0 ? (
+                  {selectedHistoryAnalysis ? (
+                    <div>
+                      <button
+                        className="project-btn project-btn-secondary"
+                        onClick={() => setSelectedHistoryAnalysis(null)}
+                        style={{ marginBottom: '24px' }}
+                      >
+                        ← Back to History
+                      </button>
+                      {selectedHistoryAnalysis?.results ? (
+                        <SimplifiedAnalysisResults results={selectedHistoryAnalysis.results} />
+                      ) : selectedHistoryAnalysis ? (
+                        <div style={{ padding: '40px', textAlign: 'center' }}>
+                          <p>Loading analysis results...</p>
+                          <p style={{ fontSize: '0.9rem', color: 'rgba(15, 37, 87, 0.6)' }}>
+                            Results data: {JSON.stringify(selectedHistoryAnalysis).substring(0, 100)}...
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : analyses.length === 0 ? (
                     <div className="analyses-empty">
                       <div className="analyses-empty-icon">📊</div>
                       <h3 className="analyses-empty-title">No Analyses Yet</h3>
@@ -1102,9 +1124,13 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                             )}
                           </div>
 
-                          <a href={`/analysis/${analysis.id}`} className="analysis-view-btn">
+                          <button
+                            className="analysis-view-btn"
+                            onClick={() => setSelectedHistoryAnalysis(analysis)}
+                            style={{ background: 'transparent', border: '1.5px solid rgba(15, 37, 87, 0.15)', color: '#0f2557', cursor: 'pointer' }}
+                          >
                             View Details →
-                          </a>
+                          </button>
                         </div>
                       ))}
                     </div>

@@ -568,13 +568,37 @@ const SimplifiedAnalysisResults = ({ results }) => {
     );
   }
 
+  // DEBUG: Log the entire results object to understand the data structure
+  console.log('📊 SimplifiedAnalysisResults received results:', results);
+  console.log('🔍 Results keys:', Object.keys(results));
+  console.log('🔍 arai_breakdown:', results.arai_breakdown);
+  console.log('🔍 accessibility:', results.accessibility);
+  console.log('🔍 readability:', results.readability);
+  console.log('🔍 attention:', results.attention);
+  console.log('🔍 arai_score:', results.arai_score);
+
   const { arai_score, arai_breakdown, overall_grade, accessibility, readability, attention } = results;
+
+  // DEBUG: Log individual fields
+  console.log('🎯 Extracted fields:');
+  console.log('  - arai_score:', arai_score, 'type:', typeof arai_score);
+  console.log('  - arai_breakdown:', arai_breakdown, 'type:', typeof arai_breakdown);
+  console.log('  - overall_grade:', overall_grade);
+  console.log('  - accessibility:', accessibility, 'type:', typeof accessibility);
+  console.log('  - readability:', readability, 'type:', typeof readability);
+  console.log('  - attention:', attention, 'type:', typeof attention);
 
   // Fallback to empty objects if data is missing
   const safeAirBreakdown = arai_breakdown || { accessibility: 0, readability: 0, attention: 0, overall: 0 };
   const safeAccessibility = accessibility || { score: 0, issues: [] };
   const safeReadability = readability || { score: 0, issues: [] };
   const safeAttention = attention || { score: 0, issues: [] };
+  
+  console.log('✅ Safe values:');
+  console.log('  - safeAirBreakdown:', safeAirBreakdown);
+  console.log('  - safeAccessibility:', safeAccessibility);
+  console.log('  - safeReadability:', safeReadability);
+  console.log('  - safeAttention:', safeAttention);
 
   // Calculate stroke offset for rings
   const calculateStrokeOffset = (score, maxValue = 100) => {
