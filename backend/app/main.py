@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
-from app.api import auth, analysis, projects, figma
+from app.api import auth, analysis, projects, figma, sharing
 import re
 
 app = FastAPI(
@@ -149,6 +149,12 @@ app.include_router(
     projects.router,
     prefix=f"{settings.API_V1_STR}",
     tags=["projects"]
+)
+
+app.include_router(
+    sharing.router,
+    prefix=f"{settings.API_V1_STR}",
+    tags=["sharing", "teams"]
 )
 
 app.include_router(

@@ -1,0 +1,65 @@
+.teams-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+}
+
+.teams-header {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  color: white;
+  text-align: center;
+}
+
+.teams-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.teams-header p {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 300;
+}
+
+.teams-main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .teams-page {
+    padding: 20px 15px;
+  }
+
+  .teams-header {
+    margin-bottom: 30px;
+  }
+
+  .teams-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .teams-header p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .teams-page {
+    padding: 15px 10px;
+  }
+
+  .teams-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .teams-header p {
+    font-size: 0.85rem;
+  }
+}

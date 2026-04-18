@@ -109,3 +109,68 @@ class Project(BaseModel):
 class ProjectList(BaseModel):
     projects: list[Project]
     total: int
+
+
+# Team Models
+class TeamCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=1000)
+
+
+class TeamMember(BaseModel):
+    id: UUID
+    user_id: UUID
+    email: str
+    role: str = Field(..., pattern="^(owner|admin|editor|member|viewer)$")
+    joined_at: datetime
+
+
+class Team(BaseModel):
+    id: UUID
+    name: str
+    description: Optional[str]
+    created_by: UUID
+    members: Optional[list[TeamMember]] = []
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+
+class TeamList(BaseModel):
+    teams: list[Team]
+    total: int
+
+
+# Project Sharing Models
+class ProjectShareCreate(BaseModel):
+    team_id: Optional[UUID] = None
+    user_id: Optional[UUID] = None
+    access_level: str = Field("viewer", pattern="^(owner|editor|viewer)$")
+
+
+class ProjectShare(BaseModel):
+    id: UUID
+    project_id: UUID
+    team_id: Optional[UUID]
+    user_id: Optional[UUID]
+    access_level: str
+    shared_by: UUID
+    shared_at: datetime
+
+
+class ProjectWithShares(BaseModel):
+    id: UUID
+    user_id: UUID
+    name: str
+    description: Optional[str]
+    access_level: str = "owner"  # Current user's access level
+    shares: list[ProjectShare] = []
+    analysis_count: Optional[int] = 0
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+
+class ShareProject(BaseModel):
+    project_id: UUID
+    team_ids: Optional[list[UUID]] = []
+    user_emails: Optional[list[str]] = []
+    access_level: str = Field("viewer", pattern="^(editor|viewer)$")

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, User, Figma } from 'lucide-react';
+import { Folder, FilePlus, Clock, Settings, LogOut, Menu, X, User, Figma, Users } from 'lucide-react';
 import { authService } from '../../services/auth';
 import LogoutModal from './LogoutModal';
 
@@ -363,6 +363,7 @@ const navItems = [
   { to: '/dashboard', label: 'New Analysis', Icon: FilePlus, id: 'upload' },
   { to: '/figma-analysis', label: 'Figma Analysis', Icon: Figma, id: 'figma' },
   { to: '/projects', label: 'Projects', Icon: Folder, id: 'projects' },
+  { to: '/teams', label: 'Teams', Icon: Users, id: 'teams' },
   { to: '/history', label: 'History', Icon: Clock, id: 'history' },
   { to: '/settings', label: 'Settings', Icon: Settings, id: 'settings' },
 ];

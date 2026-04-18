@@ -407,3 +407,369 @@ async def link_analysis_to_project(analysis_id: str, project_id: str, user_id: s
     except Exception as e:
         logger.error(f"❌ Error linking analysis to project: {str(e)}")
         return False
+
+
+# ==================== Team Management Functions ====================
+
+
+async def create_team(
+    user_id: str,
+    team_name: str,
+    team_description: Optional[str] = None
+) -> Dict:
+    """
+    Create a new team
+    """
+    try:
+        team_id = str(uuid.uuid4())
+        
+        team_data = {
+            "id": team_id,
+            "name": team_name,
+            "description": team_description or "",
+            "created_by": user_id,
+            "created_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase_admin.table("teams").insert(team_data).execute()
+        
+        # Add creator as owner
+        await add_team_member(team_id, user_id, "owner")
+        
+        logger.info(f"✅ Team created: {team_id} by user {user_id}")
+        return response.data[0] if response.data else team_data
+        
+    except Exception as e:
+        logger.error(f"❌ Error creating team: {str(e)}")
+        raise
+
+
+async def add_team_member(
+    team_id: str,
+    user_id: str,
+    role: str = "member"
+) -> Dict:
+    """
+    Add a user to a team
+    """
+    try:
+        member_data = {
+            "id": str(uuid.uuid4()),
+            "team_id": team_id,
+            "user_id": user_id,
+            "role": role,
+            "joined_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase_admin.table("team_members").insert(member_data).execute()
+        
+        logger.info(f"✅ User {user_id} added to team {team_id} as {role}")
+        return response.data[0] if response.data else member_data
+        
+    except Exception as e:
+        logger.error(f"❌ Error adding team member: {str(e)}")
+        raise
+
+
+async def get_user_teams(user_id: str) -> List[Dict]:
+    """
+    Get all teams that a user is a member of
+    """
+    try:
+        response = supabase_admin.table("teams") \
+            .select("*") \
+            .or_(f"created_by.eq.{user_id},team_members.user_id.eq.{user_id}") \
+            .execute()
+        
+        logger.info(f"✅ Retrieved {len(response.data)} teams for user {user_id}")
+        return response.data
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching user teams: {str(e)}")
+        raise
+
+
+async def get_team_members(team_id: str) -> List[Dict]:
+    """
+    Get all members of a team
+    """
+    try:
+        response = supabase_admin.table("team_members") \
+            .select("*") \
+            .eq("team_id", team_id) \
+            .execute()
+        
+        logger.info(f"✅ Retrieved {len(response.data)} members for team {team_id}")
+        return response.data
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching team members: {str(e)}")
+        return []
+
+
+async def remove_team_member(team_id: str, user_id: str) -> bool:
+    """
+    Remove a user from a team
+    """
+    try:
+        supabase_admin.table("team_members") \
+            .delete() \
+            .eq("team_id", team_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        logger.info(f"✅ User {user_id} removed from team {team_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Error removing team member: {str(e)}")
+        return False
+
+
+async def update_team_member_role(team_id: str, user_id: str, role: str) -> bool:
+    """
+    Update a team member's role
+    """
+    try:
+        supabase_admin.table("team_members") \
+            .update({"role": role}) \
+            .eq("team_id", team_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        logger.info(f"✅ Updated {user_id} role in team {team_id} to {role}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Error updating team member role: {str(e)}")
+        return False
+
+
+# ==================== Project Sharing Functions ====================
+
+
+async def share_project_with_team(
+    project_id: str,
+    team_id: str,
+    access_level: str,
+    shared_by: str
+) -> Dict:
+    """
+    Share a project with a team
+    """
+    try:
+        share_id = str(uuid.uuid4())
+        
+        share_data = {
+            "id": share_id,
+            "project_id": project_id,
+            "team_id": team_id,
+            "user_id": None,
+            "access_level": access_level,
+            "shared_by": shared_by,
+            "shared_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase_admin.table("project_shares").insert(share_data).execute()
+        
+        logger.info(f"✅ Project {project_id} shared with team {team_id}")
+        return response.data[0] if response.data else share_data
+        
+    except Exception as e:
+        logger.error(f"❌ Error sharing project with team: {str(e)}")
+        raise
+
+
+async def share_project_with_user(
+    project_id: str,
+    user_id: str,
+    access_level: str,
+    shared_by: str
+) -> Dict:
+    """
+    Share a project with a specific user
+    """
+    try:
+        share_id = str(uuid.uuid4())
+        
+        share_data = {
+            "id": share_id,
+            "project_id": project_id,
+            "team_id": None,
+            "user_id": user_id,
+            "access_level": access_level,
+            "shared_by": shared_by,
+            "shared_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase_admin.table("project_shares").insert(share_data).execute()
+        
+        logger.info(f"✅ Project {project_id} shared with user {user_id}")
+        return response.data[0] if response.data else share_data
+        
+    except Exception as e:
+        logger.error(f"❌ Error sharing project with user: {str(e)}")
+        raise
+
+
+async def get_project_shares(project_id: str) -> List[Dict]:
+    """
+    Get all shares for a project
+    """
+    try:
+        response = supabase_admin.table("project_shares") \
+            .select("*") \
+            .eq("project_id", project_id) \
+            .execute()
+        
+        logger.info(f"✅ Retrieved {len(response.data)} shares for project {project_id}")
+        return response.data
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching project shares: {str(e)}")
+        return []
+
+
+async def remove_project_share(share_id: str) -> bool:
+    """
+    Remove a project share
+    """
+    try:
+        supabase_admin.table("project_shares") \
+            .delete() \
+            .eq("id", share_id) \
+            .execute()
+        
+        logger.info(f"✅ Removed project share {share_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Error removing project share: {str(e)}")
+        return False
+
+
+async def get_user_access_level(project_id: str, user_id: str) -> Optional[str]:
+    """
+    Get the access level of a user for a project
+    Returns 'owner', 'editor', 'viewer', or None
+    """
+    try:
+        # Check if user owns the project
+        project = await get_project_by_id(project_id)
+        if project and project.get("user_id") == user_id:
+            return "owner"
+        
+        # Check direct user share
+        response = supabase_admin.table("project_shares") \
+            .select("access_level") \
+            .eq("project_id", project_id) \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        if response.data:
+            return response.data[0]["access_level"]
+        
+        # Check team shares
+        response = supabase_admin.table("project_shares") \
+            .select("access_level") \
+            .eq("project_id", project_id) \
+            .neq("team_id", "null") \
+            .execute()
+        
+        team_shares = response.data or []
+        
+        for share in team_shares:
+            team_id = share.get("team_id")
+            if team_id:
+                # Check if user is in this team
+                member = supabase_admin.table("team_members") \
+                    .select("*") \
+                    .eq("team_id", team_id) \
+                    .eq("user_id", user_id) \
+                    .execute()
+                
+                if member.data:
+                    return share["access_level"]
+        
+        return None
+        
+    except Exception as e:
+        logger.error(f"❌ Error getting user access level: {str(e)}")
+        return None
+
+
+async def get_user_shared_projects(user_id: str) -> List[Dict]:
+    """
+    Get all projects shared with a user (either directly or through teams)
+    """
+    try:
+        shared_projects = []
+        
+        # Get direct shares
+        direct_response = supabase_admin.table("project_shares") \
+            .select("*") \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        for share in direct_response.data or []:
+            project = await get_project_by_id(share["project_id"])
+            if project:
+                project["access_level"] = share["access_level"]
+                shared_projects.append(project)
+        
+        # Get team shares
+        team_response = supabase_admin.table("team_members") \
+            .select("team_id") \
+            .eq("user_id", user_id) \
+            .execute()
+        
+        team_ids = [member["team_id"] for member in team_response.data or []]
+        
+        for team_id in team_ids:
+            team_shares = supabase_admin.table("project_shares") \
+                .select("*") \
+                .eq("team_id", team_id) \
+                .execute()
+            
+            for share in team_shares.data or []:
+                project = await get_project_by_id(share["project_id"])
+                if project:
+                    # Check if not already added from direct shares
+                    if not any(p["id"] == project["id"] for p in shared_projects):
+                        project["access_level"] = share["access_level"]
+                        shared_projects.append(project)
+        
+        logger.info(f"✅ Retrieved {len(shared_projects)} shared projects for user {user_id}")
+        return shared_projects
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching user shared projects: {str(e)}")
+        return []
+
+
+async def get_user_by_email(email: str) -> Optional[Dict]:
+    """
+    Get user information by email using Supabase Admin API
+    Returns user object with id and email, or None if not found
+    """
+    try:
+        # Use Supabase admin API to search for user by email
+        users = supabase_admin.auth.admin.list_users()
+        
+        for user in users:
+            if user.email == email:
+                return {
+                    "id": user.id,
+                    "email": user.email,
+                    "user_metadata": user.user_metadata or {}
+                }
+        
+        logger.warning(f"⚠️ User not found with email: {email}")
+        return None
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching user by email: {str(e)}")
+        return None
+
+
