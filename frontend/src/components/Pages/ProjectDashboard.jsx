@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Trash2, Calendar, Zap, Eye } from 'lucide-react';
 import Sidebar from '../Common/Sidebar';
 import { projectService } from '../../services/projects';
 import { analysisService } from '../../services/analysis';
@@ -18,6 +19,7 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedHistoryAnalysis, setSelectedHistoryAnalysis] = useState(null);
   const [historyDetailLoading, setHistoryDetailLoading] = useState(false);
+  const [deletingAnalysis, setDeletingAnalysis] = useState(null);
 
   const fetchProjectDetails = useCallback(async () => {
     try {
@@ -90,6 +92,31 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
     setEditedName(projectDetails.name);
     setEditedDescription(projectDetails.description || '');
     setIsEditing(false);
+  };
+
+  const handleDeleteAnalysis = async (analysisId) => {
+    if (!window.confirm('Are you sure you want to delete this analysis?')) return;
+    try {
+      setDeletingAnalysis(analysisId);
+      await analysisService.deleteAnalysis(analysisId);
+      setAnalyses(prev => prev.filter(a => (a.id || a.analysis_id) !== analysisId));
+    } catch (err) {
+      console.error('Failed to delete analysis:', err);
+    } finally {
+      setDeletingAnalysis(null);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      });
+    } catch (e) {
+      return dateString;
+    }
   };
 
   const css = `
@@ -685,6 +712,188 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
       text-align: center;
     }
 
+    /* ── Project History (matches sidebar HistoryPage) ── */
+    .ph-main {
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
+    }
+
+    .ph-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .ph-item {
+      padding: 24px 32px;
+      border-bottom: 1px solid rgba(15, 37, 87, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      transition: background 0.2s ease;
+    }
+
+    .ph-item:last-child { border-bottom: none; }
+
+    .ph-item:hover {
+      background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.03) 100%);
+    }
+
+    .ph-item-content { flex: 1; min-width: 0; }
+
+    .ph-item-name {
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      color: #0f2557;
+      font-size: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ph-item-meta {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 0.85rem;
+      color: rgba(15, 37, 87, 0.6);
+    }
+
+    .ph-item-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ph-item-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .ph-action-button {
+      padding: 10px 14px;
+      border: 1.5px solid rgba(15, 37, 87, 0.2);
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #0f2557;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .ph-action-button:hover:not(:disabled) {
+      border-color: rgba(15, 37, 87, 0.4);
+      background: rgba(15, 37, 87, 0.02);
+    }
+
+    .ph-action-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .ph-delete {
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #991b1b;
+    }
+
+    .ph-delete:hover:not(:disabled) {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .ph-empty {
+      padding: 60px 40px;
+      text-align: center;
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
+      border-radius: 16px;
+    }
+
+    .ph-empty-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: rgba(15, 37, 87, 0.08);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+    }
+
+    .ph-empty-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0f2557;
+      margin: 0 0 8px 0;
+    }
+
+    .ph-empty-text {
+      color: rgba(15, 37, 87, 0.6);
+      margin: 0 0 24px 0;
+      font-size: 0.95rem;
+    }
+
+    .ph-empty-button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #0f2557, #091840);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .ph-empty-button:hover {
+      background: linear-gradient(135deg, #091840, #051026);
+      box-shadow: 0 8px 24px rgba(15, 37, 87, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .ph-loading {
+      padding: 60px 40px;
+      text-align: center;
+      color: rgba(15, 37, 87, 0.6);
+    }
+
+    .ph-spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(15, 37, 87, 0.1);
+      border-top-color: #0f2557;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+      .ph-item {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .ph-item-actions {
+        width: 100%;
+      }
+      .ph-action-button {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
     .analyses-empty-icon {
       font-size: 3rem;
       margin-bottom: 16px;
@@ -1063,87 +1272,80 @@ const ProjectDashboard = ({ project, onBack, onDelete }) => {
                   {selectedHistoryAnalysis ? (
                     <div>
                       <button
-                        className="project-btn project-btn-secondary"
+                        className="ph-action-button"
                         onClick={() => setSelectedHistoryAnalysis(null)}
                         style={{ marginBottom: '24px' }}
                       >
                         ← Back to History
                       </button>
                       {historyDetailLoading ? (
-                        <div style={{ padding: '40px', textAlign: 'center' }}>
-                          <div className="dashboard-spinner" style={{ margin: '0 auto 16px' }}></div>
-                          <p>Loading analysis results...</p>
+                        <div className="ph-loading">
+                          <span className="ph-spinner"></span>
+                          Loading analysis results...
                         </div>
                       ) : selectedHistoryAnalysis?.results ? (
                         <SimplifiedAnalysisResults results={selectedHistoryAnalysis.results} />
                       ) : null}
                     </div>
                   ) : analyses.length === 0 ? (
-                    <div className="analyses-empty">
-                      <div className="analyses-empty-icon">📊</div>
-                      <h3 className="analyses-empty-title">No Analyses Yet</h3>
-                      <p className="analyses-empty-text">Start analyzing designs to see results here</p>
+                    <div className="ph-empty">
+                      <div className="ph-empty-icon">
+                        <Zap size={40} />
+                      </div>
+                      <h3 className="ph-empty-title">No analyses yet</h3>
+                      <p className="ph-empty-text">Start by uploading a design in the Analyze tab</p>
+                      <button className="ph-empty-button" onClick={() => setActiveTab('analyze')}>
+                        Start Analyzing
+                      </button>
                     </div>
                   ) : (
-                    <div className="analyses-list-main">
-                      {analyses.map(analysis => (
-                        <div key={analysis.id} className="analysis-item-main">
-                          <div className="analysis-header-main">
-                            <h4 className="analysis-title-main">{analysis.design_name}</h4>
-                            <span className="analysis-date-main">
-                              {new Date(analysis.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                          
-                          <div className="analysis-scores-main">
-                            <div className="analysis-score-badge">
-                              <span className="analysis-score-label">Accessibility</span>
-                              <span className="analysis-score-value">
-                                {analysis.accessibility_score?.toFixed(1) || 'N/A'}%
-                              </span>
-                            </div>
-                            <div className="analysis-score-badge">
-                              <span className="analysis-score-label">Readability</span>
-                              <span className="analysis-score-value">
-                                {analysis.readability_score?.toFixed(1) || 'N/A'}%
-                              </span>
-                            </div>
-                            <div className="analysis-score-badge">
-                              <span className="analysis-score-label">Attention</span>
-                              <span className="analysis-score-value">
-                                {analysis.attention_score?.toFixed(1) || 'N/A'}%
-                              </span>
-                            </div>
-                            {analysis.overall_score && (
-                              <div className="analysis-score-badge overall">
-                                <span className="analysis-score-label">Overall</span>
-                                <span className="analysis-score-value">
-                                  {analysis.overall_score.toFixed(1)}%
-                                </span>
+                    <div className="ph-main">
+                      <ul className="ph-list">
+                        {analyses.map(analysis => {
+                          const id = analysis.id || analysis.analysis_id;
+                          return (
+                            <li key={id} className="ph-item">
+                              <div className="ph-item-content">
+                                <h3 className="ph-item-name">{analysis.design_name}</h3>
+                                <div className="ph-item-meta">
+                                  <span className="ph-item-date">
+                                    <Calendar size={16} />
+                                    {formatDate(analysis.created_at || analysis.timestamp)}
+                                  </span>
+                                </div>
                               </div>
-                            )}
-                          </div>
-
-                          <button
-                            className="analysis-view-btn"
-                            onClick={async () => {
-                              setSelectedHistoryAnalysis(analysis);
-                              setHistoryDetailLoading(true);
-                              try {
-                                const fullData = await analysisService.getAnalysis(analysis.id);
-                                setSelectedHistoryAnalysis({ ...analysis, results: fullData });
-                              } catch (err) {
-                                console.error('Failed to fetch analysis details:', err);
-                              } finally {
-                                setHistoryDetailLoading(false);
-                              }
-                            }}
-                            style={{ background: 'transparent', border: '1.5px solid rgba(15, 37, 87, 0.15)', color: '#0f2557', cursor: 'pointer' }}
-                          >
-                            View Details →
-                          </button>
-                        </div>
-                      ))}
+                              <div className="ph-item-actions">
+                                <button
+                                  className="ph-action-button"
+                                  onClick={async () => {
+                                    setSelectedHistoryAnalysis({ ...analysis, results: null });
+                                    setHistoryDetailLoading(true);
+                                    try {
+                                      const fullData = await analysisService.getAnalysis(id);
+                                      setSelectedHistoryAnalysis({ ...analysis, results: fullData });
+                                    } catch (err) {
+                                      console.error('Failed to fetch analysis details:', err);
+                                    } finally {
+                                      setHistoryDetailLoading(false);
+                                    }
+                                  }}
+                                >
+                                  <Eye size={16} />
+                                  View Details
+                                </button>
+                                <button
+                                  className="ph-action-button ph-delete"
+                                  onClick={() => handleDeleteAnalysis(id)}
+                                  disabled={deletingAnalysis === id}
+                                >
+                                  <Trash2 size={16} />
+                                  {deletingAnalysis === id ? 'Deleting...' : 'Delete'}
+                                </button>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
                   )}
                 </div>
