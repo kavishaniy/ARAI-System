@@ -211,7 +211,7 @@ const css = `
 .cap-cell { padding: 3rem; border-right: 1.5px solid #0f2557; position: relative; overflow: hidden; transition: background 0.2s; }
 .cap-cell:last-child { border-right: none; }
 .cap-cell:hover { background: rgba(15,37,87,0.025); }
-.cap-ghost { position: absolute; right: -0.5rem; bottom: -3rem; font-family: 'DM Serif Display', serif; font-size: 9rem; color: rgba(15,37,87,0.04); line-height: 1; pointer-events: none; font-style: italic; }
+.cap-ghost { position: absolute; right: -0.5rem; bottom: -3rem; font-family: 'DM Serif Display', serif; font-size: 9rem; color: rgba(15,37,87,0.04); line-height: 1; pointer-events: none; font-style: italic; display: none; }
 .cap-n { font-size: 0.62rem; letter-spacing: 0.18em; color: rgba(15,37,87,0.28); font-weight: 600; text-transform: uppercase; margin-bottom: 2rem; }
 .cap-t { font-family: 'DM Serif Display', serif; font-size: 1.45rem; color: #0f2557; margin-bottom: 1rem; line-height: 1.2; }
 .cap-t em { font-style: italic; }
@@ -267,17 +267,20 @@ const css = `
 
 /* ── FOOTER ── */
 .footer { background: #0a1a3f; border-top: 1.5px solid rgba(255,255,255,0.06); }
-.footer-top { display: grid; grid-template-columns: 280px 1fr 1fr; padding: 3rem; gap: 3rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.fb-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+.footer-top { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 4rem 3rem; gap: 4rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.footer-top > div:first-child { grid-column: 1; }
+.footer-top > div:nth-child(2) { grid-column: 2; }
+.footer-top > div:nth-child(3) { grid-column: 3; }
+.fb-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
 .fb-sq { width: 26px; height: 26px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; }
 .fb-name { font-size: 0.9rem; font-weight: 600; letter-spacing: 0.1em; color: rgba(255,255,255,0.6); }
-.fb-desc { font-size: 0.76rem; color: rgba(255,255,255,0.26); line-height: 1.75; font-weight: 300; }
-.fcol-t { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,0.22); margin-bottom: 1.25rem; }
-.flink { display: block; font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 0.7rem; text-decoration: none; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; text-align: left; transition: color 0.15s; }
-.flink:hover { color: rgba(255,255,255,0.75); }
-.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 3rem; }
-.footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.18); }
-.footer-uni { font-size: 0.68rem; color: rgba(255,255,255,0.16); letter-spacing: 0.05em; }
+.fb-desc { font-size: 0.76rem; color: rgba(255,255,255,0.4); line-height: 1.75; font-weight: 300; margin: 0; }
+.fcol-t { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem; }
+.flink { display: block; font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 0.8rem; text-decoration: none; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; text-align: left; transition: color 0.15s; padding: 0; }
+.flink:hover { color: rgba(255,255,255,0.8); }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding: 2rem 3rem; }
+.footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.3); }
+.footer-uni { font-size: 0.72rem; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 960px) {
@@ -662,14 +665,16 @@ const Landing = () => {
         <div className="footer-top">
           <div>
             <div className="fb-logo">
-              <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '38px', width: 'auto' }} />
+              <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '32px', width: 'auto' }} />
             </div>
             <p className="fb-desc">AI-powered accessibility analysis for modern design teams. Built with research-backed methods and WCAG standards.</p>
           </div>
           <div>
             <div className="fcol-t">Navigation</div>
             {['Home', 'About', 'Features', 'How It Works', 'Contact Us'].map(l => (
-              <button key={l} className="flink" onClick={() => navigate(`/${l.toLowerCase().replace(/ /g, '-')}`)}>{l}</button>
+              <button key={l} className="flink" onClick={() => navigate(`/${l.toLowerCase().replace(/ /g, '-')}`)}>
+                {l}
+              </button>
             ))}
           </div>
           <div>
