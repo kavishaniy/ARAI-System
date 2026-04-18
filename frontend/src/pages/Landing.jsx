@@ -435,12 +435,24 @@ const Landing = () => {
       {/* NAV */}
       <nav className="nav">
         <div className="nav-logo">
-          <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '28px', width: 'auto' }} />
+          <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '40px', width: 'auto' }} />
         </div>
         <div className="nav-center">
-          {['About', 'Features', 'How It Works', 'Contact'].map(l => (
+          {['About', 'Features', 'Who Is It For', 'Contact'].map(l => (
             <button key={l} className="nav-link"
-              onClick={() => navigate(`/${l.toLowerCase().replace(/ /g, '-')}`)}>{l}</button>
+              onClick={() => {
+                if (l === 'About') {
+                  document.querySelector('.score-section')?.scrollIntoView({ behavior: 'smooth' });
+                } else if (l === 'Features') {
+                  document.querySelector('.caps-header')?.scrollIntoView({ behavior: 'smooth' });
+                } else if (l === 'Who Is It For') {
+                  document.querySelector('.who-grid')?.scrollIntoView({ behavior: 'smooth' });
+                } else if (l === 'Contact') {
+                  document.querySelector('.footer')?.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  navigate(`/${l.toLowerCase().replace(/ /g, '-')}`);
+                }
+              }}>{l}</button>
           ))}
         </div>
         <div className="nav-right">
@@ -650,7 +662,7 @@ const Landing = () => {
         <div className="footer-top">
           <div>
             <div className="fb-logo">
-              <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '26px', width: 'auto' }} />
+              <img src="/arai-black.png" alt="ARAI Logo" style={{ height: '38px', width: 'auto' }} />
             </div>
             <p className="fb-desc">AI-powered accessibility analysis for modern design teams. Built with research-backed methods and WCAG standards.</p>
           </div>
