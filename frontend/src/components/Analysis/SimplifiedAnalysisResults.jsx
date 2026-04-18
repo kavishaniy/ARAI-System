@@ -534,6 +534,135 @@ const css = `
     font-size: 1.3rem;
   }
 }
+
+/* ── Visual Redesign Section ───────────────────────────────────────────── */
+.vr-section {
+  max-width: 1400px;
+  margin: 0 auto 3rem;
+  background: white;
+  border: 1.5px solid rgba(15,37,87,0.15);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(15,37,87,0.08);
+}
+
+.vr-header { margin-bottom: 1.8rem; }
+
+.vr-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #0f2557;
+  margin-bottom: 0.5rem;
+}
+
+.vr-subtitle {
+  font-size: 0.95rem;
+  color: rgba(15,37,87,0.6);
+  line-height: 1.6;
+}
+
+.vr-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.vr-tab {
+  padding: 10px 20px;
+  border: 1.5px solid rgba(15,37,87,0.2);
+  border-radius: 8px;
+  background: white;
+  color: rgba(15,37,87,0.7);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vr-tab:hover { border-color: rgba(15,37,87,0.4); color: #0f2557; }
+
+.vr-tab.active {
+  background: #0f2557;
+  border-color: #0f2557;
+  color: white;
+}
+
+.vr-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.vr-image-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid rgba(15,37,87,0.1);
+  background: #f5f4f0;
+  line-height: 0;
+}
+
+.vr-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.vr-desc {
+  padding: 1rem 0;
+}
+
+.vr-desc h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #0f2557;
+  margin-bottom: 0.8rem;
+}
+
+.vr-desc p {
+  font-size: 0.92rem;
+  color: rgba(15,37,87,0.65);
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+
+.vr-desc ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vr-desc li {
+  font-size: 0.9rem;
+  color: rgba(15,37,87,0.75);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.vr-chip {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.vr-chip.red    { color: #dc3232; }
+.vr-chip.amber  { color: #d97706; }
+.vr-chip.yellow { color: #ca8a04; }
+.vr-chip.blue   { color: #3b5bdb; }
+.vr-chip.green  { color: #2d9e5e; }
+.vr-chip.purple { color: #7c3aed; }
+
+@media (max-width: 768px) {
+  .vr-body { grid-template-columns: 1fr; }
+  .vr-tabs { gap: 8px; }
+  .vr-tab  { font-size: 0.82rem; padding: 8px 14px; }
+}
 `;
 
 /**
@@ -543,6 +672,7 @@ const css = `
 const SimplifiedAnalysisResults = ({ results }) => {
   const [animated, setAnimated] = useState(false);
   const [activeTab, setActiveTab] = useState('accessibility');
+  const [visualTab, setVisualTab] = useState('heatmap');
   const scoreRef = useRef(null);
 
   // Animation setup
@@ -778,6 +908,79 @@ const SimplifiedAnalysisResults = ({ results }) => {
           </div>
         </div>
       </div>
+
+      {/* Visual Redesign Section */}
+      {results.redesigned_images && Object.keys(results.redesigned_images).length > 0 && (
+        <div className="vr-section">
+          <div className="vr-header">
+            <h2 className="vr-title">Visual Design Analysis</h2>
+            <p className="vr-subtitle">
+              Three AI-generated views of your design — attention distribution, issue overlays, and an auto-enhanced version.
+            </p>
+          </div>
+
+          <div className="vr-tabs">
+            {[
+              { key: 'heatmap',   label: 'Attention Heatmap',      desc: 'Predicted user gaze distribution across a 3×3 grid. Red = high focus, Blue = low focus.' },
+              { key: 'annotated', label: 'Issue Overlay',           desc: 'Colour-coded zones showing accessibility (red), readability (amber), and attention balance (purple) issues.' },
+              { key: 'enhanced',  label: 'Suggested Enhancement',   desc: 'Auto-corrected version: contrast boosted, sharpness improved, and focus vignette applied where needed.' },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                className={`vr-tab ${visualTab === key ? 'active' : ''}`}
+                onClick={() => setVisualTab(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="vr-body">
+            <div className="vr-image-wrap">
+              <img
+                src={results.redesigned_images[visualTab]}
+                alt={visualTab}
+                className="vr-image"
+              />
+            </div>
+            <div className="vr-desc">
+              {visualTab === 'heatmap' && (
+                <>
+                  <h3>Attention Heatmap</h3>
+                  <p>The image is divided into a 3×3 grid. Each cell is scored by luminance variance and edge density — areas rich in detail and contrast attract the most user attention.</p>
+                  <ul>
+                    <li><span className="vr-chip red">■</span> <strong>HIGH</strong> — dominant focus zones, primary content should live here</li>
+                    <li><span className="vr-chip yellow">■</span> <strong>MED</strong> — secondary zones, supporting content</li>
+                    <li><span className="vr-chip blue">■</span> <strong>LOW</strong> — neglected areas, avoid placing key CTAs here</li>
+                  </ul>
+                </>
+              )}
+              {visualTab === 'annotated' && (
+                <>
+                  <h3>Issue Overlay</h3>
+                  <p>Colour-coded zones highlight where each analysis module detected problems. The border colour reflects the worst overall score.</p>
+                  <ul>
+                    <li><span className="vr-chip red">■</span> <strong>Red tint (top)</strong> — Accessibility issues (contrast, text size, touch targets)</li>
+                    <li><span className="vr-chip amber">■</span> <strong>Amber tint (bottom)</strong> — Readability issues (sentence length, dense text)</li>
+                    <li><span className="vr-chip purple">■</span> <strong>Purple hatching</strong> — Attention imbalance (poor visual hierarchy)</li>
+                  </ul>
+                </>
+              )}
+              {visualTab === 'enhanced' && (
+                <>
+                  <h3>Suggested Enhancement</h3>
+                  <p>Automatic corrections applied based on your scores. This shows what the design could look like with the detected issues addressed.</p>
+                  <ul>
+                    <li><span className="vr-chip blue">■</span> <strong>Contrast boost</strong> — applied when accessibility score &lt; 80</li>
+                    <li><span className="vr-chip green">■</span> <strong>Sharpness boost</strong> — applied when readability score &lt; 75</li>
+                    <li><span className="vr-chip purple">■</span> <strong>Focus vignette</strong> — applied when attention score &lt; 75</li>
+                  </ul>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Category Sections - Tabbed */}
       <div className="categories-section">

@@ -351,8 +351,26 @@ async def upload_design(
         
         # Convert NumPy types to native Python types for JSON serialization
         final_results = convert_to_native_types(final_results)
-        
-        # Save to Supabase database
+
+        # Generate visual redesign images (heatmap, annotated, enhanced)
+        redesigned_images = {}
+        try:
+            from app.ai_modules.image_redesigner import ImageRedesigner
+            logger.info("🎨 Generating visual redesign images...")
+            redesigned_images = ImageRedesigner().generate(str(local_file_path), final_results)
+            # Save each image as a file for future retrieval
+            import base64 as _b64
+            for key, data_url in redesigned_images.items():
+                if data_url:
+                    img_bytes = _b64.b64decode(data_url.split(",", 1)[1])
+                    img_path = analysis_dir / f"{key}.jpg"
+                    with open(img_path, "wb") as f:
+                        f.write(img_bytes)
+            logger.info("✅ Visual redesign images generated and saved")
+        except Exception as redesign_error:
+            logger.warning(f"⚠️ Could not generate redesign images: {redesign_error}")
+
+        # Save to Supabase database (without large image blobs)
         try:
             logger.info(f"💾 Attempting to save analysis to database...")
             await save_analysis_to_db(
@@ -370,17 +388,18 @@ async def upload_design(
             import traceback
             logger.error(f"📌 Full traceback: {traceback.format_exc()}")
             # Continue even if DB save fails - return results anyway
-            # This allows the API to still return results to the user even if DB save fails
-        # Save results to JSON (local backup)
+
+        # Save results to JSON (local backup, without images to keep file small)
         import json
         results_path = analysis_dir / "results.json"
         with open(results_path, "w") as f:
             json.dump(final_results, f, indent=2)
-        
+
         logger.info(f"✅ Analysis completed. ARAI Score: {arai_score}")
         logger.info(f"📊 Accessibility: {accessibility_results['score']}, Readability: {readability_results['score']}, Attention: {attention_results['score']}")
-        
-        return final_results
+
+        # Return results WITH redesigned images (images are not stored in DB)
+        return {**final_results, "redesigned_images": redesigned_images}
         
     except HTTPException:
         raise
@@ -420,21 +439,35 @@ async def get_analysis_results(
     Requires authentication
     """
     try:
+        import json as _json
+        import base64 as _b64
+
+        def _attach_images(data: dict) -> dict:
+            """Read saved redesign images from disk and attach as base64."""
+            aid = data.get("analysis_id") or analysis_id
+            img_dir = UPLOAD_DIR / aid
+            images = {}
+            for key in ("heatmap", "annotated", "enhanced"):
+                img_path = img_dir / f"{key}.jpg"
+                if img_path.exists():
+                    images[key] = "data:image/jpeg;base64," + _b64.b64encode(
+                        img_path.read_bytes()
+                    ).decode()
+            if images:
+                data = {**data, "redesigned_images": images}
+            return data
+
         # Try to get from database first
         analysis = await get_analysis_by_id(analysis_id, str(current_user.id))
-        
+
         if analysis:
-            # If DB row has full results JSON, return it
             if analysis.get("results") and isinstance(analysis["results"], dict) and analysis["results"].get("arai_breakdown"):
-                return analysis["results"]
-            # Otherwise fall back to local JSON file (full results saved at upload time)
+                return _attach_images(analysis["results"])
             results_path = UPLOAD_DIR / analysis_id / "results.json"
             if results_path.exists():
-                import json
                 with open(results_path, "r") as f:
-                    return json.load(f)
-            # Last resort: reconstruct minimal structure from flat DB fields
-            return {
+                    return _attach_images(_json.load(f))
+            return _attach_images({
                 "analysis_id": analysis.get("id"),
                 "design_name": analysis.get("design_name"),
                 "arai_score": analysis.get("arai_score", 0),
@@ -448,20 +481,19 @@ async def get_analysis_results(
                 "accessibility": {"score": analysis.get("accessibility_score", 0), "issues": []},
                 "readability": {"score": analysis.get("readability_score", 0), "issues": []},
                 "attention": {"score": analysis.get("attention_score", 0), "issues": []},
-            }
+            })
 
-        # Fallback to local file if not in database
+        # Fallback to local file
         analysis_dir = UPLOAD_DIR / analysis_id
         results_path = analysis_dir / "results.json"
 
         if not results_path.exists():
             raise HTTPException(status_code=404, detail="Analysis not found")
 
-        import json
         with open(results_path, "r") as f:
-            results = json.load(f)
+            results = _json.load(f)
 
-        return results
+        return _attach_images(results)
         
     except HTTPException:
         raise
