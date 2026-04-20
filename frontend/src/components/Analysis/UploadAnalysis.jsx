@@ -1,47 +1,55 @@
 import React, { useState } from 'react';
-import { Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import axios from 'axios';
 import { authService } from '../../services/auth';
 
-// Upload and Analysis Component - Production Ready - Legacy Single File Version
+// Upload and Analysis Component - Production Ready - Multiple Files Version
 const UploadAnalysis = ({ onAnalysisComplete }) => {
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [files, setFiles] = useState([]);
   const [designName, setDesignName] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [retryMessage, setRetryMessage] = useState('');
 
-  const handleFileChange = (selectedFile) => {
-    if (!selectedFile) return;
+  const handleFileChange = (selectedFiles) => {
+    if (!selectedFiles || selectedFiles.length === 0) return;
 
-    // Validate file type
     const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
-    if (!validTypes.includes(selectedFile.type)) {
-      setError('Please upload a valid image file (PNG, JPG, JPEG, or WebP)');
-      return;
+    let hasError = false;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+
+      // Validate file type
+      if (!validTypes.includes(file.type)) {
+        setError(`${file.name}: Invalid file type. Please use PNG, JPG, JPEG, or WebP`);
+        hasError = true;
+        continue;
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError(`${file.name}: File size must be less than 10MB`);
+        hasError = true;
+        continue;
+      }
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFiles(prev => [...prev, { file, preview: reader.result }]);
+      };
+      reader.readAsDataURL(file);
     }
 
-    // Validate file size (max 10MB)
-    if (selectedFile.size > 10 * 1024 * 1024) {
-      setError('File size must be less than 10MB');
-      return;
+    if (!hasError) {
+      setError(null);
     }
 
-    setFile(selectedFile);
-    setError(null);
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result);
-    };
-    reader.readAsDataURL(selectedFile);
-
-    // Auto-fill design name if empty
-    if (!designName) {
-      setDesignName(selectedFile.name.replace(/\.[^/.]+$/, ''));
+    // Auto-fill design name from first file if empty
+    if (!designName && selectedFiles[0]) {
+      setDesignName(selectedFiles[0].name.replace(/\.[^/.]+$/, ''));
     }
   };
 
@@ -60,16 +68,27 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileChange(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileChange(e.dataTransfer.files);
     }
+  };
+
+  const removeFile = (index) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const resetForm = () => {
+    setFiles([]);
+    setDesignName('');
+    setError(null);
+    setRetryMessage('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file) {
-      setError('Please select a file to upload');
+    if (files.length === 0) {
+      setError('Please select at least one file to upload');
       return;
     }
 
@@ -97,105 +116,100 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      if (designName) {
-        formData.append('design_name', designName);
-      }
-
       const apiUrl = process.env.REACT_APP_API_URL || 'https://arai-system.onrender.com/api/v1';
       
-      console.log('🚀 Uploading design for analysis...');
-      console.log('📁 File:', file.name);
+      console.log('🚀 Uploading designs for analysis...');
+      console.log('📁 Files:', files.length);
       console.log('🔑 Token exists:', !!token);
       console.log('🌐 API URL:', apiUrl);
-      
-      // Retry logic for 502 errors (Render free tier wake-up)
-      let retries = 3;
-      let lastError = null;
-      
-      for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-          console.log(`📡 Attempt ${attempt}/${retries}...`);
-          
-          if (attempt > 1) {
-            setRetryMessage(`Retrying... (Attempt ${attempt}/${retries})`);
-          } else {
-            setRetryMessage('');
-          }
-          
-          const response = await axios.post(
-            `${apiUrl}/analysis/upload`,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${token}`
-              },
-              timeout: 40000, // 40 seconds timeout - optimized backend should respond faster
-            }
-          );
 
-          console.log('✅ Analysis completed:', response.data);
-          
-          // Success! Break out of retry loop
-          lastError = null;
-          
-          // Reset form FIRST (clear any lingering state)
-          setFile(null);
-          setPreview(null);
-          setDesignName('');
-          setError(null);
-          setIsAnalyzing(false);
-          setRetryMessage('');
-          
-          // Notify parent component with a slight delay to ensure state is cleared
-          setTimeout(() => {
+      // Process each file
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        const { file } = files[fileIndex];
+        const formData = new FormData();
+        formData.append('file', file);
+        if (designName) {
+          formData.append('design_name', `${designName} ${fileIndex + 1}`);
+        }
+
+        console.log(`\n📤 Processing file ${fileIndex + 1}/${files.length}: ${file.name}`);
+        
+        // Retry logic for 502 errors (Render free tier wake-up)
+        let retries = 3;
+        let lastError = null;
+        
+        for (let attempt = 1; attempt <= retries; attempt++) {
+          try {
+            console.log(`📡 Attempt ${attempt}/${retries}...`);
+            
+            if (attempt > 1) {
+              setRetryMessage(`Uploading file ${fileIndex + 1}/${files.length}... Retrying (Attempt ${attempt}/${retries})`);
+            } else {
+              setRetryMessage(`Uploading file ${fileIndex + 1}/${files.length}...`);
+            }
+            
+            const response = await axios.post(
+              `${apiUrl}/analysis/upload`,
+              formData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${token}`
+                },
+                timeout: 40000, // 40 seconds timeout
+              }
+            );
+
+            console.log(`✅ Analysis completed for file ${fileIndex + 1}:`, response.data);
+            
+            // Success! Break out of retry loop
+            lastError = null;
+            
+            // Call callback for each file when it completes
             if (onAnalysisComplete) {
-              console.log('📤 Calling onAnalysisComplete callback with response data');
+              console.log(`� Calling onAnalysisComplete callback for file ${fileIndex + 1}`);
               onAnalysisComplete(response.data);
             }
-          }, 100);
-          
-          break; // Exit retry loop on success
-          
-        } catch (retryErr) {
-          lastError = retryErr;
-          console.warn(`⚠️ Attempt ${attempt} failed:`, retryErr.message);
-          
-          // Check if it's a timeout error
-          const isTimeout = retryErr.code === 'ECONNABORTED' || retryErr.message?.includes('timeout');
-          
-          // Check if it's a 502 or network error that we should retry
-          const shouldRetry = (
-            retryErr.code === 'ERR_NETWORK' ||
-            retryErr.code === 'ECONNABORTED' ||
-            retryErr.response?.status === 502 ||
-            retryErr.response?.status === 503 ||
-            retryErr.response?.status === 504
-          );
-          
-          if (shouldRetry && attempt < retries) {
-            // Adjust message based on error type
-            if (isTimeout) {
-              setRetryMessage(`Analysis is taking longer than expected. Retrying... (Attempt ${attempt + 1}/${retries})`);
+            
+            break; // Exit retry loop on success
+            
+          } catch (retryErr) {
+            lastError = retryErr;
+            console.warn(`⚠️ Attempt ${attempt} failed for file ${fileIndex + 1}:`, retryErr.message);
+            
+            const isTimeout = retryErr.code === 'ECONNABORTED' || retryErr.message?.includes('timeout');
+            const shouldRetry = (
+              retryErr.code === 'ERR_NETWORK' ||
+              retryErr.code === 'ECONNABORTED' ||
+              retryErr.response?.status === 502 ||
+              retryErr.response?.status === 503 ||
+              retryErr.response?.status === 504
+            );
+            
+            if (shouldRetry && attempt < retries) {
+              if (isTimeout) {
+                setRetryMessage(`Analysis taking longer for file ${fileIndex + 1}. Retrying... (Attempt ${attempt + 1}/${retries})`);
+              } else {
+                const waitTime = attempt * 2000;
+                setRetryMessage(`Server loading... Waiting ${waitTime/1000}s before retry (File ${fileIndex + 1}/${files.length})`);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+              }
+              continue;
             } else {
-              const waitTime = attempt * 2000; // 2s, 4s, 6s
-              setRetryMessage(`Server is waking up... Waiting ${waitTime/1000}s before next attempt`);
-              await new Promise(resolve => setTimeout(resolve, waitTime));
+              throw retryErr;
             }
-            continue;
-          } else {
-            // Don't retry for other errors (401, 400, etc.)
-            throw retryErr;
           }
         }
+        
+        if (lastError) {
+          throw lastError;
+        }
       }
-      
-      // If we exhausted all retries, throw the last error
-      if (lastError) {
-        throw lastError;
-      }
+
+      // All files processed successfully
+      resetForm();
+
+      console.log('✅ All files analyzed successfully!');
       
     } catch (err) {
       console.error('❌ Analysis error:', err);
@@ -234,13 +248,6 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       setIsAnalyzing(false);
       setRetryMessage('');
     }
-  };
-
-  const resetForm = () => {
-    setFile(null);
-    setPreview(null);
-    setDesignName('');
-    setError(null);
   };
 
   const css = `
@@ -504,6 +511,110 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
       display: none;
     }
 
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .file-count {
+      font-weight: 600;
+      color: #0f2557;
+      margin: 0 0 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.1);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .file-item:hover {
+      border-color: rgba(15, 37, 87, 0.15);
+      background: rgba(15, 37, 87, 0.02);
+    }
+
+    .file-thumbnail {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+      border: 1px solid rgba(15, 37, 87, 0.1);
+    }
+
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-name {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #0f2557;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-size {
+      margin: 4px 0 0 0;
+      font-size: 0.85rem;
+      color: rgba(15, 37, 87, 0.6);
+    }
+
+    .file-remove-btn {
+      padding: 8px;
+      background: transparent;
+      border: 1.5px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      color: #ef4444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .file-remove-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #dc2626;
+    }
+
+    .upload-add-more-link {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, rgba(100, 180, 255, 0.1) 0%, rgba(100, 180, 255, 0.05) 100%);
+      border: 1.5px dashed rgba(100, 180, 255, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .upload-add-more-link:hover {
+      border-color: rgba(100, 180, 255, 0.5);
+      background: linear-gradient(135deg, rgba(100, 180, 255, 0.15) 0%, rgba(100, 180, 255, 0.08) 100%);
+    }
+
+    .add-more-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #64b4ff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     @media (max-width: 768px) {
       .upload-area {
         padding: 28px 16px;
@@ -511,6 +622,14 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
 
       .form-section {
         padding: 20px;
+      }
+
+      .file-item {
+        flex-wrap: wrap;
+      }
+
+      .file-info {
+        flex-basis: 100%;
       }
     }
   `;
@@ -530,9 +649,9 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         <form className="upload-form" onSubmit={handleSubmit}>
         {/* File Upload Section */}
         <div className="form-section">
-          <label className="form-label">Design File</label>
+          <label className="form-label">Design Files</label>
           
-          {!preview ? (
+          {files.length === 0 ? (
             <div
               className={`upload-area ${dragActive ? 'active' : ''}`}
               onDragEnter={handleDrag}
@@ -542,33 +661,56 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
             >
               <Upload className="upload-icon" />
               <p className="upload-text">
-                Drag and drop your design file here, or{' '}
+                Drag and drop your design files here, or{' '}
                 <label className="upload-browse-link">
                   browse files
                   <input
                     type="file"
                     className="hidden-input"
                     accept="image/png,image/jpeg,image/jpg,image/webp"
-                    onChange={(e) => handleFileChange(e.target.files[0])}
+                    multiple
+                    onChange={(e) => handleFileChange(e.target.files)}
                   />
                 </label>
               </p>
-              <p className="upload-hint">Supports: PNG, JPG, JPEG, WebP (Max 10MB)</p>
+              <p className="upload-hint">Supports: PNG, JPG, JPEG, WebP (Max 10MB each). Upload multiple designs at once!</p>
             </div>
           ) : (
             <div className="upload-preview">
-              <img
-                src={preview}
-                alt="Preview"
-                className="upload-preview-img"
-              />
-              <button
-                type="button"
-                onClick={resetForm}
-                className="upload-preview-remove"
-              >
-                Remove
-              </button>
+              <div className="file-list">
+                <p className="file-count">{files.length} file{files.length !== 1 ? 's' : ''} selected:</p>
+                {files.map((fileObj, index) => (
+                  <div key={index} className="file-item">
+                    <img
+                      src={fileObj.preview}
+                      alt={`Preview ${index + 1}`}
+                      className="file-thumbnail"
+                    />
+                    <div className="file-info">
+                      <p className="file-name">{fileObj.file.name}</p>
+                      <p className="file-size">{(fileObj.file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(index)}
+                      className="file-remove-btn"
+                      title="Remove this file"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <label className="upload-add-more-link">
+                <span className="add-more-text">+ Add More Files</span>
+                <input
+                  type="file"
+                  className="hidden-input"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  multiple
+                  onChange={(e) => handleFileChange(e.target.files)}
+                />
+              </label>
             </div>
           )}
         </div>
@@ -583,6 +725,7 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
             placeholder="e.g., Homepage Design V2"
             className="form-input"
           />
+          <p style={{ fontSize: '0.85rem', color: 'rgba(15, 37, 87, 0.5)', marginTop: '8px' }}>This name will be appended with file numbers for multiple uploads</p>
         </div>
 
         {/* Error Message */}
@@ -602,17 +745,17 @@ const UploadAnalysis = ({ onAnalysisComplete }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={!file || isAnalyzing}
+          disabled={files.length === 0 || isAnalyzing}
           className="submit-button"
         >
           {isAnalyzing ? (
             <>
               <span style={{ display: 'inline-block', animation: 'spin 0.8s linear infinite' }}>⟳</span>
-              Analyzing Design... (This may take 1-3 minutes)
+              Analyzing Designs... (This may take 1-3 minutes)
             </>
           ) : (
             <>
-              Analyze Design
+              Analyze {files.length} Design{files.length !== 1 ? 's' : ''}
             </>
           )}
         </button>

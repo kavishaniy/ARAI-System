@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, Layers, Clock, Users } from 'lucide-react';
+import { Upload, Layers, Clock, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
-import UploadAnalysis from '../components/Analysis/UploadAnalysis';
+import Sidebar from '../components/Common/Sidebar';
+import PageHeader from '../components/Common/PageHeader';
+import UploadAnalysisMultiple from '../components/Analysis/UploadAnalysisMultiple';
 import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
 import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 import { teamService } from '../services/sharing';
@@ -144,58 +146,129 @@ const TeamDetail = () => {
     );
   }
 
+  const css = `
+    /* ── Layout ─────────────────────────────────────── */
+    .team-detail-shell {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f4f0 0%, #faf9f7 100%);
+    }
+
+    .team-detail-pg-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 240px;
+      transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      width: calc(100% - 240px);
+      max-width: calc(100% - 240px);
+    }
+
+    @media (max-width: 1024px) {
+      .team-detail-pg-container { margin-left: 80px; width: calc(100% - 80px); max-width: calc(100% - 80px); }
+    }
+    @media (max-width: 768px) {
+      .team-detail-pg-container { margin-left: 60px; }
+    }
+    @media (max-width: 480px) {
+      .team-detail-pg-container { margin-left: 56px; }
+    }
+
+    .team-detail-pg-main {
+      flex: 1;
+      padding: 32px 60px;
+      overflow-y: auto;
+    }
+    @media (max-width: 1024px) { .team-detail-pg-main { padding: 24px 40px; } }
+    @media (max-width: 768px)  { .team-detail-pg-main { padding: 20px 24px; } }
+    @media (max-width: 480px)  { .team-detail-pg-main { padding: 16px 16px; } }
+
+    .team-detail-pg-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Tab bar ─────────────────────────────────────── */
+    .tpg-tab-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 28px;
+      background: white;
+      border: 1.5px solid rgba(15,37,87,0.1);
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .tpg-tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: rgba(15,37,87,0.55);
+      background: transparent;
+      white-space: nowrap;
+    }
+
+    .tpg-tab-btn:hover {
+      color: #0f2557;
+      background: rgba(15,37,87,0.04);
+    }
+
+    .tpg-tab-btn.active {
+      background: linear-gradient(135deg, #0f2557, #091840);
+      color: white;
+    }
+  `;
+
   return (
-    <div className="team-detail-container" style={{ backgroundColor: '#ffffff', minHeight: '100vh', width: '100%' }}>
-      {/* Header */}
-      <div className="team-detail-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-          <button 
-            className="btn-back" 
-            onClick={() => navigate('/teams')}
-            style={{ margin: 0, flexShrink: 0 }}
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div style={{ flex: 1 }}>
-            <h1 className="team-detail-title">{team.name}</h1>
-            <div className="team-detail-info">
-              <Users size={14} /> {team.members?.length || 0} members
-            </div>
-          </div>
-        </div>
-      </div>
+    <>
+      <style>{css}</style>
+      <div className="team-detail-shell">
+        <Sidebar active="teams" />
 
-      {team.description && (
-        <p className="team-detail-description">{team.description}</p>
-      )}
+        <div className="team-detail-pg-container">
+          <PageHeader
+            title={team?.name || 'Team'}
+            subtitle={team?.description || 'Team details and analysis'}
+          />
 
-      {/* Tabs */}
-      <div className="team-detail-tabs" style={{ display: 'flex', visibility: 'visible', width: '100%' }}>
-        <button
-          className={`tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
-          onClick={() => setActiveTab('analysis')}
-          style={{ display: 'inline-flex', cursor: 'pointer' }}
-        >
-          <Upload size={16} /> Upload Analysis
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'figma' ? 'active' : ''}`}
-          onClick={() => setActiveTab('figma')}
-          style={{ display: 'inline-flex', cursor: 'pointer' }}
-        >
-          <Layers size={16} /> Figma Analysis
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-          style={{ display: 'inline-flex', cursor: 'pointer' }}
-        >
-          <Clock size={16} /> History
-        </button>
-      </div>
+          <div className="team-detail-pg-main">
+            <div className="team-detail-pg-wrapper">
+              {/* Tab Bar */}
+              <div className="tpg-tab-bar">
+                <button
+                  className={`tpg-tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('analysis')}
+                >
+                  <Upload size={15} />
+                  <span>Upload Analysis</span>
+                </button>
+                <button
+                  className={`tpg-tab-btn ${activeTab === 'figma' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('figma')}
+                >
+                  <Layers size={15} />
+                  <span>Figma Analysis</span>
+                </button>
+                <button
+                  className={`tpg-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('history')}
+                >
+                  <Clock size={15} />
+                  <span>History</span>
+                </button>
+              </div>
 
-      {/* Content */}
-      <div className="team-detail-content" style={{ display: 'block', visibility: 'visible', width: '100%', margin: '0 auto' }}>
         {/* Upload Analysis Tab */}
         {activeTab === 'analysis' && (
           <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
@@ -254,12 +327,12 @@ const TeamDetail = () => {
                     <ArrowLeft size={14} /> Back to Results
                   </button>
                 </div>
-                <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+                <UploadAnalysisMultiple onAnalysisComplete={handleUploadAnalysisComplete} />
               </>
             ) : null}
 
             {!showUploadForm && uploadResults.length === 0 ? (
-              <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+              <UploadAnalysisMultiple onAnalysisComplete={handleUploadAnalysisComplete} />
             ) : null}
           </div>
         )}
@@ -353,8 +426,11 @@ const TeamDetail = () => {
             )}
           </div>
         )}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

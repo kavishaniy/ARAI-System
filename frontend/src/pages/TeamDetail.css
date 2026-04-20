@@ -1,11 +1,12 @@
 .team-detail-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
   width: 100%;
   display: block;
   box-sizing: border-box;
+  background: #ffffff;
 }
 
 .team-detail-header {
@@ -13,10 +14,11 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 32px;
-  padding-bottom: 20px;
+  padding: 24px 32px 20px 32px;
   border-bottom: 1px solid rgba(15, 37, 87, 0.1);
   width: 100%;
   box-sizing: border-box;
+  background: white;
 }
 
 .team-detail-title {
@@ -41,6 +43,8 @@
   font-size: 1rem;
   margin-bottom: 24px;
   line-height: 1.6;
+  padding: 0 32px;
+  box-sizing: border-box;
 }
 
 .team-detail-tabs {
@@ -51,6 +55,8 @@
   flex-wrap: wrap;
   width: 100%;
   visibility: visible;
+  padding: 0 32px;
+  box-sizing: border-box;
 }
 
 .tab-btn {
@@ -79,13 +85,14 @@
 }
 
 .team-detail-content {
-  background: white;
-  border-radius: 12px;
-  padding: 28px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: transparent;
+  border-radius: 0;
+  padding: 0 32px;
+  box-shadow: none;
   display: block;
   min-height: 400px;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -95,6 +102,7 @@
   display: block;
   width: 100%;
   min-height: 300px;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {

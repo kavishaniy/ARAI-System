@@ -11,7 +11,6 @@ import PageHeader from '../components/Common/PageHeader';
 import UploadAnalysis from '../components/Analysis/UploadAnalysis';
 import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
 import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
-import SimplifiedAnalysisResults from '../components/Analysis/SimplifiedAnalysisResults';
 import { teamService, sharingService } from '../services/sharing';
 import { analysisService } from '../services/analysis';
 import { projectService } from '../services/projects';
@@ -1157,7 +1156,8 @@ const AnalysisTab = () => {
   const [subTab, setSubTab] = useState('upload');
 
   // Upload state
-  const [uploadResult, setUploadResult] = useState(null);
+  const [uploadResults, setUploadResults] = useState([]);
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   // Figma state
   const [figmaStep, setFigmaStep] = useState('input');
@@ -1191,18 +1191,24 @@ const AnalysisTab = () => {
   };
 
   const resetFigma = () => { setFigmaResults(null); setFigmaError(''); setFigmaStep('input'); };
-  const resetUpload = () => setUploadResult(null);
 
-  // Transform single upload result into multiple analyses format
+  // Handle upload analysis completion and accumulate results
+  const handleUploadAnalysisComplete = (result) => {
+    setUploadResults(prev => [...prev, result]);
+    setShowUploadForm(false); // Hide form after upload
+  };
+
+  // Reset uploads to start over
+  const resetUpload = () => {
+    setUploadResults([]);
+    setShowUploadForm(false);
+  };
+
+  // Transform upload results into multiple analyses format
   const getUploadResultForMultiple = () => {
-    if (!uploadResult) return null;
-    // If uploadResult is already in the multiple format (has analyses array), return as is
-    if (uploadResult.analyses && Array.isArray(uploadResult.analyses)) {
-      return uploadResult;
-    }
-    // Otherwise wrap the single result into the multiple format
+    if (!uploadResults || uploadResults.length === 0) return null;
     return {
-      analyses: [uploadResult]
+      analyses: uploadResults
     };
   };
 
@@ -1224,11 +1230,70 @@ const AnalysisTab = () => {
       </div>
 
       {subTab === 'upload' && (
-        uploadResult ? (
-          <MultipleAnalysisResults results={getUploadResultForMultiple()} onNewAnalysis={resetUpload} />
-        ) : (
-          <UploadAnalysis onAnalysisComplete={setUploadResult} />
-        )
+        <>
+          {uploadResults.length > 0 && !showUploadForm ? (
+            <>
+              <MultipleAnalysisResults results={getUploadResultForMultiple()} onNewAnalysis={resetUpload} />
+              {/* Add more designs button */}
+              <div style={{ marginTop: '32px', padding: '24px', backgroundColor: '#f5f4f0', borderRadius: '12px', textAlign: 'center' }}>
+                <p style={{ marginBottom: '16px', color: '#666', fontSize: '0.95rem' }}>Want to analyze more designs?</p>
+                <button
+                  onClick={() => setShowUploadForm(true)} // Show upload form while keeping results
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#2563eb',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+                >
+                  <Upload size={14} /> Add Another Design
+                </button>
+              </div>
+            </>
+          ) : null}
+
+          {showUploadForm && uploadResults.length > 0 ? (
+            <>
+              <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <button
+                  onClick={() => setShowUploadForm(false)}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#f5f4f0',
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#e8e8e8'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#f5f4f0'}
+                >
+                  <ArrowLeft size={14} /> Back to Results
+                </button>
+              </div>
+              <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+            </>
+          ) : null}
+
+          {!showUploadForm && uploadResults.length === 0 ? (
+            <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+          ) : null}
+        </>
       )}
 
       {subTab === 'figma' && (
@@ -1383,7 +1448,7 @@ const HistoryTab = () => {
               {viewLoading ? (
                 <div className="tpg-loading"><div className="tpg-spinner" /> Loading results…</div>
               ) : selectedAnalysis.results ? (
-                <SimplifiedAnalysisResults results={selectedAnalysis.results} />
+                <MultipleAnalysisResults results={{ analyses: [selectedAnalysis.results] }} />
               ) : null}
             </div>
           </div>

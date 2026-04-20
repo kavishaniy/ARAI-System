@@ -707,7 +707,14 @@ const SimplifiedAnalysisResults = ({ results }) => {
   console.log('🔍 attention:', results.attention);
   console.log('🔍 arai_score:', results.arai_score);
 
-  const { arai_score, arai_breakdown, overall_grade, accessibility, readability, attention } = results;
+  const { 
+    arai_score = 0, 
+    arai_breakdown, 
+    overall_grade = 'F', 
+    accessibility, 
+    readability, 
+    attention 
+  } = results;
 
   // DEBUG: Log individual fields
   console.log('🎯 Extracted fields:');
@@ -719,7 +726,12 @@ const SimplifiedAnalysisResults = ({ results }) => {
   console.log('  - attention:', attention, 'type:', typeof attention);
 
   // Fallback to empty objects if data is missing
-  const safeAirBreakdown = arai_breakdown || { accessibility: 0, readability: 0, attention: 0, overall: 0 };
+  const safeAirBreakdown = {
+    accessibility: arai_breakdown?.accessibility ?? 0,
+    readability: arai_breakdown?.readability ?? 0,
+    attention: arai_breakdown?.attention ?? 0,
+    overall: arai_breakdown?.overall ?? 0
+  };
   const safeAccessibility = accessibility || { score: 0, issues: [] };
   const safeReadability = readability || { score: 0, issues: [] };
   const safeAttention = attention || { score: 0, issues: [] };
