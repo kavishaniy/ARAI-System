@@ -7,6 +7,7 @@ import PageHeader from '../components/Common/PageHeader';
 import UploadAnalysisMultiple from '../components/Analysis/UploadAnalysisMultiple';
 import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
 import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
+import SimplifiedAnalysisResults from '../components/Analysis/SimplifiedAnalysisResults';
 import { teamService } from '../services/sharing';
 import { analysisService } from '../services/analysis';
 import './TeamDetail.css';
@@ -24,7 +25,11 @@ const TeamDetail = () => {
   // Tab state
   const [activeTab, setActiveTab] = useState('analysis');
   
-  // Analysis states
+  // Upload Analysis states (like Dashboard)
+  const [currentAnalysis, setCurrentAnalysis] = useState(null);
+  const [analysisKey, setAnalysisKey] = useState(0);
+  
+  // Figma Analysis states
   const [figmaStep, setFigmaStep] = useState('input');
   const [figmaResults, setFigmaResults] = useState(null);
   const [figmaLoading, setFigmaLoading] = useState(false);
@@ -101,77 +106,15 @@ const TeamDetail = () => {
     setFigmaStep('input');
   };
 
-  // Handle upload analysis completion and accumulate results
-  const handleUploadAnalysisComplete = (result) => {
-    console.log('✅ handleUploadAnalysisComplete CALLED');
-    console.log('📊 Received result:', result);
-    
-    if (result) {
-      console.log('📊 Result is valid, creating formatted object');
-      
-      // Ensure result has the required fields for MultipleAnalysisResults
-      const formattedResult = {
-        // Design identification
-        designName: result.design_name || result.designName || 'Untitled Design',
-        filename: result.filename || 'unknown',
-        analysis_id: result.analysis_id,
-        
-        // ARAI Scores - ensure these are numbers, not undefined or objects
-        arai_score: (() => {
-          const score = result.arai_score ?? result.arai_breakdown?.overall ?? 0;
-          console.log('🔢 arai_score calc:', { raw: result.arai_score, arai_breakdown_overall: result.arai_breakdown?.overall, final: score });
-          return typeof score === 'number' ? score : parseFloat(score) || 0;
-        })(),
-        arai_breakdown: {
-          overall: (() => {
-            const score = result.arai_score ?? result.arai_breakdown?.overall ?? 0;
-            return typeof score === 'number' ? score : parseFloat(score) || 0;
-          })(),
-          accessibility: (() => {
-            const score = result.arai_breakdown?.accessibility ?? result.accessibility?.score ?? 0;
-            return typeof score === 'number' ? score : parseFloat(score) || 0;
-          })(),
-          readability: (() => {
-            const score = result.arai_breakdown?.readability ?? result.readability?.score ?? 0;
-            return typeof score === 'number' ? score : parseFloat(score) || 0;
-          })(),
-          attention: (() => {
-            const score = result.arai_breakdown?.attention ?? result.attention?.score ?? 0;
-            return typeof score === 'number' ? score : parseFloat(score) || 0;
-          })()
-        },
-        overall_grade: result.overall_grade || 'F',
-        
-        // Individual analysis objects (for SimplifiedAnalysisResults)
-        accessibility: result.accessibility || { score: 0, issues: [], grade: 'F' },
-        readability: result.readability || { score: 0, issues: [], grade: 'F' },
-        attention: result.attention || { score: 0, issues: [], grade: 'F' },
-        
-        // Preview and media
-        preview: result.preview || null,
-        redesigned_images: result.redesigned_images || {},
-        
-        // Additional data
-        timestamp: result.timestamp,
-        status: result.status || 'completed',
-        issues: result.issues || [],
-        issue_summary: result.issue_summary || { critical: 0, high: 0, medium: 0, passing: 0 },
-        
-        // Pass through all other fields
-        ...result
-      };
-      
-      console.log('✅ Formatted result created:', {
-        designName: formattedResult.designName,
-        arai_score: formattedResult.arai_score,
-        arai_breakdown: formattedResult.arai_breakdown,
-        has_preview: !!formattedResult.preview
-      });
-      
-      console.log('✅ Upload analysis complete');
-    } else {
-      console.error('❌ Result is null or undefined!');
-    }
+  // Handle upload analysis completion (Dashboard-style)
+  const handleAnalysisComplete = (analysisData) => {
+    setCurrentAnalysis(analysisData);
+    setAnalysisKey(prev => prev + 1);
+  };
+
+  const handleNewAnalysis = () => {
+    setCurrentAnalysis(null);
+    setAnalysisKey(prev => prev + 1);
   };
 
   if (loading) {
@@ -323,7 +266,22 @@ const TeamDetail = () => {
         {/* Upload Analysis Tab */}
         {activeTab === 'analysis' && (
           <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
-            <UploadAnalysisMultiple onAnalysisComplete={handleUploadAnalysisComplete} />
+            {currentAnalysis ? (
+              currentAnalysis.analyses ? (
+                <MultipleAnalysisResults 
+                  key={analysisKey} 
+                  results={currentAnalysis} 
+                  onNewAnalysis={handleNewAnalysis}
+                />
+              ) : (
+                <SimplifiedAnalysisResults 
+                  key={analysisKey} 
+                  results={currentAnalysis} 
+                />
+              )
+            ) : (
+              <UploadAnalysisMultiple onAnalysisComplete={handleAnalysisComplete} />
+            )}
           </div>
         )}
 
