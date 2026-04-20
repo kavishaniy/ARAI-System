@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Users, Plus, UserPlus, Calendar, CheckCircle,
+  Users, Plus, UserPlus, Calendar, CheckCircle, Edit, Trash2, MoreVertical,
   ChevronDown, ChevronUp,
 } from 'lucide-react';
 import Sidebar from '../components/Common/Sidebar';
@@ -782,7 +782,82 @@ const css = `
     border: none;
     border-top: 1px solid rgba(15,37,87,0.08);
   }
+
+  /* ── Team card menu ──────────────────────────────── */
+  .tpg-card-menu {
+    position: relative;
+  }
+
+  .tpg-menu-btn {
+    position: relative;
+    background: transparent;
+    border: 1px solid rgba(15,37,87,0.15);
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: rgba(15,37,87,0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .tpg-menu-btn:hover {
+    background: rgba(15,37,87,0.06);
+    border-color: rgba(15,37,87,0.25);
+    color: #0f2557;
+  }
+
+  .tpg-menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1.5px solid rgba(15,37,87,0.12);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(15,37,87,0.12);
+    z-index: 20;
+    min-width: 180px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .tpg-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    border: none;
+    background: transparent;
+    color: #0f2557;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid rgba(15,37,87,0.06);
+  }
+
+  .tpg-menu-item:last-child {
+    border-bottom: none;
+  }
+
+  .tpg-menu-item:hover {
+    background: rgba(15,37,87,0.05);
+  }
+
+  .tpg-menu-item.danger {
+    color: #991b1b;
+  }
+
+  .tpg-menu-item.danger:hover {
+    background: rgba(239,68,68,0.08);
+  }
 `;
+
 
 /* ───────────────────────────────────────────────────────────
    TeamCard
@@ -795,6 +870,15 @@ const TeamCard = ({ team, onRefresh }) => {
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteError, setInviteError] = useState(null);
   const [inviteSuccess, setInviteSuccess] = useState(null);
+  const [showEdit, setShowEdit] = useState(false);
+  const [editName, setEditName] = useState(team.name);
+  const [editDesc, setEditDesc] = useState(team.description || '');
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState(null);
+  const [editSuccess, setEditSuccess] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   const handleInvite = async (e) => {
     e.preventDefault();
@@ -823,19 +907,83 @@ const TeamCard = ({ team, onRefresh }) => {
     }
   };
 
+  const handleEditTeam = async (e) => {
+    e.preventDefault();
+    if (!editName.trim()) { setEditError('Team name is required.'); return; }
+    setEditLoading(true);
+    setEditError(null);
+    setEditSuccess(null);
+    try {
+      await teamService.updateTeam(team.id, editName.trim(), editDesc.trim());
+      setEditSuccess('Team updated successfully!');
+      setShowEdit(false);
+      setTimeout(() => onRefresh(), 800);
+    } catch (err) {
+      setEditError(err.response?.data?.detail || 'Failed to update team. Please try again.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const handleDeleteTeam = async () => {
+    if (!window.confirm(`Are you sure you want to delete "${team.name}"? This action cannot be undone.`)) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      await teamService.deleteTeam(team.id);
+      setShowMenu(false);
+      setTimeout(() => onRefresh(), 600);
+    } catch (err) {
+      setDeleteError(err.response?.data?.detail || 'Failed to delete team. Please try again.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <div 
-      className="tpg-card"
+      className="tpg-card tpg-card-menu"
       onClick={() => navigate(`/teams/${team.id}`)}
       style={{ cursor: 'pointer', transition: 'transform 0.2s ease' }}
       onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
       onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
     >
-      <div className="tpg-team-header" onClick={(e) => e.stopPropagation()}>
-        <h3 className="tpg-team-name">{team.name}</h3>
+      {/* Menu button in top-right corner */}
+      <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', alignItems: 'center', gap: 10, zIndex: 10 }}>
         <span className="tpg-member-badge">
           <Users size={11} />{team.members?.length || 0}
         </span>
+        <button
+          className="tpg-menu-btn"
+          onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); setShowMembers(false); setShowInvite(false); setShowEdit(false); }}
+          title="More options"
+          style={{ position: 'static', marginRight: '-6px' }}
+        >
+          <MoreVertical size={16} />
+        </button>
+      </div>
+
+      {/* Dropdown menu */}
+      {showMenu && (
+        <div className="tpg-menu-dropdown" onClick={(e) => e.stopPropagation()}>
+          <button
+            className="tpg-menu-item"
+            onClick={(e) => { e.stopPropagation(); setShowEdit(true); setShowMenu(false); }}
+          >
+            <Edit size={14} /> Edit
+          </button>
+          <button
+            className="tpg-menu-item danger"
+            onClick={(e) => { e.stopPropagation(); handleDeleteTeam(); }}
+            disabled={deleteLoading}
+          >
+            <Trash2 size={14} /> Delete
+          </button>
+        </div>
+      )}
+
+      <div className="tpg-team-header" onClick={(e) => e.stopPropagation()}>
+        <h3 className="tpg-team-name">{team.name}</h3>
       </div>
 
       {team.description && <p className="tpg-team-desc">{team.description}</p>}
@@ -845,20 +993,23 @@ const TeamCard = ({ team, onRefresh }) => {
         {new Date(team.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
       </p>
 
+      {deleteError && <div className="tpg-error" style={{ marginBottom: 12, fontSize: '0.85rem' }}>{deleteError}</div>}
       {inviteError   && <div className="tpg-error"   style={{ marginBottom: 12, fontSize: '0.85rem' }}>{inviteError}</div>}
       {inviteSuccess && <div className="tpg-success" style={{ marginBottom: 12, fontSize: '0.85rem' }}><CheckCircle size={14} />{inviteSuccess}</div>}
+      {editError   && <div className="tpg-error"   style={{ marginBottom: 12, fontSize: '0.85rem' }}>{editError}</div>}
+      {editSuccess && <div className="tpg-success" style={{ marginBottom: 12, fontSize: '0.85rem' }}><CheckCircle size={14} />{editSuccess}</div>}
 
       <div className="tpg-team-btns">
         <button
           className="tpg-btn-outline"
-          onClick={(e) => { e.stopPropagation(); setShowMembers(!showMembers); setShowInvite(false); }}
+          onClick={(e) => { e.stopPropagation(); setShowMembers(!showMembers); setShowInvite(false); setShowEdit(false); setShowMenu(false); }}
         >
           {showMembers ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
           {showMembers ? 'Hide Members' : 'View Members'}
         </button>
         <button
           className="tpg-btn-outline"
-          onClick={(e) => { e.stopPropagation(); setShowInvite(!showInvite); setShowMembers(true); }}
+          onClick={(e) => { e.stopPropagation(); setShowInvite(!showInvite); setShowMembers(true); setShowEdit(false); setShowMenu(false); }}
         >
           <UserPlus size={13} />
           Invite
@@ -900,6 +1051,43 @@ const TeamCard = ({ team, onRefresh }) => {
               </button>
             </form>
           )}
+        </div>
+      )}
+
+      {showEdit && (
+        <div className="tpg-members-section" onClick={(e) => e.stopPropagation()}>
+          <p className="tpg-members-label">Edit Team</p>
+          <form className="tpg-form" onSubmit={handleEditTeam} style={{ gap: 12 }}>
+            <div className="tpg-form-group">
+              <label>Team Name</label>
+              <input 
+                className="tpg-input" 
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Team name"
+                required 
+                disabled={editLoading}
+              />
+            </div>
+            <div className="tpg-form-group">
+              <label>Description</label>
+              <input 
+                className="tpg-input" 
+                value={editDesc}
+                onChange={(e) => setEditDesc(e.target.value)}
+                placeholder="Team description (optional)"
+                disabled={editLoading}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button type="submit" className="tpg-btn-navy" disabled={editLoading} style={{ padding: '9px 16px', fontSize: '0.875rem', flex: 1 }}>
+                {editLoading ? 'Saving…' : 'Save Changes'}
+              </button>
+              <button type="button" className="tpg-btn-outline" onClick={() => { setShowEdit(false); setEditName(team.name); setEditDesc(team.description || ''); }} style={{ padding: '9px 16px', fontSize: '0.875rem' }}>
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

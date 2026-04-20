@@ -111,24 +111,36 @@ async def list_user_teams(
         
         teams = await get_user_teams(str(current_user.id))
         
-        # Enhance with members
+        # Enhance with members and their email addresses
         team_list = []
         for team in teams:
             members = await get_team_members(team["id"])
+            
+            # Fetch email for each member from Supabase auth
+            members_with_emails = []
+            for m in members:
+                email = ""
+                try:
+                    user_data = supabase_admin.auth.admin.get_user_by_id(m["user_id"])
+                    if user_data and user_data.user:
+                        email = user_data.user.email or ""
+                except Exception as e:
+                    logger.warning(f"⚠️ Could not fetch email for user {m['user_id']}: {str(e)}")
+                
+                members_with_emails.append(TeamMember(
+                    id=m["id"],
+                    user_id=m["user_id"],
+                    email=email,
+                    role=m["role"],
+                    joined_at=m["joined_at"]
+                ))
+            
             team_list.append(Team(
                 id=team["id"],
                 name=team["name"],
                 description=team.get("description"),
                 created_by=team["created_by"],
-                members=[
-                    TeamMember(
-                        id=m["id"],
-                        user_id=m["user_id"],
-                        email="",  # Would need to fetch from auth
-                        role=m["role"],
-                        joined_at=m["joined_at"]
-                    ) for m in members
-                ],
+                members=members_with_emails,
                 created_at=team["created_at"],
                 updated_at=team.get("updated_at")
             ))
@@ -167,20 +179,31 @@ async def get_team_details(
         if not team:
             raise HTTPException(status_code=404, detail="Team not found")
         
+        # Fetch email for each member from Supabase auth
+        members_with_emails = []
+        for m in members:
+            email = ""
+            try:
+                user_data = supabase_admin.auth.admin.get_user_by_id(m["user_id"])
+                if user_data and user_data.user:
+                    email = user_data.user.email or ""
+            except Exception as e:
+                logger.warning(f"⚠️ Could not fetch email for user {m['user_id']}: {str(e)}")
+            
+            members_with_emails.append(TeamMember(
+                id=m["id"],
+                user_id=m["user_id"],
+                email=email,
+                role=m["role"],
+                joined_at=m["joined_at"]
+            ))
+        
         return Team(
             id=team["id"],
             name=team["name"],
             description=team.get("description"),
             created_by=team["created_by"],
-            members=[
-                TeamMember(
-                    id=m["id"],
-                    user_id=m["user_id"],
-                    email="",
-                    role=m["role"],
-                    joined_at=m["joined_at"]
-                ) for m in members
-            ],
+            members=members_with_emails,
             created_at=team["created_at"],
             updated_at=team.get("updated_at")
         )
@@ -190,6 +213,105 @@ async def get_team_details(
     except Exception as e:
         logger.error(f"❌ Error fetching team: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching team: {str(e)}")
+
+
+@router.put("/teams/{team_id}", response_model=Team)
+async def update_team(
+    team_id: str,
+    team_data: TeamCreate,
+    current_user = Depends(get_current_user)
+):
+    """
+    Update a team (name and description)
+    Only team creator can update
+    """
+    try:
+        logger.info(f"📝 Updating team {team_id}")
+        
+        # Get team to verify ownership
+        teams = await get_user_teams(str(current_user.id))
+        team = next((t for t in teams if t["id"] == team_id), None)
+        
+        if not team:
+            raise HTTPException(status_code=404, detail="Team not found")
+        
+        # Only creator can update
+        if team["created_by"] != str(current_user.id):
+            raise HTTPException(status_code=403, detail="Only team creator can update team")
+        
+        # Update in database
+        from app.core.database import supabase_admin
+        result = supabase_admin.table("teams").update({
+            "name": team_data.name,
+            "description": team_data.description,
+            "updated_at": "now()"
+        }).eq("id", team_id).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=400, detail="Failed to update team")
+        
+        updated_team = result.data[0]
+        members = await get_team_members(team_id)
+        
+        return Team(
+            id=updated_team["id"],
+            name=updated_team["name"],
+            description=updated_team.get("description"),
+            created_by=updated_team["created_by"],
+            members=[
+                TeamMember(
+                    id=m["id"],
+                    user_id=m["user_id"],
+                    email="",
+                    role=m["role"],
+                    joined_at=m["joined_at"]
+                ) for m in members
+            ],
+            created_at=updated_team["created_at"],
+            updated_at=updated_team.get("updated_at")
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error updating team: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error updating team: {str(e)}")
+
+
+@router.delete("/teams/{team_id}")
+async def delete_team(
+    team_id: str,
+    current_user = Depends(get_current_user)
+):
+    """
+    Delete a team
+    Only team creator can delete
+    """
+    try:
+        logger.info(f"🗑️ Deleting team {team_id}")
+        
+        # Get team to verify ownership
+        teams = await get_user_teams(str(current_user.id))
+        team = next((t for t in teams if t["id"] == team_id), None)
+        
+        if not team:
+            raise HTTPException(status_code=404, detail="Team not found")
+        
+        # Only creator can delete
+        if team["created_by"] != str(current_user.id):
+            raise HTTPException(status_code=403, detail="Only team creator can delete team")
+        
+        # Delete from database
+        from app.core.database import supabase_admin
+        result = supabase_admin.table("teams").delete().eq("id", team_id).execute()
+        
+        return {"message": "Team deleted successfully", "team_id": team_id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error deleting team: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error deleting team: {str(e)}")
 
 
 @router.post("/teams/{team_id}/members")

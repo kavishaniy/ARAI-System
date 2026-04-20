@@ -6,6 +6,8 @@ const TEAM_ENDPOINTS = {
   CREATE: '/teams',
   LIST: '/teams',
   GET: (teamId) => `/teams/${teamId}`,
+  UPDATE: (teamId) => `/teams/${teamId}`,
+  DELETE: (teamId) => `/teams/${teamId}`,
   ADD_MEMBER: (teamId) => `/teams/${teamId}/members`,
   UPDATE_MEMBER: (teamId, userId) => `/teams/${teamId}/members/${userId}`,
   REMOVE_MEMBER: (teamId, userId) => `/teams/${teamId}/members/${userId}`,
@@ -53,6 +55,37 @@ export const teamService = {
       return response.data;
     } catch (error) {
       console.error('❌ Error fetching team:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a team
+   */
+  async updateTeam(teamId, name, description = '') {
+    try {
+      const response = await api.put(TEAM_ENDPOINTS.UPDATE(teamId), {
+        name,
+        description,
+      });
+      console.log('✅ Team updated:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error updating team:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a team
+   */
+  async deleteTeam(teamId) {
+    try {
+      const response = await api.delete(TEAM_ENDPOINTS.DELETE(teamId));
+      console.log('✅ Team deleted:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error deleting team:', error);
       throw error;
     }
   },
