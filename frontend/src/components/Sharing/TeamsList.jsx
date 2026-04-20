@@ -378,10 +378,6 @@ const TeamCard = ({ team, onRefresh }) => {
   // Projects
   const [teamProjects, setTeamProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
-  const [showCreateProject, setShowCreateProject] = useState(false);
-  const [projectName, setProjectName] = useState('');
-  const [projectDesc, setProjectDesc] = useState('');
-  const [createError, setCreateError] = useState(null);
 
   // Analysis & History
   const [activeTab, setActiveTab] = useState('projects');
@@ -414,8 +410,15 @@ const TeamCard = ({ team, onRefresh }) => {
     setInviteError(null);
     setInviteSuccess(null);
     try {
-      await teamService.inviteTeamMember(team.id, email, 'member');
-      setInviteSuccess(`Collaboration invite sent to ${email}`);
+      const result = await teamService.inviteTeamMember(team.id, email, 'member');
+      
+      // Handle both successful and pending_signup status
+      if (result.status === 'pending_signup' || result.status === 'not_found') {
+        setInviteSuccess(`✉️ ${result.message} (they'll be automatically added after signing up)`);
+      } else {
+        setInviteSuccess(`Collaboration invite sent to ${email}`);
+      }
+      
       setInviteEmail('');
       setShowInvite(false);
       onRefresh();
@@ -424,79 +427,6 @@ const TeamCard = ({ team, onRefresh }) => {
       setInviteError(typeof errorMsg === 'string' ? errorMsg : 'Failed to send invite.');
     } finally {
       setInviteLoading(false);
-    }
-  };
-
-  const handleCreateProject = async (e) => {
-    e.preventDefault();
-    if (!projectName.trim()) {
-      setCreateError('Project name is required.');
-      return;
-    }
-
-    try {
-      setCreateError(null);
-      
-      // Create a unique project name by appending team name + timestamp to avoid duplicates
-      // This ensures uniqueness even if user creates multiple projects with same name
-      // Format: "projectName (teamName) - timestamp"
-      const timestamp = Date.now();
-      const uniqueProjectName = `${projectName.trim()} (${team.name}) - ${timestamp}`;
-      
-      console.log('Creating project with unique name:', uniqueProjectName);
-      
-      const response = await projectService.createProject(
-        uniqueProjectName,
-        projectDesc.trim()
-      );
-      
-      // Now share this project with the team
-      if (response.id) {
-        await sharingService.shareProject(
-          response.id,
-          [team.id],  // Share with this team
-          [],         // No individual user emails
-          'editor'    // Team members get editor access
-        );
-      }
-      
-      setProjectName('');
-      setProjectDesc('');
-      setShowCreateProject(false);
-      await fetchTeamProjects();
-    } catch (err) {
-      console.error('Full error creating project:', err);
-      console.error('Error details:', err.response?.data);
-      let errorMsg = 'Failed to create project.';
-      
-      // Check for duplicate key error
-      if (err.response?.data?.code === '23505' || 
-          err.response?.data?.message?.includes('duplicate key')) {
-        errorMsg = '⚠️ A project with this name already exists. Try a different name.';
-        console.error('Duplicate key detected:', err.response?.data);
-      } else if (err.response?.status === 401) {
-        errorMsg = '🔐 Session expired. Please log in again.';
-        localStorage.removeItem('access_token');
-      } else if (err.response?.status === 500) {
-        errorMsg = '⚠️ Server error (500). Backend may be down or experiencing issues.';
-        console.error('Server response:', err.response?.data);
-      } else if (err.response?.status === 403) {
-        errorMsg = '❌ Access denied. You may not have permission to create projects.';
-      } else if (err.message === 'Network Error') {
-        errorMsg = '🌐 Network error. Check if backend is running on localhost:8000';
-      } else if (err.response?.data?.detail) {
-        errorMsg = err.response.data.detail;
-      } else if (err.response?.data?.message) {
-        errorMsg = err.response.data.message;
-      } else if (err.message) {
-        errorMsg = err.message;
-      }
-      
-      // Extract just the error message if it contains a dict
-      if (typeof errorMsg === 'object') {
-        errorMsg = errorMsg.message || JSON.stringify(errorMsg);
-      }
-      setCreateError(typeof errorMsg === 'string' ? errorMsg : 'Failed to create project.');
     }
   };
 
@@ -610,44 +540,13 @@ const TeamCard = ({ team, onRefresh }) => {
           <div className="projects-tab-content">
             <div className="projects-header">
               <h4 className="section-title">Shared Projects</h4>
-              <button className="btn-small" onClick={() => setShowCreateProject(!showCreateProject)}>
-                {showCreateProject ? 'Cancel' : <><Plus size={12} /> New Project</>}
-              </button>
             </div>
-
-            {createError && <div className="alert-error" style={{ marginBottom: 14 }}>{createError}</div>}
-
-            {showCreateProject && (
-              <form className="create-project-form" onSubmit={handleCreateProject}>
-                <div className="form-row">
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    placeholder="Project name"
-                    required
-                  />
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={projectDesc}
-                    onChange={(e) => setProjectDesc(e.target.value)}
-                    placeholder="Description (optional)"
-                  />
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button type="submit" className="btn-create">Create</button>
-                  <button type="button" className="btn-cancel" onClick={() => setShowCreateProject(false)}>Cancel</button>
-                </div>
-              </form>
-            )}
 
             {projectsLoading ? (
               <div className="loading-state"><div className="spinner" /> Loading projects…</div>
             ) : teamProjects.length === 0 ? (
               <div className="empty-state">
-                <p>No projects yet. Create one to get started!</p>
+                <p>No projects yet.</p>
               </div>
             ) : (
               <div className="projects-grid">

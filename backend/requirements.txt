@@ -11,6 +11,9 @@ requests==2.31.0
 # Database & Authentication
 supabase==2.0.3
 
+# Email (collaboration invitations)
+sendgrid>=6.11.0
+
 # Data Validation
 pydantic==2.5.0
 pydantic-settings==2.1.0

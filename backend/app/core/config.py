@@ -67,6 +67,15 @@ class Settings(BaseSettings):
     FIGMA_CLIENT_SECRET: Optional[str] = None
     FIGMA_REDIRECT_URI: Optional[str] = None
     
+    # Email
+    SENDGRID_API_KEY: Optional[str] = None
+    FROM_EMAIL: str = "noreply@arai-system.com"
+    FRONTEND_URL: str = "http://localhost:5173"
+    SMTP_HOST: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+
     # Session/Cookies
     SESSION_SECRET_KEY: str = "your-session-secret-key-change-in-production"
     

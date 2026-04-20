@@ -474,17 +474,29 @@ async def add_team_member(
 
 async def get_user_teams(user_id: str) -> List[Dict]:
     """
-    Get all teams that a user is a member of
+    Get all teams that a user is a member of.
+    Queries team_members first (creator is always added as 'owner' member),
+    then fetches the corresponding team rows.
     """
     try:
+        member_response = supabase_admin.table("team_members") \
+            .select("team_id") \
+            .eq("user_id", user_id) \
+            .execute()
+
+        team_ids = [m["team_id"] for m in member_response.data or []]
+
+        if not team_ids:
+            return []
+
         response = supabase_admin.table("teams") \
             .select("*") \
-            .or_(f"created_by.eq.{user_id},team_members.user_id.eq.{user_id}") \
+            .in_("id", team_ids) \
             .execute()
-        
+
         logger.info(f"✅ Retrieved {len(response.data)} teams for user {user_id}")
         return response.data
-        
+
     except Exception as e:
         logger.error(f"❌ Error fetching user teams: {str(e)}")
         raise

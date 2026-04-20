@@ -170,7 +170,6 @@ class ProjectWithShares(BaseModel):
 
 
 class ShareProject(BaseModel):
-    project_id: UUID
     team_ids: Optional[list[UUID]] = []
     user_emails: Optional[list[str]] = []
     access_level: str = Field("viewer", pattern="^(editor|viewer)$")

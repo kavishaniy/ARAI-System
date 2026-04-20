@@ -23,6 +23,7 @@ from app.core.database import (
     get_user_by_email,
     supabase_admin
 )
+from app.services.email import send_collaboration_invite
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -181,7 +182,8 @@ async def invite_member_by_email(
 ):
     """
     Invite a user to a team by email address (must be team owner/admin)
-    Looks up the user by email and adds them to the team
+    Looks up the user by email and adds them to the team.
+    If user doesn't exist yet, sends invitation email for them to sign up.
     """
     try:
         logger.info(f"📧 Inviting {email} to team {team_id}")
@@ -197,7 +199,31 @@ async def invite_member_by_email(
         user = await get_user_by_email(email)
         
         if not user:
-            raise HTTPException(status_code=404, detail=f"User with email '{email}' not found")
+            # User doesn't exist yet - send them an invitation email to sign up first
+            logger.info(f"📧 User {email} doesn't exist yet, sending invitation to sign up")
+            
+            try:
+                await send_collaboration_invite(
+                    to_email=email,
+                    project_name="team invitation",
+                    inviter_email=current_user.email or str(current_user.id),
+                    user_exists=False,
+                )
+                logger.info(f"✅ Invitation email sent to {email} to sign up and join team")
+                return {
+                    "message": f"Invitation sent to {email}. They'll be added to the team once they sign up.",
+                    "user_email": email,
+                    "status": "pending_signup",
+                    "note": "The user will be automatically added to the team after they create an account."
+                }
+            except Exception as email_err:
+                logger.warning(f"⚠️ Failed to send invitation email: {str(email_err)}")
+                return {
+                    "message": f"User {email} not found in the system. They need to sign up first.",
+                    "user_email": email,
+                    "status": "not_found",
+                    "error": "Could not send invitation email. Please check the email address."
+                }
         
         # Check if user is already a member
         existing_member = next((m for m in members if m["user_id"] == user["id"]), None)
@@ -207,7 +233,15 @@ async def invite_member_by_email(
         
         # Add user to team
         result = await add_team_member(team_id, user["id"], role)
-        
+
+        # Send invitation email (non-blocking — failure doesn't abort the request)
+        await send_collaboration_invite(
+            to_email=email,
+            project_name=f"team invitation",
+            inviter_email=current_user.email or str(current_user.id),
+            user_exists=True,
+        )
+
         logger.info(f"✅ Successfully invited {email} to team {team_id}")
         return {
             "message": f"User {email} invited to team successfully",
@@ -327,23 +361,38 @@ async def share_project(
                 logger.error(f"❌ Error sharing with team {team_id}: {str(e)}")
         
         # Share with users (by email)
+        inviter_email = current_user.email or str(current_user.id)
+        project_name = project.get("name", "a project")
+
         for email in share_data.user_emails or []:
             try:
-                # Look up user by email
-                user_response = supabase_admin.table("auth.users") \
-                    .select("id") \
-                    .eq("email", email) \
-                    .execute()
-                
-                if user_response.data:
-                    user_id = user_response.data[0]["id"]
+                # Look up user by email using the correct Supabase admin API
+                user = await get_user_by_email(email)
+
+                if user:
                     share = await share_project_with_user(
                         project_id=project_id,
-                        user_id=user_id,
+                        user_id=user["id"],
                         access_level=share_data.access_level,
                         shared_by=str(current_user.id)
                     )
                     shares.append(share)
+                    # Notify existing user about the shared project
+                    await send_collaboration_invite(
+                        to_email=email,
+                        project_name=project_name,
+                        inviter_email=inviter_email,
+                        user_exists=True,
+                    )
+                else:
+                    # User hasn't signed up yet — send a sign-up invitation
+                    await send_collaboration_invite(
+                        to_email=email,
+                        project_name=project_name,
+                        inviter_email=inviter_email,
+                        user_exists=False,
+                    )
+                    logger.info(f"📧 Invitation sent to unregistered email: {email}")
             except Exception as e:
                 logger.error(f"❌ Error sharing with user {email}: {str(e)}")
         
