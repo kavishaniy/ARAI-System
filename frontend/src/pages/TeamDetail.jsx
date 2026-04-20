@@ -4,7 +4,7 @@ import { ArrowLeft, Upload, Layers, Clock, Users } from 'lucide-react';
 import axios from 'axios';
 import UploadAnalysis from '../components/Analysis/UploadAnalysis';
 import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
-import SimplifiedAnalysisResults from '../components/Analysis/SimplifiedAnalysisResults';
+import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 import { teamService } from '../services/sharing';
 import { analysisService } from '../services/analysis';
 import './TeamDetail.css';
@@ -23,7 +23,8 @@ const TeamDetail = () => {
   const [activeTab, setActiveTab] = useState('analysis');
   
   // Analysis states
-  const [uploadResult, setUploadResult] = useState(null);
+  const [uploadResults, setUploadResults] = useState([]);
+  const [showUploadForm, setShowUploadForm] = useState(false);
   const [figmaStep, setFigmaStep] = useState('input');
   const [figmaResults, setFigmaResults] = useState(null);
   const [figmaLoading, setFigmaLoading] = useState(false);
@@ -100,7 +101,25 @@ const TeamDetail = () => {
     setFigmaStep('input');
   };
 
-  const resetUpload = () => setUploadResult(null);
+  // Handle upload analysis completion and accumulate results
+  const handleUploadAnalysisComplete = (result) => {
+    setUploadResults(prev => [...prev, result]);
+    setShowUploadForm(false); // Hide form after upload
+  };
+
+  // Reset uploads to start over
+  const resetUpload = () => {
+    setUploadResults([]);
+    setShowUploadForm(false);
+  };
+
+  // Transform upload results into multiple analyses format
+  const getUploadResultsForMultiple = () => {
+    if (!uploadResults || uploadResults.length === 0) return null;
+    return {
+      analyses: uploadResults
+    };
+  };
 
   if (loading) {
     return (
@@ -180,16 +199,68 @@ const TeamDetail = () => {
         {/* Upload Analysis Tab */}
         {activeTab === 'analysis' && (
           <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
-            {uploadResult ? (
-              <div>
-                <button className="btn-back" onClick={resetUpload}>
-                  <ArrowLeft size={14} /> New Analysis
-                </button>
-                <SimplifiedAnalysisResults results={uploadResult} />
-              </div>
-            ) : (
-              <UploadAnalysis onAnalysisComplete={setUploadResult} />
-            )}
+            {uploadResults.length > 0 && !showUploadForm ? (
+              <>
+                <MultipleAnalysisResults results={getUploadResultsForMultiple()} onNewAnalysis={resetUpload} />
+                {/* Add more designs button */}
+                <div style={{ marginTop: '32px', padding: '24px', backgroundColor: '#f5f4f0', borderRadius: '12px', textAlign: 'center' }}>
+                  <p style={{ marginBottom: '16px', color: '#666', fontSize: '0.95rem' }}>Want to analyze more designs?</p>
+                  <button
+                    onClick={() => setShowUploadForm(true)} // Show upload form while keeping results
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#2563eb',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+                  >
+                    <Upload size={14} /> Add Another Design
+                  </button>
+                </div>
+              </>
+            ) : null}
+
+            {showUploadForm && uploadResults.length > 0 ? (
+              <>
+                <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <button
+                    onClick={() => setShowUploadForm(false)}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#f5f4f0',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#e8e8e8'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#f5f4f0'}
+                  >
+                    <ArrowLeft size={14} /> Back to Results
+                  </button>
+                </div>
+                <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+              </>
+            ) : null}
+
+            {!showUploadForm && uploadResults.length === 0 ? (
+              <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+            ) : null}
           </div>
         )}
 
@@ -197,37 +268,7 @@ const TeamDetail = () => {
         {activeTab === 'figma' && (
           <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
             {figmaStep === 'results' && figmaResults ? (
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                  <button className="btn-back" style={{ margin: 0 }} onClick={resetFigma}>
-                    <ArrowLeft size={14} /> Back
-                  </button>
-                  <button className="btn-primary" onClick={resetFigma}>
-                    <Upload size={14} /> New Analysis
-                  </button>
-                </div>
-                <div className="figma-results">
-                  {figmaResults.analyses && figmaResults.analyses.length > 0 ? (
-                    <div className="results-grid">
-                      {figmaResults.analyses.map((analysis, idx) => (
-                        <div key={idx} className="result-card">
-                          <h3>{analysis.frame_name || `Frame ${idx + 1}`}</h3>
-                          <div className="result-details">
-                            {analysis.summary && <p>{analysis.summary}</p>}
-                            {analysis.metrics && (
-                              <div className="metrics">
-                                <p>🎯 Score: {analysis.metrics.overall_score || 'N/A'}</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No analysis results available</p>
-                  )}
-                </div>
-              </div>
+              <MultipleAnalysisResults results={figmaResults} onNewAnalysis={resetFigma} />
             ) : (
               <>
                 {figmaError && (

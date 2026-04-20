@@ -1193,6 +1193,19 @@ const AnalysisTab = () => {
   const resetFigma = () => { setFigmaResults(null); setFigmaError(''); setFigmaStep('input'); };
   const resetUpload = () => setUploadResult(null);
 
+  // Transform single upload result into multiple analyses format
+  const getUploadResultForMultiple = () => {
+    if (!uploadResult) return null;
+    // If uploadResult is already in the multiple format (has analyses array), return as is
+    if (uploadResult.analyses && Array.isArray(uploadResult.analyses)) {
+      return uploadResult;
+    }
+    // Otherwise wrap the single result into the multiple format
+    return {
+      analyses: [uploadResult]
+    };
+  };
+
   return (
     <div>
       <div className="tpg-subtabs">
@@ -1212,12 +1225,7 @@ const AnalysisTab = () => {
 
       {subTab === 'upload' && (
         uploadResult ? (
-          <div>
-            <button className="tpg-back-btn" onClick={resetUpload}>
-              <ArrowLeft size={13} /> New Analysis
-            </button>
-            <SimplifiedAnalysisResults results={uploadResult} />
-          </div>
+          <MultipleAnalysisResults results={getUploadResultForMultiple()} onNewAnalysis={resetUpload} />
         ) : (
           <UploadAnalysis onAnalysisComplete={setUploadResult} />
         )
