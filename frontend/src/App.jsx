@@ -9,6 +9,7 @@ import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
 import FigmaAnalysis from './pages/FigmaAnalysis';
 import TeamsPage from './pages/Teams';
+import TeamDetail from './pages/TeamDetail';
 import AnalysisReport from './components/Analysis/AnalysisReport';
 import Projects from './components/Pages/Projects';
 import HistoryPage from './components/Pages/HistoryPage';
@@ -113,6 +114,14 @@ const AppLayout = () => {
           element={
             <ProtectedRoute>
               <TeamsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teams/:teamId"
+          element={
+            <ProtectedRoute>
+              <TeamDetail />
             </ProtectedRoute>
           }
         />

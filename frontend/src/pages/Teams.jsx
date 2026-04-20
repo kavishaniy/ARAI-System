@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Users, Upload, Layers, Clock, Plus, X, ArrowLeft, FilePlus,
   Trash2, Calendar, Eye, Search, UserPlus, Mail, CheckCircle,
@@ -844,6 +845,7 @@ const EmailTagsInput = ({ emails, onChange }) => {
    TeamCard
 ──────────────────────────────────────────────────────────── */
 const TeamCard = ({ team, onRefresh }) => {
+  const navigate = useNavigate();
   const [showMembers, setShowMembers] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -879,8 +881,14 @@ const TeamCard = ({ team, onRefresh }) => {
   };
 
   return (
-    <div className="tpg-card">
-      <div className="tpg-team-header">
+    <div 
+      className="tpg-card"
+      onClick={() => navigate(`/teams/${team.id}`)}
+      style={{ cursor: 'pointer', transition: 'transform 0.2s ease' }}
+      onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+      onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+    >
+      <div className="tpg-team-header" onClick={(e) => e.stopPropagation()}>
         <h3 className="tpg-team-name">{team.name}</h3>
         <span className="tpg-member-badge">
           <Users size={11} />{team.members?.length || 0}
@@ -900,14 +908,14 @@ const TeamCard = ({ team, onRefresh }) => {
       <div className="tpg-team-btns">
         <button
           className="tpg-btn-outline"
-          onClick={() => { setShowMembers(!showMembers); setShowInvite(false); }}
+          onClick={(e) => { e.stopPropagation(); setShowMembers(!showMembers); setShowInvite(false); }}
         >
           {showMembers ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
           {showMembers ? 'Hide Members' : 'View Members'}
         </button>
         <button
           className="tpg-btn-outline"
-          onClick={() => { setShowInvite(!showInvite); setShowMembers(true); }}
+          onClick={(e) => { e.stopPropagation(); setShowInvite(!showInvite); setShowMembers(true); }}
         >
           <UserPlus size={13} />
           Invite
@@ -915,7 +923,7 @@ const TeamCard = ({ team, onRefresh }) => {
       </div>
 
       {showMembers && (
-        <div className="tpg-members-section">
+        <div className="tpg-members-section" onClick={(e) => e.stopPropagation()}>
           <p className="tpg-members-label">Members ({team.members?.length || 0})</p>
 
           {(!team.members || team.members.length === 0) ? (
@@ -934,7 +942,7 @@ const TeamCard = ({ team, onRefresh }) => {
           )}
 
           {showInvite && (
-            <form className="tpg-invite-row" onSubmit={handleInvite}>
+            <form className="tpg-invite-row" onSubmit={handleInvite} onClick={(e) => e.stopPropagation()}>
               <input
                 type="email"
                 className="tpg-input"
