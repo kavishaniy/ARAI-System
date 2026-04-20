@@ -26,6 +26,13 @@ export const analysisService = {
     return response.data;
   },
 
+  async getTeamHistory(teamId, page = 1, limit = 100) {
+    const response = await api.get(`/teams/${teamId}/analysis-history`, {
+      params: { page, limit },
+    });
+    return response.data;
+  },
+
   async deleteAnalysis(analysisId) {
     const response = await api.delete(`/analysis/results/${analysisId}`);
     return response.data;

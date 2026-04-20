@@ -314,6 +314,63 @@ async def delete_team(
         raise HTTPException(status_code=500, detail=f"Error deleting team: {str(e)}")
 
 
+@router.get("/teams/{team_id}/analysis-history")
+async def get_team_analysis_history(
+    team_id: str,
+    page: int = Query(1, ge=1),
+    limit: int = Query(100, ge=1, le=500),
+    current_user = Depends(get_current_user)
+):
+    """
+    Get all analysis history for a team (all members' analyses)
+    """
+    try:
+        logger.info(f"📋 Fetching analysis history for team {team_id}")
+        
+        # Verify current user is a member of the team
+        members = await get_team_members(team_id)
+        current_member = next((m for m in members if m["user_id"] == str(current_user.id)), None)
+        
+        if not current_member:
+            raise HTTPException(status_code=403, detail="You are not a member of this team")
+        
+        # Get all team members' user IDs
+        team_member_ids = [m["user_id"] for m in members]
+        
+        # Fetch analyses for all team members
+        from app.core.database import supabase_admin
+        result = supabase_admin.table("analyses")\
+            .select("*")\
+            .in_("user_id", team_member_ids)\
+            .order("created_at", desc=True)\
+            .range((page - 1) * limit, page * limit - 1)\
+            .execute()
+        
+        analyses = result.data or []
+        
+        # Get total count
+        count_result = supabase_admin.table("analyses")\
+            .select("id", count="exact")\
+            .in_("user_id", team_member_ids)\
+            .execute()
+        
+        total = count_result.count or 0
+        
+        return {
+            "analyses": analyses,
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "pages": (total + limit - 1) // limit
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error fetching team analysis history: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching analysis history: {str(e)}")
+
+
 @router.post("/teams/{team_id}/members")
 async def add_member_to_team(
     team_id: str,

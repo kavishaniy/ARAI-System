@@ -59,23 +59,23 @@ const TeamDetail = () => {
   }, [teamId]);
 
   useEffect(() => {
+    const fetchHistory = async () => {
+      setHistoryLoading(true);
+      try {
+        const response = await analysisService.getTeamHistory(teamId, 1, 100);
+        setHistory(response.analyses || []);
+      } catch (err) {
+        console.error('Error fetching history:', err);
+        setHistory([]);
+      } finally {
+        setHistoryLoading(false);
+      }
+    };
+
     if (activeTab === 'history') {
       fetchHistory();
     }
   }, [activeTab, teamId]);
-
-  const fetchHistory = async () => {
-    setHistoryLoading(true);
-    try {
-      const response = await analysisService.getHistory(1, 100);
-      setHistory(response.analyses || []);
-    } catch (err) {
-      console.error('Error fetching history:', err);
-      setHistory([]);
-    } finally {
-      setHistoryLoading(false);
-    }
-  };
 
   const handleFigmaSubmit = async ({ frameUrls }) => {
     setFigmaError('');
