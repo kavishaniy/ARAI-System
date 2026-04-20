@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Users, Plus, X, UserPlus, Mail, CheckCircle, Calendar,
-  ChevronDown, ChevronUp, Upload, ArrowLeft,
+  Users, Plus, UserPlus, Calendar, CheckCircle,
+  ChevronDown, ChevronUp,
 } from 'lucide-react';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
-import UploadAnalysis from '../components/Analysis/UploadAnalysis';
-import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
-import { teamService, sharingService } from '../services/sharing';
-import { projectService } from '../services/projects';
+import { teamService } from '../services/sharing';
 
 const css = `
   /* ── Layout ─────────────────────────────────────── */
@@ -788,53 +785,6 @@ const css = `
 `;
 
 /* ───────────────────────────────────────────────────────────
-   EmailTagsInput
-──────────────────────────────────────────────────────────── */
-const EmailTagsInput = ({ emails, onChange }) => {
-  const [input, setInput] = useState('');
-
-  const addEmail = () => {
-    const val = input.trim().toLowerCase();
-    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || emails.includes(val)) {
-      setInput('');
-      return;
-    }
-    onChange([...emails, val]);
-    setInput('');
-  };
-
-  const removeEmail = (email) => onChange(emails.filter((e) => e !== email));
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addEmail(); }
-    else if (e.key === 'Backspace' && !input && emails.length > 0) removeEmail(emails[emails.length - 1]);
-  };
-
-  return (
-    <>
-      <div className="tpg-email-tags">
-        {emails.map((email) => (
-          <span key={email} className="tpg-email-tag">
-            {email}
-            <button type="button" onClick={() => removeEmail(email)}><X size={11} /></button>
-          </span>
-        ))}
-        <input
-          className="tpg-email-input"
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onBlur={addEmail}
-          placeholder={emails.length === 0 ? 'colleague@example.com' : 'Add another…'}
-        />
-      </div>
-      <p className="tpg-email-hint">Press Enter or comma after each email address</p>
-    </>
-  );
-};
-
-/* ───────────────────────────────────────────────────────────
    TeamCard
 ──────────────────────────────────────────────────────────── */
 const TeamCard = ({ team, onRefresh }) => {
@@ -960,53 +910,11 @@ const TeamCard = ({ team, onRefresh }) => {
    TeamsTab
 ──────────────────────────────────────────────────────────── */
 const TeamsTab = ({ teams, loading, error, onRefresh }) => {
-  const [showCreateProject, setShowCreateProject] = useState(false);
-  const [projectName, setProjectName] = useState('');
-  const [projectDesc, setProjectDesc] = useState('');
-  const [inviteEmails, setInviteEmails] = useState([]);
-  const [createLoading, setCreateLoading] = useState(false);
-  const [createError, setCreateError] = useState(null);
-  const [createSuccess, setCreateSuccess] = useState(null);
-
   const [showCreateTeam, setShowCreateTeam] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [teamDesc, setTeamDesc] = useState('');
   const [teamLoading, setTeamLoading] = useState(false);
   const [teamError, setTeamError] = useState(null);
-
-  // Upload and analysis state
-  const [showUploadAnalysis, setShowUploadAnalysis] = useState(false);
-  const [uploadResults, setUploadResults] = useState([]);
-  const [showUploadForm, setShowUploadForm] = useState(false);
-
-  const handleCreateProject = async (e) => {
-    e.preventDefault();
-    if (!projectName.trim()) { setCreateError('Project name is required.'); return; }
-    setCreateLoading(true);
-    setCreateError(null);
-    setCreateSuccess(null);
-    try {
-      const project = await projectService.createProject(projectName.trim(), projectDesc.trim());
-      const pid = project.id || project.project_id;
-      if (inviteEmails.length > 0 && pid) {
-        await sharingService.shareProject(pid, [], inviteEmails, 'editor');
-      }
-      const emailList = inviteEmails.length > 0 ? inviteEmails.join(', ') : null;
-      setCreateSuccess(
-        emailList
-          ? `Project "${projectName.trim()}" created! Collaboration invites sent to: ${emailList}`
-          : `Project "${projectName.trim()}" created successfully.`
-      );
-      setProjectName('');
-      setProjectDesc('');
-      setInviteEmails([]);
-      setShowCreateProject(false);
-    } catch (err) {
-      setCreateError(err.response?.data?.detail || 'Failed to create project. Please try again.');
-    } finally {
-      setCreateLoading(false);
-    }
-  };
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -1025,230 +933,27 @@ const TeamsTab = ({ teams, loading, error, onRefresh }) => {
     }
   };
 
-  // Handle upload analysis completion and accumulate results
-  const handleUploadAnalysisComplete = (result) => {
-    console.log('📊 handleUploadAnalysisComplete called with result:', result);
-    if (result) {
-      // Log all properties to see what's available
-      console.log('📊 Result keys:', Object.keys(result));
-      console.log('📊 Result preview:', result.preview);
-      console.log('📊 Result arai_score:', result.arai_score);
-      console.log('📊 Result arai_breakdown:', result.arai_breakdown);
-      
-      // Ensure result has the required fields for MultipleAnalysisResults
-      const formattedResult = {
-        designName: result.design_name || result.designName || 'Untitled Design',
-        arai_score: result.arai_score || 0,
-        arai_breakdown: result.arai_breakdown || { accessibility: 0, readability: 0, attention: 0, overall: 0 },
-        overall_grade: result.overall_grade || 'F',
-        preview: result.preview || null,
-        accessibility: result.accessibility || result.arai_breakdown?.accessibility || 0,
-        readability: result.readability || result.arai_breakdown?.readability || 0,
-        attention: result.attention || result.arai_breakdown?.attention || 0,
-        ...result // Merge in case there are other fields
-      };
-      
-      console.log('📊 Formatted result:', formattedResult);
-      
-      setUploadResults(prev => {
-        const updated = [...prev, formattedResult];
-        console.log('📊 Updated uploadResults array:', updated);
-        console.log('📊 uploadResults length:', updated.length);
-        return updated;
-      });
-      setShowUploadForm(false); // Hide form after upload
-      setShowUploadAnalysis(true); // Make sure upload analysis section is visible
-    } else {
-      console.warn('⚠️ Result is null or undefined');
-    }
-  };
-
-  // Reset uploads to start over
-  const resetUpload = () => {
-    setUploadResults([]);
-    setShowUploadForm(false);
-    setShowUploadAnalysis(false);
-  };
-
-  // Transform upload results into multiple analyses format
-  const getUploadResultForMultiple = () => {
-    console.log('📊 getUploadResultForMultiple called');
-    console.log('📊 uploadResults state:', uploadResults);
-    console.log('📊 uploadResults length:', uploadResults.length);
-    
-    if (!uploadResults || uploadResults.length === 0) {
-      console.log('📊 uploadResults is empty, returning null');
-      return null;
-    }
-    
-    const formatted = {
-      analyses: uploadResults
-    };
-    console.log('📊 getUploadResultForMultiple returning:', formatted);
-    console.log('📊 analyses array length:', formatted.analyses.length);
-    console.log('📊 first analysis:', formatted.analyses[0]);
-    return formatted;
-  };
-
   return (
     <div>
-      {/* ── Create Project Banner ── */}
+      {/* ── Create Team Banner ── */}
       <div className="tpg-create-banner">
         <div>
-          <h2>Start a New Project</h2>
-          <p>Create a shared project and invite collaborators by email — they'll receive an invite instantly.</p>
+          <h2>Create a New Team Project</h2>
+          <p>Set up a team and start collaborating with your team members — invite them by email instantly.</p>
         </div>
         <button
           className="tpg-btn-banner"
-          onClick={() => { setShowCreateProject(!showCreateProject); setCreateSuccess(null); setCreateError(null); }}
+          onClick={() => { setShowCreateTeam(!showCreateTeam); setTeamError(null); }}
         >
           <Plus size={15} />
-          {showCreateProject ? 'Cancel' : 'Create Project'}
-        </button>
-      </div>
-
-      {createSuccess && (
-        <div className="tpg-success" style={{ marginBottom: 22 }}>
-          <CheckCircle size={15} />{createSuccess}
-        </div>
-      )}
-
-      {showCreateProject && (
-        <div className="tpg-card" style={{ marginBottom: 28 }}>
-          <h3 className="tpg-card-title">New Shared Project</h3>
-          <p className="tpg-card-subtitle">Set up your project and invite team members by email in one step.</p>
-
-          {createError && <div className="tpg-error" style={{ marginBottom: 16 }}>{createError}</div>}
-
-          <form className="tpg-form" onSubmit={handleCreateProject}>
-            <div className="tpg-form-row">
-              <div className="tpg-form-group">
-                <label>Project Name *</label>
-                <input className="tpg-input" value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  placeholder="e.g., Mobile App Redesign" required />
-              </div>
-              <div className="tpg-form-group">
-                <label>Description</label>
-                <input className="tpg-input" value={projectDesc}
-                  onChange={(e) => setProjectDesc(e.target.value)}
-                  placeholder="Brief description (optional)" />
-              </div>
-            </div>
-
-            <div className="tpg-form-group">
-              <label><Mail size={13} />Invite Collaborators by Email</label>
-              <EmailTagsInput emails={inviteEmails} onChange={setInviteEmails} />
-            </div>
-
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <button type="submit" className="tpg-btn-navy" disabled={createLoading}>
-                {createLoading ? 'Creating…' : <><Plus size={14} /> Create &amp; Send Invites</>}
-              </button>
-              <button type="button" className="tpg-btn-outline" onClick={() => setShowCreateProject(false)}>
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <hr className="tpg-divider" />
-
-      {/* ── Upload & Analysis Section ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-        <h2 className="tpg-section-heading" style={{ margin: 0 }}>Design Analysis</h2>
-        {!showUploadAnalysis && uploadResults.length === 0 && (
-          <button className="tpg-btn-outline" onClick={() => setShowUploadAnalysis(true)}>
-            <Upload size={13} /> Analyze Designs
-          </button>
-        )}
-      </div>
-
-      {showUploadAnalysis && (
-        <>
-          {console.log('📊 showUploadAnalysis is true')}
-          {console.log('📊 uploadResults.length:', uploadResults.length)}
-          {console.log('📊 showUploadForm:', showUploadForm)}
-          {uploadResults.length > 0 ? (
-            <>
-              {!showUploadForm && (
-                <>
-                  {console.log('📊 Rendering MultipleAnalysisResults with:', uploadResults)}
-                  <MultipleAnalysisResults results={getUploadResultForMultiple()} onNewAnalysis={resetUpload} />
-                  {/* Add more designs button */}
-                  <div style={{ marginTop: '32px', padding: '24px', backgroundColor: '#f5f4f0', borderRadius: '12px', textAlign: 'center' }}>
-                    <p style={{ marginBottom: '16px', color: '#666', fontSize: '0.95rem' }}>Want to analyze more designs?</p>
-                    <button
-                      onClick={() => setShowUploadForm(true)}
-                      style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#2563eb',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        fontSize: '0.9rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
-                    >
-                      <Upload size={14} /> Add Another Design
-                    </button>
-                  </div>
-                </>
-              )}
-
-              {showUploadForm && (
-                <>
-                  <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <button
-                      onClick={() => setShowUploadForm(false)}
-                      style={{
-                        padding: '8px 16px',
-                        backgroundColor: '#f5f4f0',
-                        border: '1px solid #ddd',
-                        borderRadius: '6px',
-                        fontSize: '0.9rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#e8e8e8'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#f5f4f0'}
-                    >
-                      <ArrowLeft size={14} /> Back to Results
-                    </button>
-                  </div>
-                  <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
-                </>
-              )}
-            </>
-          ) : (
-            <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
-          )}
-        </>
-      )}
-
-      <hr className="tpg-divider" />
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-        <h2 className="tpg-section-heading" style={{ margin: 0 }}>My Teams</h2>
-        <button className="tpg-btn-outline" onClick={() => setShowCreateTeam(!showCreateTeam)}>
-          <Plus size={13} /> New Team
+          {showCreateTeam ? 'Cancel' : 'New Team Project'}
         </button>
       </div>
 
       {showCreateTeam && (
-        <div className="tpg-card" style={{ marginBottom: 20 }}>
+        <div className="tpg-card" style={{ marginBottom: 28 }}>
           <h3 className="tpg-card-title">Create Team</h3>
+          <p className="tpg-card-subtitle">Set up your team and invite members by email.</p>
           {teamError && <div className="tpg-error" style={{ marginBottom: 14 }}>{teamError}</div>}
           <form className="tpg-form" onSubmit={handleCreateTeam}>
             <div className="tpg-form-row">
@@ -1274,6 +979,11 @@ const TeamsTab = ({ teams, loading, error, onRefresh }) => {
           </form>
         </div>
       )}
+
+      <hr className="tpg-divider" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <h2 className="tpg-section-heading" style={{ margin: 0 }}>My Teams</h2>
+      </div>
 
       {loading ? (
         <div className="tpg-loading"><div className="tpg-spinner" /> Loading teams…</div>
