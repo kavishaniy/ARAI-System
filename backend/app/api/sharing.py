@@ -142,6 +142,56 @@ async def list_user_teams(
         raise HTTPException(status_code=500, detail=f"Error fetching teams: {str(e)}")
 
 
+@router.get("/teams/{team_id}", response_model=Team)
+async def get_team_details(
+    team_id: str,
+    current_user = Depends(get_current_user)
+):
+    """
+    Get details of a specific team
+    """
+    try:
+        logger.info(f"📋 Fetching team details for {team_id}")
+        
+        # Get team members to verify user is a member
+        members = await get_team_members(team_id)
+        current_member = next((m for m in members if m["user_id"] == str(current_user.id)), None)
+        
+        if not current_member:
+            raise HTTPException(status_code=403, detail="You are not a member of this team")
+        
+        # Get team from database
+        teams = await get_user_teams(str(current_user.id))
+        team = next((t for t in teams if t["id"] == team_id), None)
+        
+        if not team:
+            raise HTTPException(status_code=404, detail="Team not found")
+        
+        return Team(
+            id=team["id"],
+            name=team["name"],
+            description=team.get("description"),
+            created_by=team["created_by"],
+            members=[
+                TeamMember(
+                    id=m["id"],
+                    user_id=m["user_id"],
+                    email="",
+                    role=m["role"],
+                    joined_at=m["joined_at"]
+                ) for m in members
+            ],
+            created_at=team["created_at"],
+            updated_at=team.get("updated_at")
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error fetching team: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching team: {str(e)}")
+
+
 @router.post("/teams/{team_id}/members")
 async def add_member_to_team(
     team_id: str,

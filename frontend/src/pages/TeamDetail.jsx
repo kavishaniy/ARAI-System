@@ -126,18 +126,18 @@ const TeamDetail = () => {
   }
 
   return (
-    <div className="team-detail-container" style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
+    <div className="team-detail-container" style={{ backgroundColor: '#ffffff', minHeight: '100vh', width: '100%' }}>
       {/* Header */}
       <div className="team-detail-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
           <button 
             className="btn-back" 
             onClick={() => navigate('/teams')}
-            style={{ margin: 0 }}
+            style={{ margin: 0, flexShrink: 0 }}
           >
             <ArrowLeft size={18} />
           </button>
-          <div>
+          <div style={{ flex: 1 }}>
             <h1 className="team-detail-title">{team.name}</h1>
             <div className="team-detail-info">
               <Users size={14} /> {team.members?.length || 0} members
@@ -151,32 +151,35 @@ const TeamDetail = () => {
       )}
 
       {/* Tabs */}
-      <div className="team-detail-tabs">
+      <div className="team-detail-tabs" style={{ display: 'flex', visibility: 'visible', width: '100%' }}>
         <button
           className={`tab-btn ${activeTab === 'analysis' ? 'active' : ''}`}
           onClick={() => setActiveTab('analysis')}
+          style={{ display: 'inline-flex', cursor: 'pointer' }}
         >
           <Upload size={16} /> Upload Analysis
         </button>
         <button
           className={`tab-btn ${activeTab === 'figma' ? 'active' : ''}`}
           onClick={() => setActiveTab('figma')}
+          style={{ display: 'inline-flex', cursor: 'pointer' }}
         >
           <Layers size={16} /> Figma Analysis
         </button>
         <button
           className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
           onClick={() => setActiveTab('history')}
+          style={{ display: 'inline-flex', cursor: 'pointer' }}
         >
           <Clock size={16} /> History
         </button>
       </div>
 
       {/* Content */}
-      <div className="team-detail-content">
+      <div className="team-detail-content" style={{ display: 'block', visibility: 'visible', width: '100%', margin: '0 auto' }}>
         {/* Upload Analysis Tab */}
         {activeTab === 'analysis' && (
-          <div className="analysis-section">
+          <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
             {uploadResult ? (
               <div>
                 <button className="btn-back" onClick={resetUpload}>
@@ -192,7 +195,7 @@ const TeamDetail = () => {
 
         {/* Figma Analysis Tab */}
         {activeTab === 'figma' && (
-          <div className="analysis-section">
+          <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
             {figmaStep === 'results' && figmaResults ? (
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
@@ -246,7 +249,7 @@ const TeamDetail = () => {
 
         {/* History Tab */}
         {activeTab === 'history' && (
-          <div className="history-section">
+          <div className="history-section" style={{ display: 'block', width: '100%' }}>
             <div style={{ marginBottom: '20px' }}>
               <input
                 type="text"
