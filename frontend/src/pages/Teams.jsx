@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Users, Upload, Layers, Clock, Plus, X, ArrowLeft, FilePlus,
-  Trash2, Calendar, Eye, Search, UserPlus, Mail, CheckCircle,
+  Users, Plus, X, UserPlus, Mail, CheckCircle, Calendar,
   ChevronDown, ChevronUp,
 } from 'lucide-react';
-import axios from 'axios';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
-import UploadAnalysis from '../components/Analysis/UploadAnalysis';
-import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
-import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 import { teamService, sharingService } from '../services/sharing';
-import { analysisService } from '../services/analysis';
 import { projectService } from '../services/projects';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const css = `
   /* ── Layout ─────────────────────────────────────── */
@@ -1150,319 +1142,9 @@ const TeamsTab = ({ teams, loading, error, onRefresh }) => {
 };
 
 /* ───────────────────────────────────────────────────────────
-   AnalysisTab
-──────────────────────────────────────────────────────────── */
-const AnalysisTab = () => {
-  const [subTab, setSubTab] = useState('upload');
-
-  // Upload state
-  const [uploadResults, setUploadResults] = useState([]);
-  const [showUploadForm, setShowUploadForm] = useState(false);
-
-  // Figma state
-  const [figmaStep, setFigmaStep] = useState('input');
-  const [figmaResults, setFigmaResults] = useState(null);
-  const [figmaLoading, setFigmaLoading] = useState(false);
-  const [figmaLoadingMsg, setFigmaLoadingMsg] = useState('');
-  const [figmaError, setFigmaError] = useState('');
-
-  const handleFigmaSubmit = async ({ frameUrls }) => {
-    setFigmaError('');
-    setFigmaLoading(true);
-    setFigmaLoadingMsg(`Analyzing ${frameUrls.length} frame${frameUrls.length !== 1 ? 's' : ''}…`);
-    try {
-      const resp = await axios.post(
-        `${API_BASE}/api/v1/figma/analyze-frames`,
-        { frame_urls: frameUrls },
-        { headers: { 'Content-Type': 'application/json' }, timeout: 300000 }
-      );
-      if (resp.data?.analyses?.length) {
-        setFigmaResults(resp.data);
-        setFigmaStep('results');
-      } else {
-        setFigmaError('No frames could be analyzed. Check that the Figma file is public.');
-      }
-    } catch (err) {
-      setFigmaError(err.response?.data?.detail || err.message || 'Analysis failed.');
-    } finally {
-      setFigmaLoading(false);
-      setFigmaLoadingMsg('');
-    }
-  };
-
-  const resetFigma = () => { setFigmaResults(null); setFigmaError(''); setFigmaStep('input'); };
-
-  // Handle upload analysis completion and accumulate results
-  const handleUploadAnalysisComplete = (result) => {
-    setUploadResults(prev => [...prev, result]);
-    setShowUploadForm(false); // Hide form after upload
-  };
-
-  // Reset uploads to start over
-  const resetUpload = () => {
-    setUploadResults([]);
-    setShowUploadForm(false);
-  };
-
-  // Transform upload results into multiple analyses format
-  const getUploadResultForMultiple = () => {
-    if (!uploadResults || uploadResults.length === 0) return null;
-    return {
-      analyses: uploadResults
-    };
-  };
-
-  return (
-    <div>
-      <div className="tpg-subtabs">
-        <button
-          className={`tpg-subtab-btn ${subTab === 'upload' ? 'active' : ''}`}
-          onClick={() => setSubTab('upload')}
-        >
-          <Upload size={14} /> Upload Analysis
-        </button>
-        <button
-          className={`tpg-subtab-btn ${subTab === 'figma' ? 'active' : ''}`}
-          onClick={() => setSubTab('figma')}
-        >
-          <Layers size={14} /> Figma Analysis
-        </button>
-      </div>
-
-      {subTab === 'upload' && (
-        <>
-          {uploadResults.length > 0 && !showUploadForm ? (
-            <>
-              <MultipleAnalysisResults results={getUploadResultForMultiple()} onNewAnalysis={resetUpload} />
-              {/* Add more designs button */}
-              <div style={{ marginTop: '32px', padding: '24px', backgroundColor: '#f5f4f0', borderRadius: '12px', textAlign: 'center' }}>
-                <p style={{ marginBottom: '16px', color: '#666', fontSize: '0.95rem' }}>Want to analyze more designs?</p>
-                <button
-                  onClick={() => setShowUploadForm(true)} // Show upload form while keeping results
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#2563eb',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontSize: '0.9rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
-                >
-                  <Upload size={14} /> Add Another Design
-                </button>
-              </div>
-            </>
-          ) : null}
-
-          {showUploadForm && uploadResults.length > 0 ? (
-            <>
-              <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <button
-                  onClick={() => setShowUploadForm(false)}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#f5f4f0',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '0.9rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#e8e8e8'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#f5f4f0'}
-                >
-                  <ArrowLeft size={14} /> Back to Results
-                </button>
-              </div>
-              <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
-            </>
-          ) : null}
-
-          {!showUploadForm && uploadResults.length === 0 ? (
-            <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
-          ) : null}
-        </>
-      )}
-
-      {subTab === 'figma' && (
-        figmaStep === 'results' && figmaResults ? (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <button className="tpg-back-btn" style={{ margin: 0 }} onClick={resetFigma}>
-                <ArrowLeft size={13} /> Back
-              </button>
-              <button className="tpg-new-btn" onClick={resetFigma}>
-                <FilePlus size={13} /> New Analysis
-              </button>
-            </div>
-            <MultipleAnalysisResults results={figmaResults} onNewAnalysis={resetFigma} />
-          </div>
-        ) : (
-          <>
-            {figmaError && <div className="tpg-error" style={{ marginBottom: 18 }}>{figmaError}</div>}
-            {figmaLoading ? (
-              <div className="tpg-loading">
-                <div className="tpg-spinner" />{figmaLoadingMsg}
-              </div>
-            ) : (
-              <FigmaProjectInput onProjectSubmit={handleFigmaSubmit} />
-            )}
-          </>
-        )
-      )}
-    </div>
-  );
-};
-
-/* ───────────────────────────────────────────────────────────
-   HistoryTab
-──────────────────────────────────────────────────────────── */
-const HistoryTab = () => {
-  const [analyses, setAnalyses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
-  const [viewLoading, setViewLoading] = useState(false);
-  const [deleting, setDeleting] = useState(null);
-
-  useEffect(() => { fetchHistory(); }, []);
-
-  const fetchHistory = async () => {
-    try {
-      setLoading(true); setError(null);
-      const res = await analysisService.getHistory(1, 100);
-      setAnalyses(res.analyses || []);
-    } catch { setError('Failed to load analysis history.'); }
-    finally { setLoading(false); }
-  };
-
-  const handleView = async (analysis) => {
-    setSelectedAnalysis({ ...analysis, results: null });
-    setViewLoading(true);
-    try {
-      const fullData = await analysisService.getAnalysis(analysis.analysis_id);
-      setSelectedAnalysis({ ...analysis, results: fullData });
-    } catch { /* keep modal open */ }
-    finally { setViewLoading(false); }
-  };
-
-  const handleDelete = async (analysisId) => {
-    if (!window.confirm('Delete this analysis?')) return;
-    setDeleting(analysisId);
-    try {
-      await analysisService.deleteAnalysis(analysisId);
-      setAnalyses((prev) => prev.filter((a) => a.analysis_id !== analysisId));
-    } catch { setError('Failed to delete analysis.'); }
-    finally { setDeleting(null); }
-  };
-
-  const formatDate = (d) => {
-    try {
-      return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    } catch { return d; }
-  };
-
-  const filtered = analyses.filter((a) => {
-    const q = searchQuery.toLowerCase();
-    return (a.design_name || '').toLowerCase().includes(q) || (a.filename || '').toLowerCase().includes(q);
-  });
-
-  return (
-    <div>
-      {error && <div className="tpg-error" style={{ marginBottom: 16 }}>{error}</div>}
-
-      <div className="tpg-history-wrap">
-        <div className="tpg-search-bar">
-          <Search className="tpg-search-icon" size={15} />
-          <input
-            className="tpg-search-input"
-            type="text"
-            placeholder="Search by design name or filename…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        {loading ? (
-          <div className="tpg-loading"><div className="tpg-spinner" /> Loading history…</div>
-        ) : analyses.length === 0 ? (
-          <div className="tpg-empty" style={{ border: 'none', borderRadius: 0 }}>
-            <div className="tpg-empty-icon"><Clock size={28} color="#0f2557" /></div>
-            <h3>No analyses yet</h3>
-            <p>Run an Upload or Figma analysis — results will appear here.</p>
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="tpg-empty" style={{ border: 'none', borderRadius: 0 }}>
-            <div className="tpg-empty-icon"><Search size={26} color="#0f2557" /></div>
-            <h3>No results found</h3>
-            <p>No analyses match "{searchQuery}".</p>
-          </div>
-        ) : (
-          <ul className="tpg-history-list">
-            {filtered.map((a) => (
-              <li key={a.analysis_id} className="tpg-history-item">
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p className="tpg-history-name">{a.design_name || 'Untitled'}</p>
-                  <div className="tpg-history-date"><Calendar size={12} />{formatDate(a.timestamp)}</div>
-                </div>
-                <div className="tpg-history-actions">
-                  <button className="tpg-btn-outline" onClick={() => handleView(a)}>
-                    <Eye size={13} /> View
-                  </button>
-                  <button
-                    className="tpg-btn-danger"
-                    onClick={() => handleDelete(a.analysis_id)}
-                    disabled={deleting === a.analysis_id}
-                  >
-                    <Trash2 size={13} />
-                    {deleting === a.analysis_id ? 'Deleting…' : 'Delete'}
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {selectedAnalysis && (
-        <div className="tpg-overlay" onClick={() => setSelectedAnalysis(null)}>
-          <div className="tpg-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="tpg-modal-header">
-              <h2 className="tpg-modal-title">{selectedAnalysis.design_name || 'Analysis Results'}</h2>
-              <button className="tpg-modal-close" onClick={() => setSelectedAnalysis(null)}><X size={20} /></button>
-            </div>
-            <div className="tpg-modal-body">
-              {viewLoading ? (
-                <div className="tpg-loading"><div className="tpg-spinner" /> Loading results…</div>
-              ) : selectedAnalysis.results ? (
-                <MultipleAnalysisResults results={{ analyses: [selectedAnalysis.results] }} />
-              ) : null}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-/* ───────────────────────────────────────────────────────────
    Page
 ──────────────────────────────────────────────────────────── */
 const TeamsPage = () => {
-  const [activeTab, setActiveTab] = useState('teams');
   const [teams, setTeams] = useState([]);
   const [teamsLoading, setTeamsLoading] = useState(true);
   const [teamsError, setTeamsError] = useState(null);
@@ -1478,12 +1160,6 @@ const TeamsPage = () => {
     finally { setTeamsLoading(false); }
   };
 
-  const tabs = [
-    { id: 'teams',    label: 'Teams',    Icon: Users  },
-    { id: 'analysis', label: 'Analysis', Icon: Upload },
-    { id: 'history',  label: 'History',  Icon: Clock  },
-  ];
-
   return (
     <>
       <style>{css}</style>
@@ -1498,22 +1174,7 @@ const TeamsPage = () => {
 
           <div className="teams-pg-main">
             <div className="teams-pg-wrapper">
-              <div className="tpg-tab-bar">
-                {tabs.map(({ id, label, Icon }) => (
-                  <button
-                    key={id}
-                    className={`tpg-tab-btn ${activeTab === id ? 'active' : ''}`}
-                    onClick={() => setActiveTab(id)}
-                  >
-                    <Icon size={15} />
-                    <span>{label}</span>
-                  </button>
-                ))}
-              </div>
-
-              {activeTab === 'teams'    && <TeamsTab teams={teams} loading={teamsLoading} error={teamsError} onRefresh={fetchTeams} />}
-              {activeTab === 'analysis' && <AnalysisTab />}
-              {activeTab === 'history'  && <HistoryTab />}
+              <TeamsTab teams={teams} loading={teamsLoading} error={teamsError} onRefresh={fetchTeams} />
             </div>
           </div>
         </div>
