@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Users, Plus, X, UserPlus, Mail, CheckCircle, Calendar,
-  ChevronDown, ChevronUp,
+  ChevronDown, ChevronUp, Upload, ArrowLeft,
 } from 'lucide-react';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
+import UploadAnalysis from '../components/Analysis/UploadAnalysis';
+import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
 import { teamService, sharingService } from '../services/sharing';
 import { projectService } from '../services/projects';
 
@@ -972,6 +974,11 @@ const TeamsTab = ({ teams, loading, error, onRefresh }) => {
   const [teamLoading, setTeamLoading] = useState(false);
   const [teamError, setTeamError] = useState(null);
 
+  // Upload and analysis state
+  const [showUploadAnalysis, setShowUploadAnalysis] = useState(false);
+  const [uploadResults, setUploadResults] = useState([]);
+  const [showUploadForm, setShowUploadForm] = useState(false);
+
   const handleCreateProject = async (e) => {
     e.preventDefault();
     if (!projectName.trim()) { setCreateError('Project name is required.'); return; }
@@ -1016,6 +1023,71 @@ const TeamsTab = ({ teams, loading, error, onRefresh }) => {
     } finally {
       setTeamLoading(false);
     }
+  };
+
+  // Handle upload analysis completion and accumulate results
+  const handleUploadAnalysisComplete = (result) => {
+    console.log('📊 handleUploadAnalysisComplete called with result:', result);
+    if (result) {
+      // Log all properties to see what's available
+      console.log('📊 Result keys:', Object.keys(result));
+      console.log('📊 Result preview:', result.preview);
+      console.log('📊 Result arai_score:', result.arai_score);
+      console.log('📊 Result arai_breakdown:', result.arai_breakdown);
+      
+      // Ensure result has the required fields for MultipleAnalysisResults
+      const formattedResult = {
+        designName: result.design_name || result.designName || 'Untitled Design',
+        arai_score: result.arai_score || 0,
+        arai_breakdown: result.arai_breakdown || { accessibility: 0, readability: 0, attention: 0, overall: 0 },
+        overall_grade: result.overall_grade || 'F',
+        preview: result.preview || null,
+        accessibility: result.accessibility || result.arai_breakdown?.accessibility || 0,
+        readability: result.readability || result.arai_breakdown?.readability || 0,
+        attention: result.attention || result.arai_breakdown?.attention || 0,
+        ...result // Merge in case there are other fields
+      };
+      
+      console.log('📊 Formatted result:', formattedResult);
+      
+      setUploadResults(prev => {
+        const updated = [...prev, formattedResult];
+        console.log('📊 Updated uploadResults array:', updated);
+        console.log('📊 uploadResults length:', updated.length);
+        return updated;
+      });
+      setShowUploadForm(false); // Hide form after upload
+      setShowUploadAnalysis(true); // Make sure upload analysis section is visible
+    } else {
+      console.warn('⚠️ Result is null or undefined');
+    }
+  };
+
+  // Reset uploads to start over
+  const resetUpload = () => {
+    setUploadResults([]);
+    setShowUploadForm(false);
+    setShowUploadAnalysis(false);
+  };
+
+  // Transform upload results into multiple analyses format
+  const getUploadResultForMultiple = () => {
+    console.log('📊 getUploadResultForMultiple called');
+    console.log('📊 uploadResults state:', uploadResults);
+    console.log('📊 uploadResults length:', uploadResults.length);
+    
+    if (!uploadResults || uploadResults.length === 0) {
+      console.log('📊 uploadResults is empty, returning null');
+      return null;
+    }
+    
+    const formatted = {
+      analyses: uploadResults
+    };
+    console.log('📊 getUploadResultForMultiple returning:', formatted);
+    console.log('📊 analyses array length:', formatted.analyses.length);
+    console.log('📊 first analysis:', formatted.analyses[0]);
+    return formatted;
   };
 
   return (
@@ -1083,7 +1155,90 @@ const TeamsTab = ({ teams, loading, error, onRefresh }) => {
 
       <hr className="tpg-divider" />
 
-      {/* ── Teams heading + new team button ── */}
+      {/* ── Upload & Analysis Section ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <h2 className="tpg-section-heading" style={{ margin: 0 }}>Design Analysis</h2>
+        {!showUploadAnalysis && uploadResults.length === 0 && (
+          <button className="tpg-btn-outline" onClick={() => setShowUploadAnalysis(true)}>
+            <Upload size={13} /> Analyze Designs
+          </button>
+        )}
+      </div>
+
+      {showUploadAnalysis && (
+        <>
+          {console.log('📊 showUploadAnalysis is true')}
+          {console.log('📊 uploadResults.length:', uploadResults.length)}
+          {console.log('📊 showUploadForm:', showUploadForm)}
+          {uploadResults.length > 0 ? (
+            <>
+              {!showUploadForm && (
+                <>
+                  {console.log('📊 Rendering MultipleAnalysisResults with:', uploadResults)}
+                  <MultipleAnalysisResults results={getUploadResultForMultiple()} onNewAnalysis={resetUpload} />
+                  {/* Add more designs button */}
+                  <div style={{ marginTop: '32px', padding: '24px', backgroundColor: '#f5f4f0', borderRadius: '12px', textAlign: 'center' }}>
+                    <p style={{ marginBottom: '16px', color: '#666', fontSize: '0.95rem' }}>Want to analyze more designs?</p>
+                    <button
+                      onClick={() => setShowUploadForm(true)}
+                      style={{
+                        padding: '10px 20px',
+                        backgroundColor: '#2563eb',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '0.9rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+                    >
+                      <Upload size={14} /> Add Another Design
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {showUploadForm && (
+                <>
+                  <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button
+                      onClick={() => setShowUploadForm(false)}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: '#f5f4f0',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        fontSize: '0.9rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#e8e8e8'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#f5f4f0'}
+                    >
+                      <ArrowLeft size={14} /> Back to Results
+                    </button>
+                  </div>
+                  <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+                </>
+              )}
+            </>
+          ) : (
+            <UploadAnalysis onAnalysisComplete={handleUploadAnalysisComplete} />
+          )}
+        </>
+      )}
+
+      <hr className="tpg-divider" />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <h2 className="tpg-section-heading" style={{ margin: 0 }}>My Teams</h2>
         <button className="tpg-btn-outline" onClick={() => setShowCreateTeam(!showCreateTeam)}>

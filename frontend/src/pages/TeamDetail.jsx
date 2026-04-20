@@ -25,8 +25,6 @@ const TeamDetail = () => {
   const [activeTab, setActiveTab] = useState('analysis');
   
   // Analysis states
-  const [uploadResults, setUploadResults] = useState([]);
-  const [showUploadForm, setShowUploadForm] = useState(false);
   const [figmaStep, setFigmaStep] = useState('input');
   const [figmaResults, setFigmaResults] = useState(null);
   const [figmaLoading, setFigmaLoading] = useState(false);
@@ -105,22 +103,75 @@ const TeamDetail = () => {
 
   // Handle upload analysis completion and accumulate results
   const handleUploadAnalysisComplete = (result) => {
-    setUploadResults(prev => [...prev, result]);
-    setShowUploadForm(false); // Hide form after upload
-  };
-
-  // Reset uploads to start over
-  const resetUpload = () => {
-    setUploadResults([]);
-    setShowUploadForm(false);
-  };
-
-  // Transform upload results into multiple analyses format
-  const getUploadResultsForMultiple = () => {
-    if (!uploadResults || uploadResults.length === 0) return null;
-    return {
-      analyses: uploadResults
-    };
+    console.log('✅ handleUploadAnalysisComplete CALLED');
+    console.log('📊 Received result:', result);
+    
+    if (result) {
+      console.log('📊 Result is valid, creating formatted object');
+      
+      // Ensure result has the required fields for MultipleAnalysisResults
+      const formattedResult = {
+        // Design identification
+        designName: result.design_name || result.designName || 'Untitled Design',
+        filename: result.filename || 'unknown',
+        analysis_id: result.analysis_id,
+        
+        // ARAI Scores - ensure these are numbers, not undefined or objects
+        arai_score: (() => {
+          const score = result.arai_score ?? result.arai_breakdown?.overall ?? 0;
+          console.log('🔢 arai_score calc:', { raw: result.arai_score, arai_breakdown_overall: result.arai_breakdown?.overall, final: score });
+          return typeof score === 'number' ? score : parseFloat(score) || 0;
+        })(),
+        arai_breakdown: {
+          overall: (() => {
+            const score = result.arai_score ?? result.arai_breakdown?.overall ?? 0;
+            return typeof score === 'number' ? score : parseFloat(score) || 0;
+          })(),
+          accessibility: (() => {
+            const score = result.arai_breakdown?.accessibility ?? result.accessibility?.score ?? 0;
+            return typeof score === 'number' ? score : parseFloat(score) || 0;
+          })(),
+          readability: (() => {
+            const score = result.arai_breakdown?.readability ?? result.readability?.score ?? 0;
+            return typeof score === 'number' ? score : parseFloat(score) || 0;
+          })(),
+          attention: (() => {
+            const score = result.arai_breakdown?.attention ?? result.attention?.score ?? 0;
+            return typeof score === 'number' ? score : parseFloat(score) || 0;
+          })()
+        },
+        overall_grade: result.overall_grade || 'F',
+        
+        // Individual analysis objects (for SimplifiedAnalysisResults)
+        accessibility: result.accessibility || { score: 0, issues: [], grade: 'F' },
+        readability: result.readability || { score: 0, issues: [], grade: 'F' },
+        attention: result.attention || { score: 0, issues: [], grade: 'F' },
+        
+        // Preview and media
+        preview: result.preview || null,
+        redesigned_images: result.redesigned_images || {},
+        
+        // Additional data
+        timestamp: result.timestamp,
+        status: result.status || 'completed',
+        issues: result.issues || [],
+        issue_summary: result.issue_summary || { critical: 0, high: 0, medium: 0, passing: 0 },
+        
+        // Pass through all other fields
+        ...result
+      };
+      
+      console.log('✅ Formatted result created:', {
+        designName: formattedResult.designName,
+        arai_score: formattedResult.arai_score,
+        arai_breakdown: formattedResult.arai_breakdown,
+        has_preview: !!formattedResult.preview
+      });
+      
+      console.log('✅ Upload analysis complete');
+    } else {
+      console.error('❌ Result is null or undefined!');
+    }
   };
 
   if (loading) {
@@ -272,68 +323,7 @@ const TeamDetail = () => {
         {/* Upload Analysis Tab */}
         {activeTab === 'analysis' && (
           <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
-            {uploadResults.length > 0 && !showUploadForm ? (
-              <>
-                <MultipleAnalysisResults results={getUploadResultsForMultiple()} onNewAnalysis={resetUpload} />
-                {/* Add more designs button */}
-                <div style={{ marginTop: '32px', padding: '24px', backgroundColor: '#f5f4f0', borderRadius: '12px', textAlign: 'center' }}>
-                  <p style={{ marginBottom: '16px', color: '#666', fontSize: '0.95rem' }}>Want to analyze more designs?</p>
-                  <button
-                    onClick={() => setShowUploadForm(true)} // Show upload form while keeping results
-                    style={{
-                      padding: '10px 20px',
-                      backgroundColor: '#2563eb',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
-                  >
-                    <Upload size={14} /> Add Another Design
-                  </button>
-                </div>
-              </>
-            ) : null}
-
-            {showUploadForm && uploadResults.length > 0 ? (
-              <>
-                <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => setShowUploadForm(false)}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#f5f4f0',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#e8e8e8'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#f5f4f0'}
-                  >
-                    <ArrowLeft size={14} /> Back to Results
-                  </button>
-                </div>
-                <UploadAnalysisMultiple onAnalysisComplete={handleUploadAnalysisComplete} />
-              </>
-            ) : null}
-
-            {!showUploadForm && uploadResults.length === 0 ? (
-              <UploadAnalysisMultiple onAnalysisComplete={handleUploadAnalysisComplete} />
-            ) : null}
+            <UploadAnalysisMultiple onAnalysisComplete={handleUploadAnalysisComplete} />
           </div>
         )}
 

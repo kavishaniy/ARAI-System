@@ -300,7 +300,14 @@ async def upload_design(
         acc_score = accessibility_results.get("score", 50)
         read_score = readability_results.get("score", 50)
         attn_score = attention_results.get("score", 50)
+        
+        logger.info(f"📊 Raw scores from analyzers:")
+        logger.info(f"   - Accessibility: {acc_score} (type: {type(acc_score).__name__})")
+        logger.info(f"   - Readability: {read_score} (type: {type(read_score).__name__})")
+        logger.info(f"   - Attention: {attn_score} (type: {type(attn_score).__name__})")
+        
         arai_score = (acc_score * 0.4) + (read_score * 0.3) + (attn_score * 0.3)
+        logger.info(f"📊 Calculated ARAI Score: {arai_score}")
         
         # Compile all issues from all analyses
         all_issues = []
@@ -314,12 +321,24 @@ async def upload_design(
         medium = sum(1 for i in all_issues if i.get('severity') == 'medium')
         success = sum(1 for i in all_issues if i.get('severity') == 'success')
         
+        # Generate preview image (base64 encoded)
+        preview_image = None
+        try:
+            import base64 as _b64
+            with open(local_file_path, "rb") as img_file:
+                img_data = img_file.read()
+                preview_image = f"data:image/{file_ext[1:]};base64," + _b64.b64encode(img_data).decode()
+            logger.info("✅ Preview image generated")
+        except Exception as preview_error:
+            logger.warning(f"⚠️ Could not generate preview image: {preview_error}")
+        
         # Compile final results
         final_results = {
             "analysis_id": analysis_id,
             "design_name": design_name or file.filename,
             "filename": file.filename,
             "timestamp": timestamp,
+            "preview": preview_image,
             
             # ARAI Score
             "arai_score": round(arai_score, 2),

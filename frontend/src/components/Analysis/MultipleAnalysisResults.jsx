@@ -756,6 +756,12 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
   const analyses = results.analyses;
   const currentAnalysis = analyses[selectedIndex];
 
+  // Debug log the data structure
+  console.log('🎯 MultipleAnalysisResults - currentAnalysis:', currentAnalysis);
+  console.log('🎯 currentAnalysis.arai_score:', currentAnalysis?.arai_score);
+  console.log('🎯 currentAnalysis.arai_breakdown:', currentAnalysis?.arai_breakdown);
+  console.log('🎯 currentAnalysis.accessibility:', currentAnalysis?.accessibility);
+
   const exportAllAsPDF = async () => {
     try {
       const getScoreColor = (score) => {
@@ -972,7 +978,11 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
                     <div className="design-card-meta">
                       <div className="design-card-score-container">
                         <div className="design-card-score">
-                          {analysis.arai_score ? analysis.arai_score.toFixed(1) : 'N/A'}
+                          {(() => {
+                            const score = analysis.arai_score || analysis.arai_breakdown?.overall || 0;
+                            console.log('📊 Design card score:', score, 'analysis:', analysis.designName);
+                            return typeof score === 'number' ? score.toFixed(1) : 'N/A';
+                          })()}
                         </div>
                         <div className="design-card-score-label">ARAI Score</div>
                       </div>
