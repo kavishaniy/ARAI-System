@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Upload, Layers, Clock, ArrowLeft } from 'lucide-react';
+import { Upload, Layers, Clock, ArrowLeft, Trash2, Calendar, Search, X, Eye, Zap } from 'lucide-react';
 import axios from 'axios';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
@@ -39,6 +39,9 @@ const TeamDetail = () => {
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
     const fetchTeamDetails = async () => {
@@ -117,6 +120,48 @@ const TeamDetail = () => {
     setAnalysisKey(prev => prev + 1);
   };
 
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  const handleView = async (analysis) => {
+    setSelectedAnalysis({ ...analysis, results: null });
+    setViewLoading(true);
+    try {
+      const fullData = await analysisService.getAnalysis(analysis.analysis_id);
+      setSelectedAnalysis({ ...analysis, results: fullData });
+    } catch (err) {
+      console.error('Failed to fetch analysis details:', err);
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
+  const handleDelete = async (analysisId) => {
+    if (window.confirm('Are you sure you want to delete this analysis?')) {
+      try {
+        setDeleting(analysisId);
+        await analysisService.deleteAnalysis(analysisId);
+        setHistory(history.filter(h => h.analysis_id !== analysisId));
+      } catch (err) {
+        console.error('Failed to delete analysis:', err);
+      } finally {
+        setDeleting(null);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="team-detail-container" style={{ backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
@@ -135,6 +180,35 @@ const TeamDetail = () => {
         </button>
         <div className="alert-error" style={{ marginTop: '20px', padding: '16px', backgroundColor: '#fee', border: '1px solid #fcc', borderRadius: '6px' }}>
           ❌ {error || 'Team not found. Please go back and try again.'}
+        </div>
+      </div>
+    );
+  }
+
+  if (selectedAnalysis) {
+    return (
+      <div className="team-detail-shell">
+        <Sidebar active="teams" />
+        <div className="team-detail-pg-container">
+          <div className="team-detail-pg-main">
+            <div className="team-detail-pg-wrapper">
+              <button
+                className="action-button"
+                onClick={() => setSelectedAnalysis(null)}
+                style={{ marginBottom: '24px' }}
+              >
+                ← Back to History
+              </button>
+              {viewLoading ? (
+                <div className="history-loading">
+                  <span className="loading-spinner"></span>
+                  Loading analysis results...
+                </div>
+              ) : selectedAnalysis.results ? (
+                <SimplifiedAnalysisResults results={selectedAnalysis.results} />
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -221,6 +295,299 @@ const TeamDetail = () => {
     .tpg-tab-btn.active {
       background: linear-gradient(135deg, #0f2557, #091840);
       color: white;
+    }
+
+    /* ── History Section Styling ─────────────────────── */
+    .history-search-input {
+      width: 100%;
+      padding: 11px 16px 11px 40px;
+      border: 1.5px solid rgba(15, 37, 87, 0.15);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #0f2557;
+      background: white;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    @media (max-width: 480px) {
+      .history-search-input {
+        font-size: 0.85rem;
+        padding: 10px 14px 10px 36px;
+      }
+    }
+
+    .history-search-input::placeholder {
+      color: rgba(15, 37, 87, 0.4);
+    }
+
+    .history-search-input:focus {
+      outline: none;
+      border-color: #64b4ff;
+      box-shadow: 0 0 0 3px rgba(100, 180, 255, 0.1);
+      background: white;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(15, 37, 87, 0.4);
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .search-icon {
+        left: 10px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(15, 37, 87, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .search-clear-btn:hover {
+      color: rgba(15, 37, 87, 0.7);
+    }
+
+    .history-search-results {
+      font-size: 0.85rem;
+      color: rgba(15, 37, 87, 0.6);
+      white-space: nowrap;
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .history-search-results {
+        font-size: 0.75rem;
+      }
+    }
+
+    .history-main {
+      background: white;
+      border: 1.5px solid rgba(15, 37, 87, 0.12);
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 10px 40px rgba(15, 37, 87, 0.06);
+      overflow: hidden;
+    }
+
+    .history-empty {
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .history-empty {
+        padding: 40px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .history-empty {
+        padding: 30px 16px;
+      }
+    }
+
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: rgba(15, 37, 87, 0.08);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 480px) {
+      .empty-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 16px;
+      }
+    }
+
+    .empty-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0f2557;
+      margin: 0 0 8px 0;
+    }
+
+    @media (max-width: 480px) {
+      .empty-title {
+        font-size: 1.1rem;
+      }
+    }
+
+    .empty-text {
+      color: rgba(15, 37, 87, 0.6);
+      margin: 0 0 24px 0;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      .empty-text {
+        font-size: 0.85rem;
+        margin: 0 0 18px 0;
+      }
+    }
+
+    .history-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .history-item {
+      padding: 24px 40px;
+      border-bottom: 1px solid rgba(15, 37, 87, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-item:hover {
+      background: linear-gradient(135deg, rgba(15, 37, 87, 0.02) 0%, rgba(100, 180, 255, 0.03) 100%);
+    }
+
+    .history-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .history-item-name {
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      color: #0f2557;
+      font-size: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-item-meta {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 0.85rem;
+      color: rgba(15, 37, 87, 0.6);
+      flex-wrap: wrap;
+    }
+
+    .history-item-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .history-item-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .action-button {
+      padding: 10px 14px;
+      border: 1.5px solid rgba(15, 37, 87, 0.2);
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #0f2557;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-family: inherit;
+    }
+
+    .action-button:hover:not(:disabled) {
+      border-color: rgba(15, 37, 87, 0.4);
+      background: rgba(15, 37, 87, 0.02);
+    }
+
+    .action-button.delete {
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #991b1b;
+    }
+
+    .action-button.delete:hover:not(:disabled) {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .action-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .history-loading {
+      padding: 60px 40px;
+      text-align: center;
+      color: rgba(15, 37, 87, 0.6);
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(15, 37, 87, 0.1);
+      border-top-color: #0f2557;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .history-item {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .history-item-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .action-button {
+        flex: 1;
+        justify-content: center;
+      }
     }
   `;
 
@@ -312,66 +679,97 @@ const TeamDetail = () => {
         {/* History Tab */}
         {activeTab === 'history' && (
           <div className="history-section" style={{ display: 'block', width: '100%' }}>
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '20px', position: 'relative', maxWidth: '400px' }}>
+              <Search className="search-icon" size={18} />
               <input
                 type="text"
-                placeholder="Search analyses..."
+                className="history-search-input"
+                placeholder="Search by design name or filename..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  maxWidth: '400px',
-                  padding: '8px 12px',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '6px',
-                  fontSize: '14px'
-                }}
               />
-            </div>
-            
-            {historyLoading ? (
-              <div className="loading-state">
-                <div className="spinner" /> Loading history...
-              </div>
-            ) : history.length === 0 ? (
-              <p style={{ color: '#666', padding: '20px 0' }}>
-                No analyses yet. Upload a design or Figma file to get started.
-              </p>
-            ) : (
-              <div className="history-list">
-                {history
-                  .filter(item => 
+              {searchQuery && (
+                <button
+                  className="search-clear-btn"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  <X size={18} />
+                </button>
+              )}
+              {history.length > 0 && (
+                <span className="history-search-results">
+                  {history.filter(item => 
                     !searchQuery || 
                     (item.design_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                     (item.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                  .map((item, idx) => (
-                    <div key={idx} className="history-item">
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                          <h4 style={{ margin: '0 0 4px 0' }}>
+                  ).length} of {history.length} results
+                </span>
+              )}
+            </div>
+
+            <div className="history-main">
+              {historyLoading ? (
+                <div className="history-loading">
+                  <span className="loading-spinner"></span>
+                  Loading your analysis history...
+                </div>
+              ) : history.length === 0 ? (
+                <div className="history-empty">
+                  <div className="empty-icon">
+                    <Zap size={40} />
+                  </div>
+                  <h3 className="empty-title">No analyses yet</h3>
+                  <p className="empty-text">
+                    Start by uploading a design or connecting your Figma file to get your first analysis
+                  </p>
+                </div>
+              ) : (
+                <ul className="history-list">
+                  {history
+                    .filter(item => 
+                      !searchQuery || 
+                      (item.design_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      (item.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    .map((item) => (
+                      <li key={item.analysis_id} className="history-item">
+                        <div className="history-item-content">
+                          <h3 className="history-item-name">
                             {item.design_name || item.filename || 'Untitled'}
-                          </h4>
-                          <p style={{ margin: 0, color: '#666', fontSize: '12px' }}>
-                            {new Date(item.timestamp).toLocaleDateString()} {new Date(item.timestamp).toLocaleTimeString()}
-                          </p>
+                          </h3>
+                          <div className="history-item-meta">
+                            <span className="history-item-date">
+                              <Calendar size={16} />
+                              {formatDate(item.timestamp)}
+                            </span>
+                          </div>
                         </div>
-                        {item.overall_score !== undefined && (
-                          <span style={{
-                            backgroundColor: '#f0f0f0',
-                            padding: '4px 8px',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            fontWeight: 'bold'
-                          }}>
-                            Score: {item.overall_score}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
+
+                        <div className="history-item-actions">
+                          <button
+                            className="action-button"
+                            onClick={() => handleView(item)}
+                            title="View full results"
+                          >
+                            <Eye size={16} />
+                            View Details
+                          </button>
+                          <button
+                            className="action-button delete"
+                            onClick={() => handleDelete(item.analysis_id)}
+                            disabled={deleting === item.analysis_id}
+                            title="Delete this analysis"
+                          >
+                            <Trash2 size={16} />
+                            {deleting === item.analysis_id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </div>
           </div>
         )}
             </div>
