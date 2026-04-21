@@ -29,6 +29,49 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+async def resolve_user_email(user_id: str) -> str:
+    """
+    Resolve a user's email address for team/member responses.
+    Prefer Supabase Auth admin lookup, then fall back to the profiles table.
+    """
+    try:
+        user_data = supabase_admin.auth.admin.get_user_by_id(user_id)
+        if user_data and user_data.user and user_data.user.email:
+            return user_data.user.email
+    except Exception as e:
+        logger.warning(f"⚠️ Could not fetch auth email for user {user_id}: {str(e)}")
+
+    try:
+        profile = supabase_admin.table("profiles") \
+            .select("email") \
+            .eq("id", user_id) \
+            .single() \
+            .execute()
+        if profile and profile.data and profile.data.get("email"):
+            return profile.data["email"]
+    except Exception as e:
+        logger.warning(f"⚠️ Could not fetch profile email for user {user_id}: {str(e)}")
+
+    return ""
+
+
+async def build_team_members_with_emails(members: list[dict]) -> list[TeamMember]:
+    """
+    Convert raw team member rows into API response models with resolved emails.
+    """
+    members_with_emails = []
+    for m in members:
+        email = await resolve_user_email(m["user_id"])
+        members_with_emails.append(TeamMember(
+            id=m["id"],
+            user_id=m["user_id"],
+            email=email,
+            role=m["role"],
+            joined_at=m["joined_at"]
+        ))
+    return members_with_emails
+
+
 async def get_current_user(authorization: Optional[str] = Header(None)):
     """
     Extract and verify user from JWT token
@@ -111,29 +154,10 @@ async def list_user_teams(
         
         teams = await get_user_teams(str(current_user.id))
         
-        # Enhance with members and their email addresses
         team_list = []
         for team in teams:
             members = await get_team_members(team["id"])
-            
-            # Fetch email for each member from Supabase auth
-            members_with_emails = []
-            for m in members:
-                email = ""
-                try:
-                    user_data = supabase_admin.auth.admin.get_user_by_id(m["user_id"])
-                    if user_data and user_data.user:
-                        email = user_data.user.email or ""
-                except Exception as e:
-                    logger.warning(f"⚠️ Could not fetch email for user {m['user_id']}: {str(e)}")
-                
-                members_with_emails.append(TeamMember(
-                    id=m["id"],
-                    user_id=m["user_id"],
-                    email=email,
-                    role=m["role"],
-                    joined_at=m["joined_at"]
-                ))
+            members_with_emails = await build_team_members_with_emails(members)
             
             team_list.append(Team(
                 id=team["id"],
@@ -179,24 +203,7 @@ async def get_team_details(
         if not team:
             raise HTTPException(status_code=404, detail="Team not found")
         
-        # Fetch email for each member from Supabase auth
-        members_with_emails = []
-        for m in members:
-            email = ""
-            try:
-                user_data = supabase_admin.auth.admin.get_user_by_id(m["user_id"])
-                if user_data and user_data.user:
-                    email = user_data.user.email or ""
-            except Exception as e:
-                logger.warning(f"⚠️ Could not fetch email for user {m['user_id']}: {str(e)}")
-            
-            members_with_emails.append(TeamMember(
-                id=m["id"],
-                user_id=m["user_id"],
-                email=email,
-                role=m["role"],
-                joined_at=m["joined_at"]
-            ))
+        members_with_emails = await build_team_members_with_emails(members)
         
         return Team(
             id=team["id"],
