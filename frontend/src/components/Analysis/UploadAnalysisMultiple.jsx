@@ -108,7 +108,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
         console.log(`📁 Linking analysis to project: ${projectId}`);
       }
 
-      const apiUrl = process.env.REACT_APP_API_URL || 'https://arai-system.onrender.com/api/v1';
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
 
       console.log(`🚀 Analyzing ${fileObj.designName}...`);
 

@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from typing import Optional
 import os
@@ -78,6 +79,23 @@ class Settings(BaseSettings):
 
     # Session/Cookies
     SESSION_SECRET_KEY: str = "your-session-secret-key-change-in-production"
+
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def parse_debug(cls, value):
+        """Accept common shell/debug strings without crashing local startup."""
+        if isinstance(value, bool):
+            return value
+        if value is None:
+            return True
+
+        normalized = str(value).strip().lower()
+        if normalized in {"1", "true", "yes", "on", "debug", "development"}:
+            return True
+        if normalized in {"0", "false", "no", "off", "release", "prod", "production"}:
+            return False
+
+        return True
     
     class Config:
         env_file = str(ENV_FILE)
