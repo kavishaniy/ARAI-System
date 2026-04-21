@@ -1,5 +1,0 @@
-{
-  "handle": "arai-system-backend",
-  "baseDirectory": "backend",
-  "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-}
