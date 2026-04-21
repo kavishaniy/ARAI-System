@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Upload, Layers, Clock, ArrowLeft, Trash2, Calendar, Search, X, Eye, Zap } from 'lucide-react';
+import { Upload, Figma, Clock, ArrowLeft, Trash2, Calendar, Search, X, Eye, Zap } from 'lucide-react';
 import axios from 'axios';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
@@ -42,7 +42,6 @@ const TeamDetail = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [viewLoading, setViewLoading] = useState(false);
   const [deleting, setDeleting] = useState(null);
-  const [selectedForDelete, setSelectedForDelete] = useState(new Set());
 
   useEffect(() => {
     const fetchTeamDetails = async () => {
@@ -67,7 +66,13 @@ const TeamDetail = () => {
       setHistoryLoading(true);
       try {
         const response = await analysisService.getTeamHistory(teamId, 1, 100);
-        setHistory(response.analyses || []);
+        // Map 'id' field to 'analysis_id' for consistency
+        const mappedAnalyses = (response.analyses || []).map(item => ({
+          ...item,
+          analysis_id: item.id || item.analysis_id
+        }));
+        console.log('📋 Fetched team history:', mappedAnalyses);
+        setHistory(mappedAnalyses);
       } catch (err) {
         console.error('Error fetching history:', err);
         setHistory([]);
@@ -123,7 +128,18 @@ const TeamDetail = () => {
 
   const formatDate = (dateString) => {
     try {
+      console.log('📅 Formatting date:', dateString, 'Type:', typeof dateString);
+      
+      if (!dateString) return 'Unknown date';
+      
       const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.warn('⚠️ Invalid date:', dateString);
+        return 'Invalid date';
+      }
+      
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -132,7 +148,8 @@ const TeamDetail = () => {
         minute: '2-digit'
       });
     } catch (e) {
-      return dateString;
+      console.error('❌ Date formatting error:', e, 'dateString:', dateString);
+      return 'Invalid date';
     }
   };
 
@@ -152,45 +169,52 @@ const TeamDetail = () => {
   };
 
   const handleDelete = async (analysisId) => {
-    if (window.confirm('Are you sure you want to delete this analysis?')) {
-      try {
-        setDeleting(analysisId);
-        await analysisService.deleteAnalysis(analysisId);
-        setHistory(history.filter(h => h.analysis_id !== analysisId));
-      } catch (err) {
-        console.error('Failed to delete analysis:', err);
-      } finally {
-        setDeleting(null);
-      }
-    }
-  };
-
-  const handleSelectForDelete = (analysisId) => {
-    const newSelected = new Set(selectedForDelete);
-    if (newSelected.has(analysisId)) {
-      newSelected.delete(analysisId);
-    } else {
-      newSelected.add(analysisId);
-    }
-    setSelectedForDelete(newSelected);
-  };
-
-  const handleDeleteSelected = async () => {
-    if (selectedForDelete.size === 0) return;
+    console.log('🗑️ handleDelete called with analysisId:', analysisId);
+    console.log('Current history state before delete:', history);
     
-    if (window.confirm(`Are you sure you want to delete ${selectedForDelete.size} analyses?`)) {
-      try {
-        setDeleting('multiple');
-        for (const analysisId of selectedForDelete) {
-          await analysisService.deleteAnalysis(analysisId);
-        }
-        setHistory(history.filter(h => !selectedForDelete.has(h.analysis_id)));
-        setSelectedForDelete(new Set());
-      } catch (err) {
-        console.error('Failed to delete analyses:', err);
-      } finally {
-        setDeleting(null);
+    const confirmed = window.confirm('Are you sure you want to delete this analysis?');
+    console.log('🗑️ User confirmed deletion:', confirmed);
+    
+    if (!confirmed) {
+      console.log('🗑️ User cancelled deletion');
+      return;
+    }
+    
+    try {
+      setDeleting(analysisId);
+      console.log('🗑️ setDeleting to:', analysisId);
+      console.log('🗑️ Calling analysisService.deleteAnalysis...');
+      
+      const result = await analysisService.deleteAnalysis(analysisId);
+      console.log('🗑️ Delete API response:', result);
+      console.log('🗑️ Delete was successful, now updating UI...');
+      
+      // Update the history list by removing the deleted item
+      setHistory(prev => {
+        console.log('🗑️ Previous history length:', prev.length);
+        const updated = prev.filter(h => h.analysis_id !== analysisId);
+        console.log('🗑️ Updated history length:', updated.length);
+        console.log('🗑️ Items removed:', prev.length - updated.length);
+        console.log('🗑️ Updated history:', updated);
+        return updated;
+      });
+      
+      // Clear selected analysis if it was deleted
+      if (selectedAnalysis?.analysis_id === analysisId) {
+        console.log('🗑️ Clearing selectedAnalysis because it was deleted');
+        setSelectedAnalysis(null);
       }
+      
+      console.log('✅ Analysis deleted successfully');
+      alert('Analysis deleted successfully!');
+    } catch (err) {
+      console.error('❌ Failed to delete analysis:', err);
+      console.error('Error response:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+      alert(`Failed to delete analysis: ${err.response?.data?.detail || err.message}`);
+    } finally {
+      console.log('🗑️ Resetting deleting state');
+      setDeleting(null);
     }
   };
 
@@ -569,97 +593,6 @@ const TeamDetail = () => {
         justify-content: center;
       }
     }
-
-    /* ── Multi-delete Styles ─────────────────────── */
-    .history-item-checkbox {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      accent-color: #0f2557;
-    }
-
-    .history-item-select-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .multi-delete-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 40px;
-      background: linear-gradient(135deg, rgba(15, 37, 87, 0.05) 0%, rgba(100, 180, 255, 0.05) 100%);
-      border-bottom: 1.5px solid rgba(15, 37, 87, 0.1);
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .multi-delete-info {
-      flex: 1;
-      font-size: 0.95rem;
-      color: #0f2557;
-      font-weight: 500;
-    }
-
-    .multi-delete-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .multi-delete-btn {
-      padding: 10px 14px;
-      border: 1.5px solid rgba(239, 68, 68, 0.3);
-      background: rgba(239, 68, 68, 0.05);
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
-      color: #991b1b;
-      transition: all 0.2s ease;
-      font-weight: 500;
-      font-family: inherit;
-    }
-
-    .multi-delete-btn:hover:not(:disabled) {
-      border-color: rgba(239, 68, 68, 0.6);
-      background: rgba(239, 68, 68, 0.1);
-    }
-
-    .multi-delete-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .multi-cancel-btn {
-      padding: 10px 14px;
-      border: 1.5px solid rgba(15, 37, 87, 0.2);
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      color: #0f2557;
-      transition: all 0.2s ease;
-      font-weight: 500;
-      font-family: inherit;
-    }
-
-    .multi-cancel-btn:hover {
-      border-color: rgba(15, 37, 87, 0.4);
-      background: rgba(15, 37, 87, 0.02);
-    }
   `;
 
   if (loading) {
@@ -713,7 +646,10 @@ const TeamDetail = () => {
                   Loading analysis results...
                 </div>
               ) : selectedAnalysis.results ? (
-                <SimplifiedAnalysisResults results={selectedAnalysis.results} />
+                <SimplifiedAnalysisResults 
+                  key={selectedAnalysis.analysis_id}
+                  results={selectedAnalysis.results} 
+                />
               ) : null}
             </div>
           </div>
@@ -749,7 +685,7 @@ const TeamDetail = () => {
                   className={`tpg-tab-btn ${activeTab === 'figma' ? 'active' : ''}`}
                   onClick={() => setActiveTab('figma')}
                 >
-                  <Layers size={15} />
+                  <Figma size={15} />
                   <span>Figma Analysis</span>
                 </button>
                 <button
@@ -849,82 +785,60 @@ const TeamDetail = () => {
                   </p>
                 </div>
               ) : (
-                <>
-                  {selectedForDelete.size > 0 && (
-                    <div className="multi-delete-toolbar">
-                      <div className="multi-delete-info">
-                        {selectedForDelete.size} analysis{selectedForDelete.size > 1 ? 'es' : ''} selected
-                      </div>
-                      <div className="multi-delete-actions">
-                        <button
-                          className="multi-delete-btn"
-                          onClick={handleDeleteSelected}
-                          disabled={deleting === 'multiple'}
-                        >
-                          <Trash2 size={16} />
-                          Delete Selected
-                        </button>
-                        <button
-                          className="multi-cancel-btn"
-                          onClick={() => setSelectedForDelete(new Set())}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  <ul className="history-list">
-                    {history
-                      .filter(item => 
-                        !searchQuery || 
-                        (item.design_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        (item.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
-                      )
-                      .map((item) => (
-                        <li key={item.analysis_id} className="history-item">
-                          <div className="history-item-select-wrapper">
-                            <input
-                              type="checkbox"
-                              className="history-item-checkbox"
-                              checked={selectedForDelete.has(item.analysis_id)}
-                              onChange={() => handleSelectForDelete(item.analysis_id)}
-                            />
+                <ul className="history-list">
+                  {history
+                    .filter(item => 
+                      !searchQuery || 
+                      (item.design_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      (item.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    .map((item) => {
+                      console.log('📌 Rendering history item:', item);
+                      console.log('📌 Item properties:', Object.keys(item));
+                      console.log('📌 Date field - timestamp:', item.timestamp, 'created_at:', item.created_at);
+                      
+                      const dateToDisplay = item.timestamp || item.created_at || item.date || 'Unknown';
+                      
+                      return (
+                      <li key={item.analysis_id} className="history-item">
+                        <div className="history-item-content">
+                          <h3 className="history-item-name">
+                            {item.design_name || item.filename || 'Untitled'}
+                          </h3>
+                          <div className="history-item-meta">
+                            <span className="history-item-date">
+                              <Calendar size={16} />
+                              {formatDate(dateToDisplay)}
+                            </span>
                           </div>
-                          <div className="history-item-content">
-                            <h3 className="history-item-name">
-                              {item.design_name || item.filename || 'Untitled'}
-                            </h3>
-                            <div className="history-item-meta">
-                              <span className="history-item-date">
-                                <Calendar size={16} />
-                                {formatDate(item.timestamp)}
-                              </span>
-                            </div>
-                          </div>
+                        </div>
 
-                          <div className="history-item-actions">
-                            <button
-                              className="action-button"
-                              onClick={() => handleView(item)}
-                              title="View full results"
-                            >
-                              <Eye size={16} />
-                              View Details
-                            </button>
-                            <button
-                              className="action-button delete"
-                              onClick={() => handleDelete(item.analysis_id)}
-                              disabled={deleting === item.analysis_id}
-                              title="Delete this analysis"
-                            >
-                              <Trash2 size={16} />
-                              {deleting === item.analysis_id ? 'Deleting...' : 'Delete'}
-                            </button>
-                          </div>
-                        </li>
-                      ))}
-                  </ul>
-                </>
+                        <div className="history-item-actions">
+                          <button
+                            className="action-button"
+                            onClick={() => handleView(item)}
+                            title="View full results"
+                          >
+                            <Eye size={16} />
+                            View Details
+                          </button>
+                          <button
+                            className="action-button delete"
+                            onClick={() => {
+                              console.log('🗑️ Delete button clicked, item:', item);
+                              handleDelete(item.analysis_id);
+                            }}
+                            disabled={deleting === item.analysis_id}
+                            title="Delete this analysis"
+                          >
+                            <Trash2 size={16} />
+                            {deleting === item.analysis_id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
+                      </li>
+                    );
+                    })}
+                </ul>
               )}
             </div>
           </div>

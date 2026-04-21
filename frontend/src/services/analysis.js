@@ -34,7 +34,24 @@ export const analysisService = {
   },
 
   async deleteAnalysis(analysisId) {
-    const response = await api.delete(`/analysis/results/${analysisId}`);
-    return response.data;
+    try {
+      console.log('🗑️ Attempting to delete analysis:', analysisId);
+      console.log('API URL:', `${api.defaults.baseURL}/analysis/results/${analysisId}`);
+      
+      const response = await api.delete(`/analysis/results/${analysisId}`);
+      
+      console.log('✅ Delete response:', response.data);
+      console.log('✅ Status:', response.status);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Delete error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+        method: error.config?.method,
+      });
+      throw error;
+    }
   },
 };

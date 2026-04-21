@@ -673,6 +673,8 @@ const SimplifiedAnalysisResults = ({ results }) => {
   const [animated, setAnimated] = useState(false);
   const [activeTab, setActiveTab] = useState('accessibility');
   const [visualTab, setVisualTab] = useState('heatmap');
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
   const scoreRef = useRef(null);
 
   // Animation setup
@@ -685,6 +687,36 @@ const SimplifiedAnalysisResults = ({ results }) => {
     obs.observe(scoreRef.current);
     return () => obs.disconnect();
   }, []);
+
+  const toggleImageSelection = (imageKey) => {
+    setSelectedImages(prev => 
+      prev.includes(imageKey) 
+        ? prev.filter(key => key !== imageKey)
+        : [...prev, imageKey]
+    );
+  };
+
+  const deleteSelectedImages = () => {
+    if (selectedImages.length === 0) {
+      alert('Please select at least one image to delete');
+      return;
+    }
+    if (window.confirm(`Are you sure you want to delete ${selectedImages.length} image(s)?`)) {
+      // Add selected images to deleted list
+      setDeletedImages(prev => [...prev, ...selectedImages]);
+      setSelectedImages([]);
+      
+      // Switch to next available image if current is deleted
+      if (selectedImages.includes(visualTab)) {
+        const remainingImages = Object.keys(results.redesigned_images).filter(
+          key => !selectedImages.includes(key) && !deletedImages.includes(key)
+        );
+        setVisualTab(remainingImages[0] || 'heatmap');
+      }
+      
+      alert('Image(s) deleted successfully');
+    }
+  };
 
   if (!results) {
     return (
@@ -922,13 +954,34 @@ const SimplifiedAnalysisResults = ({ results }) => {
       </div>
 
       {/* Visual Redesign Section */}
-      {results.redesigned_images && Object.keys(results.redesigned_images).length > 0 && (
+      {results.redesigned_images && Object.keys(results.redesigned_images).filter(key => !deletedImages.includes(key)).length > 0 && (
         <div className="vr-section">
           <div className="vr-header">
-            <h2 className="vr-title">Visual Design Analysis</h2>
-            <p className="vr-subtitle">
-              Three AI-generated views of your design — attention distribution, issue overlays, and an auto-enhanced version.
-            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div>
+                <h2 className="vr-title">Visual Design Analysis</h2>
+                <p className="vr-subtitle">
+                  Three AI-generated views of your design — attention distribution, issue overlays, and an auto-enhanced version.
+                </p>
+              </div>
+              {selectedImages.length > 0 && (
+                <button
+                  onClick={deleteSelectedImages}
+                  style={{
+                    padding: '10px 16px',
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  Delete {selectedImages.length} Image{selectedImages.length !== 1 ? 's' : ''}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="vr-tabs">
@@ -936,7 +989,9 @@ const SimplifiedAnalysisResults = ({ results }) => {
               { key: 'heatmap',   label: 'Attention Heatmap',      desc: 'Predicted user gaze distribution across a 3×3 grid. Red = high focus, Blue = low focus.' },
               { key: 'annotated', label: 'Issue Overlay',           desc: 'Colour-coded zones showing accessibility (red), readability (amber), and attention balance (purple) issues.' },
               { key: 'enhanced',  label: 'Suggested Enhancement',   desc: 'Auto-corrected version: contrast boosted, sharpness improved, and focus vignette applied where needed.' },
-            ].map(({ key, label }) => (
+            ]
+              .filter(({ key }) => results.redesigned_images[key] && !deletedImages.includes(key))
+              .map(({ key, label }) => (
               <button
                 key={key}
                 className={`vr-tab ${visualTab === key ? 'active' : ''}`}
@@ -948,6 +1003,17 @@ const SimplifiedAnalysisResults = ({ results }) => {
           </div>
 
           <div className="vr-body">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <input
+                type="checkbox"
+                checked={selectedImages.includes(visualTab)}
+                onChange={() => toggleImageSelection(visualTab)}
+                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+              />
+              <label style={{ cursor: 'pointer', fontSize: '0.9rem', color: '#0f2557', fontWeight: '500' }}>
+                Select this image for deletion
+              </label>
+            </div>
             <div className="vr-image-wrap">
               <img
                 src={results.redesigned_images[visualTab]}
