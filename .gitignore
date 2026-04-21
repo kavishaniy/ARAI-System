@@ -52,6 +52,8 @@ backend/ai_models/*
 # Build
 frontend/build/
 frontend/.cache/
+backend/analysis_output/
+backend/heatmaps/
 
 # Testing
 coverage/
