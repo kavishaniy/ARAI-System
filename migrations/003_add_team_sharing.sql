@@ -46,16 +46,48 @@ ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE project_shares ENABLE ROW LEVEL SECURITY;
 
+-- Helper functions to avoid recursive RLS checks between teams and team_members.
+-- These run with definer privileges, so they can safely inspect membership/ownership
+-- without re-entering the same table policies.
+CREATE OR REPLACE FUNCTION public.is_team_member(_team_id UUID, _user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.team_members
+        WHERE team_id = _team_id
+          AND user_id = _user_id
+    );
+$$;
+
+CREATE OR REPLACE FUNCTION public.is_team_owner(_team_id UUID, _user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.teams
+        WHERE id = _team_id
+          AND created_by = _user_id
+    );
+$$;
+
+REVOKE ALL ON FUNCTION public.is_team_member(UUID, UUID) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.is_team_owner(UUID, UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_team_member(UUID, UUID) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.is_team_owner(UUID, UUID) TO authenticated, service_role;
+
 -- Teams RLS Policies
 DROP POLICY IF EXISTS "Users can view teams they're members of" ON teams;
 CREATE POLICY "Users can view teams they're members of" ON teams
     FOR SELECT USING (
-        auth.uid() = created_by OR
-        EXISTS (
-            SELECT 1 FROM team_members 
-            WHERE team_members.team_id = teams.id 
-            AND team_members.user_id = auth.uid()
-        )
+        auth.uid() = created_by
+        OR public.is_team_member(id, auth.uid())
     );
 
 DROP POLICY IF EXISTS "Users can create teams" ON teams;
@@ -75,23 +107,15 @@ CREATE POLICY "Team creators can delete teams" ON teams
 DROP POLICY IF EXISTS "Team members can view team membership" ON team_members;
 CREATE POLICY "Team members can view team membership" ON team_members
     FOR SELECT USING (
-        auth.uid() = user_id OR
-        EXISTS (
-            SELECT 1 FROM team_members tm
-            WHERE tm.team_id = team_members.team_id
-            AND tm.user_id = auth.uid()
-        )
+        auth.uid() = user_id
+        OR public.is_team_owner(team_id, auth.uid())
+        OR public.is_team_member(team_id, auth.uid())
     );
 
 DROP POLICY IF EXISTS "Team creators can manage members" ON team_members;
 CREATE POLICY "Team creators can manage members" ON team_members
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM teams
-            WHERE teams.id = team_members.team_id
-            AND teams.created_by = auth.uid()
-        )
-    );
+    FOR ALL USING (public.is_team_owner(team_id, auth.uid()))
+    WITH CHECK (public.is_team_owner(team_id, auth.uid()));
 
 -- Project Shares RLS Policies
 DROP POLICY IF EXISTS "Users can view shared projects" ON project_shares;
@@ -99,11 +123,7 @@ CREATE POLICY "Users can view shared projects" ON project_shares
     FOR SELECT USING (
         auth.uid() = user_id OR
         auth.uid() = shared_by OR
-        EXISTS (
-            SELECT 1 FROM team_members
-            WHERE team_members.team_id = project_shares.team_id
-            AND team_members.user_id = auth.uid()
-        ) OR
+        (team_id IS NOT NULL AND public.is_team_member(team_id, auth.uid())) OR
         EXISTS (
             SELECT 1 FROM projects
             WHERE projects.id = project_shares.project_id
