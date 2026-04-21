@@ -42,6 +42,7 @@ const TeamDetail = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [viewLoading, setViewLoading] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [selectedForDelete, setSelectedForDelete] = useState(new Set());
 
   useEffect(() => {
     const fetchTeamDetails = async () => {
@@ -136,14 +137,16 @@ const TeamDetail = () => {
   };
 
   const handleView = async (analysis) => {
+    console.log('Viewing analysis:', analysis);
     setSelectedAnalysis({ ...analysis, results: null });
     setViewLoading(true);
     try {
       const fullData = await analysisService.getAnalysis(analysis.analysis_id);
+      console.log('Fetched analysis data:', fullData);
       setSelectedAnalysis({ ...analysis, results: fullData });
+      setViewLoading(false);
     } catch (err) {
       console.error('Failed to fetch analysis details:', err);
-    } finally {
       setViewLoading(false);
     }
   };
@@ -162,57 +165,34 @@ const TeamDetail = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="team-detail-container" style={{ backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div className="loading-state">
-          <div className="spinner" /> Loading team details...
-        </div>
-      </div>
-    );
-  }
+  const handleSelectForDelete = (analysisId) => {
+    const newSelected = new Set(selectedForDelete);
+    if (newSelected.has(analysisId)) {
+      newSelected.delete(analysisId);
+    } else {
+      newSelected.add(analysisId);
+    }
+    setSelectedForDelete(newSelected);
+  };
 
-  if (error || !team) {
-    return (
-      <div className="team-detail-container" style={{ backgroundColor: '#fff' }}>
-        <button className="btn-back" onClick={() => navigate('/teams')} style={{ margin: '20px 0' }}>
-          <ArrowLeft size={16} /> Back to Teams
-        </button>
-        <div className="alert-error" style={{ marginTop: '20px', padding: '16px', backgroundColor: '#fee', border: '1px solid #fcc', borderRadius: '6px' }}>
-          ❌ {error || 'Team not found. Please go back and try again.'}
-        </div>
-      </div>
-    );
-  }
-
-  if (selectedAnalysis) {
-    return (
-      <div className="team-detail-shell">
-        <Sidebar active="teams" />
-        <div className="team-detail-pg-container">
-          <div className="team-detail-pg-main">
-            <div className="team-detail-pg-wrapper">
-              <button
-                className="action-button"
-                onClick={() => setSelectedAnalysis(null)}
-                style={{ marginBottom: '24px' }}
-              >
-                ← Back to History
-              </button>
-              {viewLoading ? (
-                <div className="history-loading">
-                  <span className="loading-spinner"></span>
-                  Loading analysis results...
-                </div>
-              ) : selectedAnalysis.results ? (
-                <SimplifiedAnalysisResults results={selectedAnalysis.results} />
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleDeleteSelected = async () => {
+    if (selectedForDelete.size === 0) return;
+    
+    if (window.confirm(`Are you sure you want to delete ${selectedForDelete.size} analyses?`)) {
+      try {
+        setDeleting('multiple');
+        for (const analysisId of selectedForDelete) {
+          await analysisService.deleteAnalysis(analysisId);
+        }
+        setHistory(history.filter(h => !selectedForDelete.has(h.analysis_id)));
+        setSelectedForDelete(new Set());
+      } catch (err) {
+        console.error('Failed to delete analyses:', err);
+      } finally {
+        setDeleting(null);
+      }
+    }
+  };
 
   const css = `
     /* ── Layout ─────────────────────────────────────── */
@@ -589,7 +569,158 @@ const TeamDetail = () => {
         justify-content: center;
       }
     }
+
+    /* ── Multi-delete Styles ─────────────────────── */
+    .history-item-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #0f2557;
+    }
+
+    .history-item-select-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .multi-delete-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 40px;
+      background: linear-gradient(135deg, rgba(15, 37, 87, 0.05) 0%, rgba(100, 180, 255, 0.05) 100%);
+      border-bottom: 1.5px solid rgba(15, 37, 87, 0.1);
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .multi-delete-info {
+      flex: 1;
+      font-size: 0.95rem;
+      color: #0f2557;
+      font-weight: 500;
+    }
+
+    .multi-delete-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .multi-delete-btn {
+      padding: 10px 14px;
+      border: 1.5px solid rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.05);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #991b1b;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-family: inherit;
+    }
+
+    .multi-delete-btn:hover:not(:disabled) {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .multi-delete-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .multi-cancel-btn {
+      padding: 10px 14px;
+      border: 1.5px solid rgba(15, 37, 87, 0.2);
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #0f2557;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-family: inherit;
+    }
+
+    .multi-cancel-btn:hover {
+      border-color: rgba(15, 37, 87, 0.4);
+      background: rgba(15, 37, 87, 0.02);
+    }
   `;
+
+  if (loading) {
+    return (
+      <div className="team-detail-container" style={{ backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <div className="loading-state">
+          <div className="spinner" /> Loading team details...
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !team) {
+    return (
+      <div className="team-detail-container" style={{ backgroundColor: '#fff' }}>
+        <button className="btn-back" onClick={() => navigate('/teams')} style={{ margin: '20px 0' }}>
+          <ArrowLeft size={16} /> Back to Teams
+        </button>
+        <div className="alert-error" style={{ marginTop: '20px', padding: '16px', backgroundColor: '#fee', border: '1px solid #fcc', borderRadius: '6px' }}>
+          ❌ {error || 'Team not found. Please go back and try again.'}
+        </div>
+      </div>
+    );
+  }
+
+  if (selectedAnalysis) {
+    console.log('Rendering analysis detail view, selectedAnalysis:', selectedAnalysis);
+    console.log('viewLoading:', viewLoading);
+    console.log('selectedAnalysis.results:', selectedAnalysis.results);
+    return (
+      <div className="team-detail-shell">
+        <style>{css}</style>
+        <Sidebar active="teams" />
+        <div className="team-detail-pg-container">
+          <PageHeader
+            title={team?.name || 'Team'}
+            subtitle={`Analysis: ${selectedAnalysis.design_name || selectedAnalysis.filename || 'Untitled'}`}
+          />
+          <div className="team-detail-pg-main">
+            <div className="team-detail-pg-wrapper">
+              <button
+                className="action-button"
+                onClick={() => setSelectedAnalysis(null)}
+                style={{ marginBottom: '24px' }}
+              >
+                ← Back to History
+              </button>
+              {viewLoading ? (
+                <div className="history-loading">
+                  <span className="loading-spinner"></span>
+                  Loading analysis results...
+                </div>
+              ) : selectedAnalysis.results ? (
+                <SimplifiedAnalysisResults results={selectedAnalysis.results} />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -634,18 +765,11 @@ const TeamDetail = () => {
         {activeTab === 'analysis' && (
           <div className="analysis-section" style={{ display: 'block', width: '100%' }}>
             {currentAnalysis ? (
-              currentAnalysis.analyses ? (
-                <MultipleAnalysisResults 
-                  key={analysisKey} 
-                  results={currentAnalysis} 
-                  onNewAnalysis={handleNewAnalysis}
-                />
-              ) : (
-                <SimplifiedAnalysisResults 
-                  key={analysisKey} 
-                  results={currentAnalysis} 
-                />
-              )
+              <MultipleAnalysisResults 
+                key={analysisKey} 
+                results={currentAnalysis} 
+                onNewAnalysis={handleNewAnalysis}
+              />
             ) : (
               <UploadAnalysisMultiple onAnalysisComplete={handleAnalysisComplete} />
             )}
@@ -679,7 +803,7 @@ const TeamDetail = () => {
         {/* History Tab */}
         {activeTab === 'history' && (
           <div className="history-section" style={{ display: 'block', width: '100%' }}>
-            <div style={{ marginBottom: '20px', position: 'relative', maxWidth: '400px' }}>
+            <div style={{ marginBottom: '20px', position: 'relative', maxWidth: '100%' }}>
               <Search className="search-icon" size={18} />
               <input
                 type="text"
@@ -725,49 +849,82 @@ const TeamDetail = () => {
                   </p>
                 </div>
               ) : (
-                <ul className="history-list">
-                  {history
-                    .filter(item => 
-                      !searchQuery || 
-                      (item.design_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-                      (item.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
-                    )
-                    .map((item) => (
-                      <li key={item.analysis_id} className="history-item">
-                        <div className="history-item-content">
-                          <h3 className="history-item-name">
-                            {item.design_name || item.filename || 'Untitled'}
-                          </h3>
-                          <div className="history-item-meta">
-                            <span className="history-item-date">
-                              <Calendar size={16} />
-                              {formatDate(item.timestamp)}
-                            </span>
+                <>
+                  {selectedForDelete.size > 0 && (
+                    <div className="multi-delete-toolbar">
+                      <div className="multi-delete-info">
+                        {selectedForDelete.size} analysis{selectedForDelete.size > 1 ? 'es' : ''} selected
+                      </div>
+                      <div className="multi-delete-actions">
+                        <button
+                          className="multi-delete-btn"
+                          onClick={handleDeleteSelected}
+                          disabled={deleting === 'multiple'}
+                        >
+                          <Trash2 size={16} />
+                          Delete Selected
+                        </button>
+                        <button
+                          className="multi-cancel-btn"
+                          onClick={() => setSelectedForDelete(new Set())}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <ul className="history-list">
+                    {history
+                      .filter(item => 
+                        !searchQuery || 
+                        (item.design_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (item.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map((item) => (
+                        <li key={item.analysis_id} className="history-item">
+                          <div className="history-item-select-wrapper">
+                            <input
+                              type="checkbox"
+                              className="history-item-checkbox"
+                              checked={selectedForDelete.has(item.analysis_id)}
+                              onChange={() => handleSelectForDelete(item.analysis_id)}
+                            />
                           </div>
-                        </div>
+                          <div className="history-item-content">
+                            <h3 className="history-item-name">
+                              {item.design_name || item.filename || 'Untitled'}
+                            </h3>
+                            <div className="history-item-meta">
+                              <span className="history-item-date">
+                                <Calendar size={16} />
+                                {formatDate(item.timestamp)}
+                              </span>
+                            </div>
+                          </div>
 
-                        <div className="history-item-actions">
-                          <button
-                            className="action-button"
-                            onClick={() => handleView(item)}
-                            title="View full results"
-                          >
-                            <Eye size={16} />
-                            View Details
-                          </button>
-                          <button
-                            className="action-button delete"
-                            onClick={() => handleDelete(item.analysis_id)}
-                            disabled={deleting === item.analysis_id}
-                            title="Delete this analysis"
-                          >
-                            <Trash2 size={16} />
-                            {deleting === item.analysis_id ? 'Deleting...' : 'Delete'}
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                </ul>
+                          <div className="history-item-actions">
+                            <button
+                              className="action-button"
+                              onClick={() => handleView(item)}
+                              title="View full results"
+                            >
+                              <Eye size={16} />
+                              View Details
+                            </button>
+                            <button
+                              className="action-button delete"
+                              onClick={() => handleDelete(item.analysis_id)}
+                              disabled={deleting === item.analysis_id}
+                              title="Delete this analysis"
+                            >
+                              <Trash2 size={16} />
+                              {deleting === item.analysis_id ? 'Deleting...' : 'Delete'}
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                  </ul>
+                </>
               )}
             </div>
           </div>
