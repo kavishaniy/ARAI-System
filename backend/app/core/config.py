@@ -43,9 +43,9 @@ class Settings(BaseSettings):
         return list(set(origins))  # Remove duplicates
     
     # Supabase
-    SUPABASE_URL: str
-    SUPABASE_KEY: str
-    SUPABASE_SERVICE_KEY: str
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_KEY: Optional[str] = None
+    SUPABASE_SERVICE_KEY: Optional[str] = None
     
     # JWT
     SECRET_KEY: str = "your-secret-key-here-change-in-production"
