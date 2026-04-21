@@ -170,6 +170,7 @@ const Projects = () => {
 
     .projects-search-input {
       width: 100%;
+      max-width: 600px;
       padding: 11px 16px 11px 40px;
       border: 1.5px solid rgba(15, 37, 87, 0.15);
       border-radius: 10px;
@@ -581,7 +582,7 @@ const Projects = () => {
 
   const headerActions = (
     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-      <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+      <div style={{ position: 'relative', flex: 1, maxWidth: '600px' }}>
         <svg className="search-icon-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
