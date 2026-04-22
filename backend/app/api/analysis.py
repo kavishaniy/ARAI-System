@@ -184,6 +184,7 @@ async def upload_design(
     file: UploadFile = File(...),
     design_name: Optional[str] = Form(None),
     project_id: Optional[str] = Form(None),
+    team_id: Optional[str] = Form(None),
     current_user = Depends(get_current_user)
 ):
     """
@@ -197,8 +198,12 @@ async def upload_design(
         # Normalize project_id - convert "None" string to None
         if project_id == "None" or project_id == "null" or project_id == "":
             project_id = None
+
+        if team_id == "None" or team_id == "null" or team_id == "":
+            team_id = None
             
         logger.info(f"📋 Project ID: {project_id}")
+        logger.info(f"👥 Team ID: {team_id}")
         logger.info(f"🏷️ Design name: {design_name}")
         
         # Validate file type
@@ -399,7 +404,8 @@ async def upload_design(
                 filename=file.filename,
                 file_path=storage_path,
                 results=final_results,
-                project_id=project_id
+                project_id=project_id,
+                team_id=team_id
             )
             logger.info(f"✅ Analysis saved to database successfully")
         except Exception as db_error:
@@ -668,6 +674,5 @@ async def validate_url(request: ValidateURLRequest):
             "valid": False,
             "message": f"Error validating URL: {str(e)}"
         }
-
 
 

@@ -58,7 +58,8 @@ async def save_analysis_to_db(
     filename: str,
     file_path: str,
     results: Dict,
-    project_id: Optional[str] = None
+    project_id: Optional[str] = None,
+    team_id: Optional[str] = None,
 ) -> Dict:
     """
     Save analysis results to the analyses table
@@ -104,7 +105,11 @@ async def save_analysis_to_db(
             logger.info(f"📁 Analysis will be linked to project: {project_id}")
         else:
             logger.warning(f"⚠️ No project_id provided for analysis {analysis_id}")
-        
+
+        if team_id:
+            analysis_data["team_id"] = team_id
+            logger.info(f"👥 Analysis will be linked to team: {team_id}")
+
         logger.info(f"📋 Analysis data prepared: {analysis_data}")
 
         # Insert into database using admin client to bypass RLS during API calls

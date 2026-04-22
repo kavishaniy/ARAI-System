@@ -36,6 +36,16 @@ class FakeProjectsTable:
         return FakeInsertQuery(self._responses)
 
 
+class FakeAnalysesTable:
+    def __init__(self, responses, payloads):
+        self._responses = responses
+        self._payloads = payloads
+
+    def insert(self, payload):
+        self._payloads.append(payload)
+        return FakeInsertQuery(self._responses)
+
+
 class FakeSupabaseAdmin:
     def __init__(self, responses, payloads):
         self._responses = responses
@@ -44,6 +54,16 @@ class FakeSupabaseAdmin:
     def table(self, table_name):
         assert table_name == "projects"
         return FakeProjectsTable(self._responses, self._payloads)
+
+
+class FakeSupabaseAdminAnalyses:
+    def __init__(self, responses, payloads):
+        self._responses = responses
+        self._payloads = payloads
+
+    def table(self, table_name):
+        assert table_name == "analyses"
+        return FakeAnalysesTable(self._responses, self._payloads)
 
 
 class FakeAdminUser:
@@ -254,3 +274,35 @@ def test_accept_team_invitations_for_user_adds_member_and_marks_invite(monkeypat
     assert add_calls == [("team-1", "user-42", "member")]
     assert invitation_rows[0]["status"] == "accepted"
     assert invitation_rows[0]["accepted_user_id"] == "user-42"
+
+
+def test_save_analysis_to_db_includes_team_id(monkeypatch):
+    payloads = []
+    responses = [FakeResponse([{"id": "analysis-1"}])]
+
+    monkeypatch.setattr(
+        database,
+        "supabase_admin",
+        FakeSupabaseAdminAnalyses(responses=responses, payloads=payloads),
+    )
+
+    asyncio.run(
+        database.save_analysis_to_db(
+            user_id="user-1",
+            analysis_id="analysis-1",
+            design_name="Team Run",
+            filename="team-run.png",
+            file_path="uploads/team-run.png",
+            results={
+                "arai_score": 91,
+                "overall_grade": "A",
+                "accessibility": {"score": 92},
+                "readability": {"score": 90},
+                "attention": {"score": 91},
+            },
+            team_id="team-123",
+        )
+    )
+
+    assert len(payloads) == 1
+    assert payloads[0]["team_id"] == "team-123"

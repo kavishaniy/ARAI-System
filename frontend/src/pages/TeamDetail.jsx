@@ -706,7 +706,7 @@ const TeamDetail = () => {
                 onNewAnalysis={handleNewAnalysis}
               />
             ) : (
-              <UploadAnalysisMultiple onAnalysisComplete={handleAnalysisComplete} />
+              <UploadAnalysisMultiple teamId={teamId} onAnalysisComplete={handleAnalysisComplete} />
             )}
           </div>
         )}

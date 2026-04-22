@@ -331,7 +331,7 @@ async def get_team_analysis_history(
     current_user = Depends(get_current_user)
 ):
     """
-    Get all analysis history for a team (all members' analyses)
+    Get analysis history created inside a specific team workspace
     """
     try:
         logger.info(f"📋 Fetching analysis history for team {team_id}")
@@ -343,14 +343,11 @@ async def get_team_analysis_history(
         if not current_member:
             raise HTTPException(status_code=403, detail="You are not a member of this team")
         
-        # Get all team members' user IDs
-        team_member_ids = [m["user_id"] for m in members]
-        
-        # Fetch analyses for all team members
+        # Fetch only analyses explicitly linked to this team workspace
         from app.core.database import supabase_admin
         result = supabase_admin.table("analyses")\
             .select("*")\
-            .in_("user_id", team_member_ids)\
+            .eq("team_id", team_id)\
             .order("created_at", desc=True)\
             .range((page - 1) * limit, page * limit - 1)\
             .execute()
@@ -360,7 +357,7 @@ async def get_team_analysis_history(
         # Get total count
         count_result = supabase_admin.table("analyses")\
             .select("id", count="exact")\
-            .in_("user_id", team_member_ids)\
+            .eq("team_id", team_id)\
             .execute()
         
         total = count_result.count or 0

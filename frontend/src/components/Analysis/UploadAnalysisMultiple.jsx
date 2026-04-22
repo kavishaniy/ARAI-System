@@ -5,7 +5,7 @@ import { authService } from '../../services/auth';
 import { projectService } from '../../services/projects';
 
 // Upload and Analysis Component - Multiple Images Support
-const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
+const UploadAnalysisMultiple = ({ projectId, teamId, onAnalysisComplete }) => {
   const [files, setFiles] = useState([]); // Array to hold multiple files with metadata
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
@@ -106,6 +106,10 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       if (projectId) {
         formData.append('project_id', projectId);
         console.log(`📁 Linking analysis to project: ${projectId}`);
+      }
+      if (teamId) {
+        formData.append('team_id', teamId);
+        console.log(`👥 Linking analysis to team: ${teamId}`);
       }
 
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
