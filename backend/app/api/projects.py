@@ -17,6 +17,44 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+def _map_project_creation_error(error: Exception) -> HTTPException:
+    """
+    Convert common database errors into user-facing API responses.
+    """
+    error_message = str(error)
+    error_lower = error_message.lower()
+
+    if (
+        "unique_project_name_per_user" in error_lower or
+        "duplicate key value violates unique constraint" in error_lower
+    ):
+        return HTTPException(
+            status_code=409,
+            detail="A project with this name already exists. Please choose a different name."
+        )
+
+    if "row-level security" in error_lower or "permission denied" in error_lower:
+        return HTTPException(
+            status_code=403,
+            detail="You do not have permission to create this project."
+        )
+
+    if (
+        "foreign key" in error_lower or
+        "invalid input syntax for type uuid" in error_lower or
+        "null value in column" in error_lower
+    ):
+        return HTTPException(
+            status_code=400,
+            detail=f"Unable to create project: {error_message}"
+        )
+
+    return HTTPException(
+        status_code=500,
+        detail=f"Error creating project: {error_message}"
+    )
+
+
 async def get_current_user(authorization: Optional[str] = Header(None)):
     """
     Extract and verify user from JWT token
@@ -80,7 +118,7 @@ async def create_new_project(
         raise
     except Exception as e:
         logger.error(f"❌ Error creating project: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error creating project: {str(e)}")
+        raise _map_project_creation_error(e)
 
 
 @router.get("/projects", response_model=ProjectList)

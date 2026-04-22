@@ -44,7 +44,7 @@ const Projects = () => {
       );
       
       // Add new project to list
-      setProjects([newProject, ...projects]);
+      setProjects((currentProjects) => [newProject, ...currentProjects]);
       setShowCreateModal(false);
       
       // Auto-select and show the newly created project
@@ -53,7 +53,11 @@ const Projects = () => {
       console.log('✅ Project created successfully:', newProject);
     } catch (err) {
       console.error('Error creating project:', err);
-      setError('Failed to create project. Please try again.');
+      const message =
+        err.response?.data?.detail ||
+        'Failed to create project. Please try again.';
+      setError(message);
+      throw err;
     } finally {
       setCreatingProject(false);
     }

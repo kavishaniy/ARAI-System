@@ -245,13 +245,35 @@ async def create_project(
         project_data = {
             "id": project_id,
             "user_id": user_id,
+            "created_by": user_id,
             "name": project_name,
             "description": project_description or "",
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat()
         }
-        
-        response = supabase_admin.table("projects").insert(project_data).execute()
+
+        try:
+            response = supabase_admin.table("projects").insert(project_data).execute()
+        except Exception as insert_error:
+            error_message = str(insert_error).lower()
+
+            # Some environments may not have the optional created_by column yet.
+            if "created_by" in error_message and (
+                "does not exist" in error_message or
+                "schema cache" in error_message or
+                "column" in error_message
+            ):
+                logger.warning(
+                    "⚠️ Projects insert failed with created_by; retrying without the column"
+                )
+                fallback_project_data = {
+                    key: value
+                    for key, value in project_data.items()
+                    if key != "created_by"
+                }
+                response = supabase_admin.table("projects").insert(fallback_project_data).execute()
+            else:
+                raise
         
         logger.info(f"✅ Project created: {project_id} for user {user_id}")
         return response.data[0] if response.data else project_data
@@ -783,5 +805,4 @@ async def get_user_by_email(email: str) -> Optional[Dict]:
     except Exception as e:
         logger.error(f"❌ Error fetching user by email: {str(e)}")
         return None
-
 
