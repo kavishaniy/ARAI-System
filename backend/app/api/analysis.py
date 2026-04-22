@@ -79,6 +79,19 @@ UPLOAD_DIR = Path(__file__).parent.parent.parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 
+def _map_history_save_error(error: Exception) -> str:
+    message = str(error)
+    normalized = message.lower()
+
+    if "team_id" in normalized and ("schema cache" in normalized or "column" in normalized or "does not exist" in normalized):
+        return "Database setup is missing the analyses.team_id column. Run the team-history migration in Supabase."
+
+    if "project_id" in normalized and ("schema cache" in normalized or "column" in normalized or "does not exist" in normalized):
+        return "Database setup is missing the analyses.project_id column. Run the project-linking migration in Supabase."
+
+    return "Analysis completed, but it could not be saved to team/project history."
+
+
 def get_wcag_analyzer():
     """Lazy load WCAG analyzer with memory cleanup"""
     global wcag_analyzer
@@ -412,7 +425,7 @@ async def upload_design(
             logger.info(f"✅ Analysis saved to database successfully")
         except Exception as db_error:
             history_saved = False
-            history_warning = "Analysis completed, but it could not be saved to team/project history."
+            history_warning = _map_history_save_error(db_error)
             logger.error(f"❌ Database save failed: {db_error}")
             import traceback
             logger.error(f"📌 Full traceback: {traceback.format_exc()}")
@@ -686,4 +699,3 @@ async def validate_url(request: ValidateURLRequest):
             "valid": False,
             "message": f"Error validating URL: {str(e)}"
         }
-
