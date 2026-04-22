@@ -80,6 +80,50 @@ class FakeSupabaseAdminAuthOnly:
         self.auth = type("Auth", (), {"admin": admin})()
 
 
+class FakeFilterQuery:
+    def __init__(self, rows, action="select", payload=None):
+        self._rows = rows
+        self._action = action
+        self._payload = payload or {}
+        self._filters = []
+
+    def eq(self, key, value):
+        self._filters.append((key, value))
+        return self
+
+    def execute(self):
+        matches = [
+            row for row in self._rows
+            if all(row.get(key) == value for key, value in self._filters)
+        ]
+
+        if self._action == "update":
+            for row in matches:
+                row.update(self._payload)
+
+        return FakeResponse(matches)
+
+
+class FakeTeamInvitationsTable:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def select(self, _fields):
+        return FakeFilterQuery(self._rows, action="select")
+
+    def update(self, payload):
+        return FakeFilterQuery(self._rows, action="update", payload=payload)
+
+
+class FakeSupabaseAdminTablesOnly:
+    def __init__(self, invitation_rows):
+        self._invitation_rows = invitation_rows
+
+    def table(self, table_name):
+        assert table_name == "team_invitations"
+        return FakeTeamInvitationsTable(self._invitation_rows)
+
+
 def test_map_project_creation_error_for_duplicate_name():
     exception = Exception(
         'duplicate key value violates unique constraint "unique_project_name_per_user"'
@@ -175,3 +219,38 @@ def test_get_user_by_email_falls_back_when_list_users_has_no_pagination(monkeypa
         {"page": 1, "per_page": 1000},
         {},
     ]
+
+
+def test_accept_team_invitations_for_user_adds_member_and_marks_invite(monkeypatch):
+    invitation_rows = [
+        {
+            "id": "invite-1",
+            "team_id": "team-1",
+            "email": "invitee@example.com",
+            "role": "member",
+            "status": "pending",
+            "accepted_at": None,
+            "accepted_user_id": None,
+        }
+    ]
+    add_calls = []
+
+    async def fake_get_team_members(_team_id):
+        return []
+
+    async def fake_add_team_member(team_id, user_id, role):
+        add_calls.append((team_id, user_id, role))
+        return {"team_id": team_id, "user_id": user_id, "role": role}
+
+    monkeypatch.setattr(database, "supabase_admin", FakeSupabaseAdminTablesOnly(invitation_rows))
+    monkeypatch.setattr(database, "get_team_members", fake_get_team_members)
+    monkeypatch.setattr(database, "add_team_member", fake_add_team_member)
+
+    accepted_count = asyncio.run(
+        database.accept_team_invitations_for_user("user-42", "INVITEE@example.com")
+    )
+
+    assert accepted_count == 1
+    assert add_calls == [("team-1", "user-42", "member")]
+    assert invitation_rows[0]["status"] == "accepted"
+    assert invitation_rows[0]["accepted_user_id"] == "user-42"

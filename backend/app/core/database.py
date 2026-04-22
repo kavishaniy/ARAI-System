@@ -845,6 +845,105 @@ def _serialize_admin_user(user: Any) -> Optional[Dict]:
     }
 
 
+async def create_team_invitation(
+    team_id: str,
+    email: str,
+    invited_by: str,
+    role: str = "member",
+) -> Dict:
+    """
+    Store a pending team invitation for an email address that is not registered yet.
+    """
+    normalized_email = _normalize_email(email)
+    invitation_data = {
+        "id": str(uuid.uuid4()),
+        "team_id": team_id,
+        "email": normalized_email,
+        "role": role,
+        "invited_by": invited_by,
+        "status": "pending",
+        "invited_at": datetime.utcnow().isoformat(),
+        "accepted_at": None,
+        "accepted_user_id": None,
+    }
+
+    try:
+        response = supabase_admin.table("team_invitations").upsert(
+            invitation_data,
+            on_conflict="team_id,email",
+        ).execute()
+        return response.data[0] if response.data else invitation_data
+    except Exception as e:
+        logger.error(f"❌ Error creating team invitation: {str(e)}")
+        raise
+
+
+async def accept_team_invitations_for_user(user_id: str, email: str) -> int:
+    """
+    Accept any pending team invitations for a newly registered user.
+    """
+    normalized_email = _normalize_email(email)
+    if not normalized_email:
+        return 0
+
+    try:
+        response = supabase_admin.table("team_invitations") \
+            .select("*") \
+            .eq("email", normalized_email) \
+            .eq("status", "pending") \
+            .execute()
+
+        invitations = response.data or []
+        accepted_count = 0
+
+        for invitation in invitations:
+            team_id = invitation["team_id"]
+            role = invitation.get("role") or "member"
+            members = await get_team_members(team_id)
+            already_member = any(str(member["user_id"]) == str(user_id) for member in members)
+
+            if not already_member:
+                await add_team_member(team_id, user_id, role)
+
+            supabase_admin.table("team_invitations") \
+                .update({
+                    "status": "accepted",
+                    "accepted_at": datetime.utcnow().isoformat(),
+                    "accepted_user_id": user_id,
+                }) \
+                .eq("id", invitation["id"]) \
+                .execute()
+
+            accepted_count += 1
+
+        if accepted_count:
+            logger.info(f"✅ Accepted {accepted_count} team invitations for {email}")
+
+        return accepted_count
+    except Exception as e:
+        logger.error(f"❌ Error accepting team invitations for {email}: {str(e)}")
+        return 0
+
+
+async def clear_team_invitations_for_email(team_id: str, email: str) -> None:
+    """
+    Remove any pending invite rows for an email once that user has been added directly.
+    """
+    normalized_email = _normalize_email(email)
+    if not normalized_email:
+        return
+
+    try:
+        supabase_admin.table("team_invitations") \
+            .delete() \
+            .eq("team_id", team_id) \
+            .eq("email", normalized_email) \
+            .eq("status", "pending") \
+            .execute()
+    except Exception as e:
+        logger.warning(f"⚠️ Could not clear pending team invites for {email}: {str(e)}")
+
+
 async def get_user_by_email(email: str) -> Optional[Dict]:
     """
     Get user information by email using Supabase Admin API

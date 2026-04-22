@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from supabase import create_client, Client
 from app.core.config import settings
+from app.core.database import accept_team_invitations_for_user
 from app.models.schemas import UserSignup, UserLogin, Token, User
 from typing import Optional
 
@@ -43,6 +44,14 @@ async def signup(user_data: UserSignup):
         except Exception as profile_error:
             # If profile creation fails, it might already exist or will be created by trigger
             print(f"Profile creation warning: {profile_error}")
+
+        try:
+            await accept_team_invitations_for_user(
+                user_id=str(auth_response.user.id),
+                email=user_data.email,
+            )
+        except Exception as invite_error:
+            print(f"Team invitation acceptance warning: {invite_error}")
         
         # Check if session exists
         if not auth_response.session:

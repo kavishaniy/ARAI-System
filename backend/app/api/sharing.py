@@ -11,6 +11,8 @@ from app.core.database import (
     add_team_member,
     get_user_teams,
     get_team_members,
+    create_team_invitation,
+    clear_team_invitations_for_email,
     remove_team_member,
     update_team_member_role,
     share_project_with_team,
@@ -439,6 +441,12 @@ async def invite_member_by_email(
             logger.info(f"📧 User {email} doesn't exist yet, sending invitation to sign up")
             
             try:
+                await create_team_invitation(
+                    team_id=team_id,
+                    email=email,
+                    invited_by=str(current_user.id),
+                    role=role,
+                )
                 await send_collaboration_invite(
                     to_email=email,
                     project_name="team invitation",
@@ -447,15 +455,15 @@ async def invite_member_by_email(
                 )
                 logger.info(f"✅ Invitation email sent to {email} to sign up and join team")
                 return {
-                    "message": f"Invitation sent to {email}. They need to sign up before they can be added to the team.",
+                    "message": f"Invitation sent to {email}. They'll be added to the team after they sign up.",
                     "user_email": email,
                     "status": "pending_signup",
-                    "note": "No team membership was created yet because this email is not registered."
+                    "note": "A pending team invite was saved and will be accepted automatically after signup."
                 }
             except Exception as email_err:
                 logger.warning(f"⚠️ Failed to send invitation email: {str(email_err)}")
                 return {
-                    "message": f"User {email} is not registered yet, so they could not be added to the team.",
+                    "message": f"User {email} is not registered yet, so they were not added to the team.",
                     "user_email": email,
                     "status": "not_found",
                     "error": "Could not send invitation email. Please check the email address."
@@ -469,6 +477,7 @@ async def invite_member_by_email(
         
         # Add user to team
         result = await add_team_member(team_id, user["id"], role)
+        await clear_team_invitations_for_email(team_id, email)
 
         # Send invitation email (non-blocking — failure doesn't abort the request)
         await send_collaboration_invite(
