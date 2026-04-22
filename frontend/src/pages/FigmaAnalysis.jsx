@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { ArrowLeft, FilePlus } from 'lucide-react';
-import axios from 'axios';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
 import FigmaProjectInput from '../components/Analysis/FigmaProjectInput';
 import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResults';
+import { figmaService } from '../services/figma';
 
 const css = `
 .page-shell {
@@ -176,8 +176,6 @@ const css = `
 }
 `;
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 const FigmaAnalysis = () => {
   const [step, setStep]                   = useState('input');
   const [analysisResults, setAnalysisResults] = useState(null);
@@ -191,20 +189,21 @@ const FigmaAnalysis = () => {
     setLoadingMsg(`Analyzing ${frameUrls.length} frame${frameUrls.length !== 1 ? 's' : ''}…`);
 
     try {
-      const resp = await axios.post(
-        `${API_BASE}/api/v1/figma/analyze-frames`,
-        { frame_urls: frameUrls },
-        { headers: { 'Content-Type': 'application/json' }, timeout: 300000 }
-      );
+      const resp = await figmaService.analyzeFrames(frameUrls);
 
-      if (resp.data?.analyses?.length) {
-        setAnalysisResults(resp.data);
+      if (resp?.analyses?.length) {
+        setAnalysisResults(resp);
         setStep('results');
       } else {
         setError('No frames could be analyzed. Check that the Figma file is public.');
       }
     } catch (err) {
-      const msg = err.response?.data?.detail || err.message || 'Analysis failed.';
+      const msg =
+        err.response?.data?.detail ||
+        (err.code === 'ERR_NETWORK'
+          ? 'Unable to reach the analysis server. Check that the backend is running and the frontend API URL is configured correctly.'
+          : err.message) ||
+        'Analysis failed.';
       setError(msg);
     } finally {
       setIsLoading(false);

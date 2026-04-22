@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Upload, Figma, Clock, ArrowLeft, Trash2, Calendar, Search, X, Eye, Zap } from 'lucide-react';
-import axios from 'axios';
 import Sidebar from '../components/Common/Sidebar';
 import PageHeader from '../components/Common/PageHeader';
 import UploadAnalysisMultiple from '../components/Analysis/UploadAnalysisMultiple';
@@ -10,9 +9,8 @@ import MultipleAnalysisResults from '../components/Analysis/MultipleAnalysisResu
 import SimplifiedAnalysisResults from '../components/Analysis/SimplifiedAnalysisResults';
 import { teamService } from '../services/sharing';
 import { analysisService } from '../services/analysis';
+import { figmaService } from '../services/figma';
 import './TeamDetail.css';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const TeamDetail = () => {
   const { teamId } = useParams();
@@ -90,19 +88,20 @@ const TeamDetail = () => {
     setFigmaError('');
     setFigmaLoading(true);
     try {
-      const resp = await axios.post(
-        `${API_BASE}/api/v1/figma/analyze-frames`,
-        { frame_urls: frameUrls },
-        { headers: { 'Content-Type': 'application/json' }, timeout: 300000 }
-      );
-      if (resp.data?.analyses?.length) {
-        setFigmaResults(resp.data);
+      const resp = await figmaService.analyzeFrames(frameUrls);
+      if (resp?.analyses?.length) {
+        setFigmaResults(resp);
         setFigmaStep('results');
       } else {
         setFigmaError('No frames could be analyzed. Check that the Figma file is public.');
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.detail || err.message || 'Analysis failed.';
+      const errorMsg =
+        err.response?.data?.detail ||
+        (err.code === 'ERR_NETWORK'
+          ? 'Unable to reach the analysis server. Check that the backend is running and the frontend API URL is configured correctly.'
+          : err.message) ||
+        'Analysis failed.';
       setFigmaError(typeof errorMsg === 'string' ? errorMsg : 'Analysis failed.');
     } finally {
       setFigmaLoading(false);
