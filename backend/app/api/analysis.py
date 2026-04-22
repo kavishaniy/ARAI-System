@@ -395,6 +395,8 @@ async def upload_design(
             logger.warning(f"⚠️ Could not generate redesign images: {redesign_error}")
 
         # Save to Supabase database (without large image blobs)
+        history_saved = True
+        history_warning = None
         try:
             logger.info(f"💾 Attempting to save analysis to database...")
             await save_analysis_to_db(
@@ -409,10 +411,15 @@ async def upload_design(
             )
             logger.info(f"✅ Analysis saved to database successfully")
         except Exception as db_error:
+            history_saved = False
+            history_warning = "Analysis completed, but it could not be saved to team/project history."
             logger.error(f"❌ Database save failed: {db_error}")
             import traceback
             logger.error(f"📌 Full traceback: {traceback.format_exc()}")
-            # Continue even if DB save fails - return results anyway
+            final_results["warnings"] = [
+                *final_results.get("warnings", []),
+                history_warning,
+            ]
 
         # Save results to JSON (local backup, without images to keep file small)
         import json
@@ -424,7 +431,12 @@ async def upload_design(
         logger.info(f"📊 Accessibility: {accessibility_results['score']}, Readability: {readability_results['score']}, Attention: {attention_results['score']}")
 
         # Return results WITH redesigned images (images are not stored in DB)
-        return {**final_results, "redesigned_images": redesigned_images}
+        return {
+            **final_results,
+            "redesigned_images": redesigned_images,
+            "saved_to_history": history_saved,
+            "history_warning": history_warning,
+        }
         
     except HTTPException:
         raise
@@ -674,5 +686,4 @@ async def validate_url(request: ValidateURLRequest):
             "valid": False,
             "message": f"Error validating URL: {str(e)}"
         }
-
 

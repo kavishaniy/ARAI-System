@@ -1028,6 +1028,20 @@ const MultipleAnalysisResults = ({ results, onNewAnalysis }) => {
                 ⚠️ <strong>Note:</strong> This appears to be a blank or empty image. The analysis results may not be meaningful.
               </div>
             )}
+
+            {currentAnalysis.history_warning && (
+              <div style={{
+                padding: '1rem 1.25rem',
+                background: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                borderRadius: '8px',
+                marginBottom: '2rem',
+                color: '#92400e',
+                fontSize: '0.95rem',
+              }}>
+                ⚠️ <strong>History sync:</strong> {currentAnalysis.history_warning}
+              </div>
+            )}
             <SimplifiedAnalysisResults results={currentAnalysis} />
           </>
         )}
