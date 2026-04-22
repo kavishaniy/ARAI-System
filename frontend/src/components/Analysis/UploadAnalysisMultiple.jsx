@@ -135,7 +135,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
             }
           );
 
-          console.log(`✅ ${fileObj.designName} analysis completed`);
+          console.log(`${fileObj.designName} analysis completed`);
           analysisResult = response.data;
 
           // Update file state with results
@@ -178,7 +178,7 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
       return analysisResult;
 
     } catch (err) {
-      console.error(`❌ Error analyzing ${fileObj.designName}:`, err);
+      console.error(`Error analyzing ${fileObj.designName}:`, err);
 
       let errorMsg = 'Analysis failed. Please try again.';
       if (err.response?.status === 401) {
@@ -236,9 +236,9 @@ const UploadAnalysisMultiple = ({ projectId, onAnalysisComplete }) => {
           try {
             console.log(`🔗 Linking analysis ${result.analysis_id} to project ${projectId}...`);
             await projectService.linkAnalysisToProject(projectId, result.analysis_id);
-            console.log(`✅ Analysis linked to project successfully`);
+            console.log(`Analysis linked to project successfully`);
           } catch (linkErr) {
-            console.error(`⚠️ Failed to link analysis to project:`, linkErr);
+            console.error(`Failed to link analysis to project:`, linkErr);
           }
         }
       }

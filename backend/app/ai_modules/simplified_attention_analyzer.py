@@ -14,6 +14,7 @@ import numpy as np
 from typing import Dict, List
 
 
+
 class SimplifiedAttentionAnalyzer:
     """
     Simplified Attention Analyzer - Only essential visual design checks

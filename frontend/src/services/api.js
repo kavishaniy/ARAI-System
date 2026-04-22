@@ -39,7 +39,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       const errorDetail = error.response?.data?.detail || '';
       
-      console.error('❌ 401 Unauthorized Error:', {
+      console.error('401 Unauthorized Error:', {
         detail: errorDetail,
         status: error.response?.status,
         message: error.message,
