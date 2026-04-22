@@ -4,7 +4,7 @@ Handles analysis history and file storage
 """
 from supabase import create_client, Client
 from app.core.config import settings
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 import logging
 import uuid
@@ -782,27 +782,105 @@ async def get_user_shared_projects(user_id: str) -> List[Dict]:
         return []
 
 
+def _normalize_email(value: str) -> str:
+    return value.strip().casefold()
+
+
+def _extract_admin_users(response: Any) -> List[Any]:
+    """
+    Normalize Supabase admin list_users responses across client versions.
+    """
+    if response is None:
+        return []
+
+    if isinstance(response, list):
+        return response
+
+    users = getattr(response, "users", None)
+    if isinstance(users, list):
+        return users
+
+    data = getattr(response, "data", None)
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        users = data.get("users")
+        if isinstance(users, list):
+            return users
+    elif data is not None:
+        users = getattr(data, "users", None)
+        if isinstance(users, list):
+            return users
+
+    if isinstance(response, dict):
+        users = response.get("users")
+        if isinstance(users, list):
+            return users
+        nested = response.get("data")
+        if isinstance(nested, dict):
+            users = nested.get("users")
+            if isinstance(users, list):
+                return users
+
+    return []
+
+
+def _serialize_admin_user(user: Any) -> Optional[Dict]:
+    if isinstance(user, dict):
+        user_id = user.get("id")
+        email = user.get("email")
+        metadata = user.get("user_metadata") or user.get("raw_user_meta_data") or {}
+    else:
+        user_id = getattr(user, "id", None)
+        email = getattr(user, "email", None)
+        metadata = getattr(user, "user_metadata", None) or getattr(user, "raw_user_meta_data", None) or {}
+
+    if not user_id or not email:
+        return None
+
+    return {
+        "id": str(user_id),
+        "email": email,
+        "user_metadata": metadata,
+    }
+
+
 async def get_user_by_email(email: str) -> Optional[Dict]:
     """
     Get user information by email using Supabase Admin API
     Returns user object with id and email, or None if not found
     """
     try:
-        # Use Supabase admin API to search for user by email
-        users = supabase_admin.auth.admin.list_users()
-        
-        for user in users:
-            if user.email == email:
-                return {
-                    "id": user.id,
-                    "email": user.email,
-                    "user_metadata": user.user_metadata or {}
-                }
-        
+        normalized_email = _normalize_email(email)
+        if not normalized_email:
+            return None
+
+        page = 1
+        per_page = 1000
+        uses_pagination = True
+
+        while True:
+            try:
+                response = supabase_admin.auth.admin.list_users(page=page, per_page=per_page)
+            except TypeError:
+                uses_pagination = False
+                response = supabase_admin.auth.admin.list_users()
+
+            users = _extract_admin_users(response)
+
+            for user in users:
+                serialized_user = _serialize_admin_user(user)
+                if serialized_user and _normalize_email(serialized_user["email"]) == normalized_email:
+                    return serialized_user
+
+            if not uses_pagination or len(users) < per_page:
+                break
+
+            page += 1
+
         logger.warning(f"⚠️ User not found with email: {email}")
         return None
         
     except Exception as e:
         logger.error(f"❌ Error fetching user by email: {str(e)}")
         return None
-

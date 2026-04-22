@@ -418,8 +418,8 @@ async def invite_member_by_email(
 ):
     """
     Invite a user to a team by email address (must be team owner/admin)
-    Looks up the user by email and adds them to the team.
-    If user doesn't exist yet, sends invitation email for them to sign up.
+    Looks up the user by email and adds them to the team immediately.
+    If the email is not registered yet, only a signup invitation is sent.
     """
     try:
         logger.info(f"📧 Inviting {email} to team {team_id}")
@@ -447,15 +447,15 @@ async def invite_member_by_email(
                 )
                 logger.info(f"✅ Invitation email sent to {email} to sign up and join team")
                 return {
-                    "message": f"Invitation sent to {email}. They'll be added to the team once they sign up.",
+                    "message": f"Invitation sent to {email}. They need to sign up before they can be added to the team.",
                     "user_email": email,
                     "status": "pending_signup",
-                    "note": "The user will be automatically added to the team after they create an account."
+                    "note": "No team membership was created yet because this email is not registered."
                 }
             except Exception as email_err:
                 logger.warning(f"⚠️ Failed to send invitation email: {str(email_err)}")
                 return {
-                    "message": f"User {email} not found in the system. They need to sign up first.",
+                    "message": f"User {email} is not registered yet, so they could not be added to the team.",
                     "user_email": email,
                     "status": "not_found",
                     "error": "Could not send invitation email. Please check the email address."

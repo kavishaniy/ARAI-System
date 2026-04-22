@@ -890,11 +890,10 @@ const TeamCard = ({ team, onRefresh }) => {
     try {
       const result = await teamService.inviteTeamMember(team.id, email, 'member');
       
-      // Handle both successful and pending_signup status
       if (result.status === 'pending_signup' || result.status === 'not_found') {
-        setInviteSuccess(`✉️ ${result.message} (they'll be automatically added after signing up)`);
+        setInviteSuccess(`✉️ ${result.message}`);
       } else {
-        setInviteSuccess(`Collaboration invite sent to ${email}`);
+        setInviteSuccess(`${email} was added to the team.`);
       }
       
       setInviteEmail('');
