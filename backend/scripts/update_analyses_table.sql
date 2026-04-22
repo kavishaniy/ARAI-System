@@ -10,7 +10,8 @@ ADD COLUMN IF NOT EXISTS overall_grade TEXT,
 ADD COLUMN IF NOT EXISTS conformance_level TEXT,
 ADD COLUMN IF NOT EXISTS accessibility_score NUMERIC,
 ADD COLUMN IF NOT EXISTS readability_score NUMERIC,
-ADD COLUMN IF NOT EXISTS attention_score NUMERIC;
+ADD COLUMN IF NOT EXISTS attention_score NUMERIC,
+ADD COLUMN IF NOT EXISTS team_id UUID REFERENCES teams(id) ON DELETE CASCADE;
 
 -- Create storage bucket for design uploads (if not exists)
 INSERT INTO storage.buckets (id, name, public)
@@ -48,6 +49,8 @@ USING (bucket_id = 'design-uploads');
 -- Create index for faster queries
 CREATE INDEX IF NOT EXISTS idx_analyses_user_id ON public.analyses(user_id);
 CREATE INDEX IF NOT EXISTS idx_analyses_created_at ON public.analyses(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_analyses_team_id ON public.analyses(team_id);
+CREATE INDEX IF NOT EXISTS idx_analyses_team_created ON public.analyses(team_id, created_at DESC);
 
 -- Verify setup
 SELECT * FROM storage.buckets WHERE id = 'design-uploads';
