@@ -31,6 +31,16 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+def _map_team_history_error(error: Exception) -> str:
+    message = str(error)
+    normalized = message.lower()
+
+    if "team_id" in normalized and ("schema cache" in normalized or "column" in normalized or "does not exist" in normalized):
+        return "Database setup is missing the analyses.team_id column. Run the team-history migration in Supabase."
+
+    return f"Error fetching analysis history: {message}"
+
+
 async def resolve_user_email(user_id: str) -> str:
     """
     Resolve a user's email address for team/member responses.
@@ -374,7 +384,7 @@ async def get_team_analysis_history(
         raise
     except Exception as e:
         logger.error(f"❌ Error fetching team analysis history: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error fetching analysis history: {str(e)}")
+        raise HTTPException(status_code=500, detail=_map_team_history_error(e))
 
 
 @router.post("/teams/{team_id}/members")

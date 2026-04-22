@@ -36,6 +36,7 @@ const TeamDetail = () => {
   // History states
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [viewLoading, setViewLoading] = useState(false);
@@ -61,6 +62,7 @@ const TeamDetail = () => {
 
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true);
+    setHistoryError('');
     try {
       const response = await analysisService.getTeamHistory(teamId, 1, 100);
       const mappedAnalyses = (response.analyses || []).map(item => ({
@@ -72,6 +74,11 @@ const TeamDetail = () => {
     } catch (err) {
       console.error('Error fetching history:', err);
       setHistory([]);
+      setHistoryError(
+        err.response?.data?.detail ||
+        err.message ||
+        'Failed to load team analysis history.'
+      );
     } finally {
       setHistoryLoading(false);
     }
@@ -794,6 +801,16 @@ const TeamDetail = () => {
                 <div className="history-loading">
                   <span className="loading-spinner"></span>
                   Loading your analysis history...
+                </div>
+              ) : historyError ? (
+                <div className="history-empty">
+                  <div className="empty-icon">
+                    <Zap size={40} />
+                  </div>
+                  <h3 className="empty-title">History unavailable</h3>
+                  <p className="empty-text">
+                    {historyError}
+                  </p>
                 </div>
               ) : history.length === 0 ? (
                 <div className="history-empty">
