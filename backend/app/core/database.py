@@ -670,6 +670,31 @@ async def get_project_shares(project_id: str) -> List[Dict]:
         return []
 
 
+async def infer_team_id_from_project(project_id: str) -> Optional[str]:
+    """
+    Infer a single team workspace for a project when it is shared with exactly one team.
+    Returns None when the project is not team-shared or is shared with multiple teams.
+    """
+    try:
+        shares = await get_project_shares(project_id)
+        team_ids = sorted({share.get("team_id") for share in shares if share.get("team_id")})
+
+        if len(team_ids) == 1:
+            logger.info(f"✅ Inferred team {team_ids[0]} from project {project_id}")
+            return team_ids[0]
+
+        if len(team_ids) > 1:
+            logger.info(
+                f"ℹ️ Project {project_id} is shared with multiple teams; skipping automatic team history inference"
+            )
+
+        return None
+
+    except Exception as e:
+        logger.warning(f"⚠️ Could not infer team for project {project_id}: {str(e)}")
+        return None
+
+
 async def remove_project_share(share_id: str) -> bool:
     """
     Remove a project share

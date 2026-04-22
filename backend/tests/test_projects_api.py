@@ -144,6 +144,23 @@ class FakeSupabaseAdminTablesOnly:
         return FakeTeamInvitationsTable(self._invitation_rows)
 
 
+class FakeProjectSharesTable:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def select(self, _fields):
+        return FakeFilterQuery(self._rows, action="select")
+
+
+class FakeSupabaseAdminProjectSharesOnly:
+    def __init__(self, share_rows):
+        self._share_rows = share_rows
+
+    def table(self, table_name):
+        assert table_name == "project_shares"
+        return FakeProjectSharesTable(self._share_rows)
+
+
 def test_map_project_creation_error_for_duplicate_name():
     exception = Exception(
         'duplicate key value violates unique constraint "unique_project_name_per_user"'
@@ -306,3 +323,38 @@ def test_save_analysis_to_db_includes_team_id(monkeypatch):
 
     assert len(payloads) == 1
     assert payloads[0]["team_id"] == "team-123"
+
+
+def test_infer_team_id_from_project_returns_only_shared_team(monkeypatch):
+    monkeypatch.setattr(
+        database,
+        "supabase_admin",
+        FakeSupabaseAdminProjectSharesOnly(
+            [
+                {"project_id": "project-1", "team_id": "team-1"},
+                {"project_id": "project-1", "team_id": "team-1"},
+                {"project_id": "project-2", "team_id": "team-9"},
+            ]
+        ),
+    )
+
+    inferred_team_id = asyncio.run(database.infer_team_id_from_project("project-1"))
+
+    assert inferred_team_id == "team-1"
+
+
+def test_infer_team_id_from_project_returns_none_for_multi_team_share(monkeypatch):
+    monkeypatch.setattr(
+        database,
+        "supabase_admin",
+        FakeSupabaseAdminProjectSharesOnly(
+            [
+                {"project_id": "project-1", "team_id": "team-1"},
+                {"project_id": "project-1", "team_id": "team-2"},
+            ]
+        ),
+    )
+
+    inferred_team_id = asyncio.run(database.infer_team_id_from_project("project-1"))
+
+    assert inferred_team_id is None

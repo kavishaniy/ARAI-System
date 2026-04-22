@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Upload, Figma, Clock, ArrowLeft, Trash2, Calendar, Search, X, Eye, Zap } from 'lucide-react';
 import Sidebar from '../components/Common/Sidebar';
@@ -59,30 +59,29 @@ const TeamDetail = () => {
     fetchTeamDetails();
   }, [teamId]);
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      setHistoryLoading(true);
-      try {
-        const response = await analysisService.getTeamHistory(teamId, 1, 100);
-        // Map 'id' field to 'analysis_id' for consistency
-        const mappedAnalyses = (response.analyses || []).map(item => ({
-          ...item,
-          analysis_id: item.id || item.analysis_id
-        }));
-        console.log('📋 Fetched team history:', mappedAnalyses);
-        setHistory(mappedAnalyses);
-      } catch (err) {
-        console.error('Error fetching history:', err);
-        setHistory([]);
-      } finally {
-        setHistoryLoading(false);
-      }
-    };
+  const fetchHistory = useCallback(async () => {
+    setHistoryLoading(true);
+    try {
+      const response = await analysisService.getTeamHistory(teamId, 1, 100);
+      const mappedAnalyses = (response.analyses || []).map(item => ({
+        ...item,
+        analysis_id: item.id || item.analysis_id
+      }));
+      console.log('📋 Fetched team history:', mappedAnalyses);
+      setHistory(mappedAnalyses);
+    } catch (err) {
+      console.error('Error fetching history:', err);
+      setHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, [teamId]);
 
+  useEffect(() => {
     if (activeTab === 'history') {
       fetchHistory();
     }
-  }, [activeTab, teamId]);
+  }, [activeTab, fetchHistory]);
 
   const handleFigmaSubmit = async ({ frameUrls }) => {
     setFigmaError('');
@@ -118,6 +117,29 @@ const TeamDetail = () => {
   const handleAnalysisComplete = (analysisData) => {
     setCurrentAnalysis(analysisData);
     setAnalysisKey(prev => prev + 1);
+
+    const savedAnalyses = (analysisData?.analyses || [])
+      .filter((analysis) => analysis?.saved_to_history !== false)
+      .map((analysis) => ({
+        ...analysis,
+        analysis_id: analysis.analysis_id || analysis.id,
+        id: analysis.id || analysis.analysis_id,
+        design_name: analysis.design_name || analysis.filename || 'Untitled',
+        created_at: analysis.timestamp || analysis.created_at || new Date().toISOString(),
+      }))
+      .filter((analysis) => analysis.analysis_id);
+
+    if (savedAnalyses.length > 0) {
+      setHistory((prev) => {
+        const seen = new Set(savedAnalyses.map((analysis) => analysis.analysis_id));
+        const remaining = prev.filter((analysis) => !seen.has(analysis.analysis_id));
+        return [...savedAnalyses, ...remaining];
+      });
+    }
+
+    setTimeout(() => {
+      fetchHistory();
+    }, 750);
   };
 
   const handleNewAnalysis = () => {

@@ -60,6 +60,7 @@ from app.core.database import (
     get_analysis_by_id,
     delete_analysis,
     update_analysis_status,
+    infer_team_id_from_project,
     supabase
 )
 
@@ -214,6 +215,9 @@ async def upload_design(
 
         if team_id == "None" or team_id == "null" or team_id == "":
             team_id = None
+
+        if project_id and not team_id:
+            team_id = await infer_team_id_from_project(project_id)
             
         logger.info(f"📋 Project ID: {project_id}")
         logger.info(f"👥 Team ID: {team_id}")
